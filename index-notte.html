@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Guido Arcangeli DJ — Prototipo: La Serata</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#05040a">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%237c3cff'/%3E%3Ctext x='16' y='23' font-family='Arial Black,Arial' font-size='17' font-weight='900' text-anchor='middle' fill='%23fff'%3EG%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/proto.css">
+<style>
+/* ============ SHELL: LA SERATA ============ */
+html,body{height:100%}
+body{overflow:hidden}
+body.mob{overflow:auto}
+.nt{position:relative;display:flex;flex-direction:column;height:100dvh;isolation:isolate}
+
+/* cielo / luci della sala */
+.sky{position:fixed;inset:0;z-index:-2;transition:background .1s linear;
+  background:radial-gradient(1100px 780px at 50% 108%, var(--sky1), transparent 68%),
+             radial-gradient(900px 600px at 15% -6%, var(--sky2), transparent 62%), #05040a}
+.beams{position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.5;overflow:hidden}
+.beams i{position:absolute;bottom:-10%;left:50%;width:14vw;height:130vh;transform-origin:50% 100%;
+  background:linear-gradient(to top, var(--beam), transparent 72%);filter:blur(22px);opacity:.34;mix-blend-mode:screen}
+.strobe{position:fixed;inset:0;z-index:-1;background:#fff;opacity:0;pointer-events:none;mix-blend-mode:overlay}
+
+/* ---- HUD alto ---- */
+.nt-top{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;
+  padding:14px clamp(14px,2.4vw,34px);flex:none}
+.nt-brand b{font-family:var(--f-display);font-size:1rem;letter-spacing:.03em;line-height:1;display:block}
+.nt-brand small{display:block;font-family:var(--f-mono);font-size:.5rem;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-faint);margin-top:3px}
+.nt-hud{display:flex;align-items:center;gap:clamp(12px,2vw,26px)}
+.hud{text-align:right}
+.hud b{display:block;font-family:var(--f-display);font-size:1.35rem;line-height:1;font-variant-numeric:tabular-nums}
+.hud small{display:block;font-family:var(--f-mono);font-size:.48rem;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-faint);margin-top:4px}
+.beat{width:13px;height:13px;border-radius:50%;background:var(--m);box-shadow:0 0 16px var(--m);
+  animation:bt .5s infinite;align-self:center}
+@keyframes bt{0%{transform:scale(1);opacity:1}55%{transform:scale(.6);opacity:.4}100%{transform:scale(1);opacity:1}}
+.crowd{display:flex;align-items:flex-end;gap:2px;height:20px}
+.crowd i{width:3px;background:rgba(255,255,255,.16);border-radius:1px;transition:height .5s var(--ease),background .5s}
+.crowd i.on{background:var(--c);box-shadow:0 0 6px var(--c)}
+.nt-links{display:flex;gap:13px;font-family:var(--f-mono);font-size:.55rem;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-faint)}
+.nt-links a:hover{color:var(--ink)}
+
+/* ---- scena ---- */
+.nt-stage{flex:1;min-height:0;position:relative;margin:0 clamp(14px,2.4vw,34px)}
+.mom{position:absolute;inset:0;overflow-y:auto;padding:6px 4px 24px;opacity:0;pointer-events:none;
+  transform:translateY(22px) scale(.995);transition:opacity .45s,transform .6s var(--ease)}
+.mom.on{opacity:1;pointer-events:auto;transform:none;transition-delay:.08s}
+.mom::-webkit-scrollbar{width:5px}
+.mom::-webkit-scrollbar-thumb{background:var(--line-2);border-radius:9px}
+.mom-head{display:flex;align-items:flex-end;gap:16px;flex-wrap:wrap;margin-bottom:18px;padding-bottom:14px;border-bottom:1px solid var(--line)}
+.mom-time{font-family:var(--f-display);font-size:clamp(2.2rem,5.4vw,4rem);line-height:.85;color:var(--w);
+  text-shadow:0 0 30px rgba(255,216,77,.35);font-variant-numeric:tabular-nums}
+.mom-head h2{font-family:var(--f-display);font-size:clamp(1.4rem,3vw,2.4rem);line-height:.98}
+.mom-head>div>span{font-family:var(--f-mono);font-size:.55rem;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-dim);display:block;margin-bottom:6px}
+.mom-inner{max-width:1180px}
+
+/* ---- timeline ---- */
+.nt-bot{flex:none;padding:6px clamp(66px,7vw,120px) 62px}
+.tl{position:relative;height:76px;cursor:grab;touch-action:none;user-select:none}
+.tl:active{cursor:grabbing}
+.tl-track{position:absolute;left:0;right:0;top:34px;height:2px;background:rgba(255,255,255,.13);border-radius:2px}
+.tl-fill{position:absolute;left:0;top:34px;height:2px;border-radius:2px;
+  background:linear-gradient(90deg,var(--w),var(--m) 55%,var(--c));box-shadow:0 0 14px rgba(255,46,136,.5)}
+.tl-hour{position:absolute;top:44px;transform:translateX(-50%);font-family:var(--f-mono);font-size:.5rem;
+  letter-spacing:.1em;color:var(--ink-faint)}
+.tl-hour::before{content:'';position:absolute;left:50%;top:-11px;width:1px;height:7px;background:var(--line-2)}
+.tl-mark{position:absolute;top:20px;transform:translateX(-50%);text-align:center;cursor:pointer;transition:.3s}
+.tl-mark i{display:block;width:9px;height:9px;border-radius:50%;background:#0d0a16;
+  border:1px solid var(--line-2);margin:0 auto 0;transition:.3s}
+.tl-mark b{position:absolute;left:50%;bottom:24px;transform:translateX(-50%);white-space:nowrap;
+  font-family:var(--f-mono);font-size:.5rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-faint);transition:.3s}
+.tl-mark.on i{background:var(--w);border-color:var(--w);box-shadow:0 0 14px var(--w);transform:scale(1.35)}
+.tl-mark.on b{color:var(--ink)}
+.tl-mark:hover b{color:var(--ink-dim)}
+.tl-head{position:absolute;top:34px;width:3px;height:26px;transform:translate(-50%,-50%);border-radius:2px;
+  background:var(--ink);box-shadow:0 0 14px rgba(255,255,255,.7);pointer-events:none}
+.nt-hint{display:flex;justify-content:space-between;gap:12px;font-family:var(--f-mono);font-size:.5rem;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--ink-faint);margin-top:2px}
+
+/* ============ MOBILE ============ */
+.nt-mobile{display:none}
+@media(max-width:880px){
+  .nt{display:none}
+  .nt-mobile{display:block;padding-bottom:70px}
+  .nm-top{position:sticky;top:0;z-index:50;background:rgba(5,4,10,.93);backdrop-filter:blur(12px);
+    border-bottom:1px solid var(--line);padding:12px 16px}
+  .nm-line{display:flex;gap:6px;overflow-x:auto;margin-top:10px;scrollbar-width:none}
+  .nm-line::-webkit-scrollbar{display:none}
+  .nm-line a{flex:none;padding:7px 11px;border:1px solid var(--line);border-radius:999px;
+    font-family:var(--f-mono);font-size:.55rem;letter-spacing:.1em;color:var(--ink-dim)}
+  .nm-hero{padding:44px 16px 30px}
+  .nm-hero h1{font-family:var(--f-display);font-size:clamp(2.4rem,14vw,4rem);line-height:.88}
+  .nm-hero h1 em{font-style:normal;color:var(--w)}
+  .nm-hero p{color:var(--ink-dim);margin-top:14px}
+  .nm-sec{padding:34px 16px;border-top:1px solid var(--line)}
+  .nm-sec .t{font-family:var(--f-display);font-size:1.8rem;color:var(--w);display:block;line-height:1}
+  .nm-sec .k{font-family:var(--f-mono);font-size:.55rem;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-faint);display:block;margin:6px 0 12px}
+  .nm-sec h2{font-family:var(--f-display);font-size:clamp(1.6rem,7.5vw,2.2rem);line-height:.98;margin-bottom:18px}
+}
+</style>
+</head>
+<body>
+
+<div class="sky" id="sky"></div>
+<div class="beams" id="beams"><i></i><i></i><i></i><i></i></div>
+<div class="strobe" id="strobe"></div>
+
+<div class="nt">
+  <header class="nt-top">
+    <a class="nt-brand" href="index.html"><b>Guido Arcangeli</b><small>Una serata intera, dall’apertura all’ultimo ballo</small></a>
+    <div class="nt-hud">
+      <span class="beat" id="beat"></span>
+      <div class="hud"><b id="hud-time">21:00</b><small>Ora</small></div>
+      <div class="hud"><b id="hud-bpm">96</b><small>BPM</small></div>
+      <div class="hud"><span class="crowd" id="crowd"></span><small>Sala</small></div>
+      <nav class="nt-links"><a href="archivio.html">Archivio</a><a href="biografia.html">Biografia</a><a href="news.html">News</a></nav>
+    </div>
+  </header>
+
+  <div class="nt-stage" id="stage"></div>
+
+  <div class="nt-bot">
+    <div class="tl" id="tl" role="slider" aria-label="Ora della serata" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" tabindex="0">
+      <div class="tl-track"></div>
+      <div class="tl-fill" id="fill"></div>
+      <div id="marks"></div>
+      <div class="tl-head" id="head"></div>
+    </div>
+    <div class="nt-hint">
+      <span>Trascina la serata · rotellina · ← → · 1–6</span>
+      <span id="hint-mom">21:00 — Apertura sala</span>
+    </div>
+  </div>
+</div>
+
+<!-- ============ MOBILE ============ -->
+<div class="nt-mobile" id="mob">
+  <div class="nm-top">
+    <a class="nt-brand" href="index.html"><b>Guido Arcangeli</b><small>Una serata intera</small></a>
+    <nav class="nm-line" id="nmline"></nav>
+  </div>
+  <div class="nm-hero">
+    <h1>Guido<br><em>Arcangeli</em></h1>
+    <p>Dalle 21:00 all’ultimo ballo: quarant’anni dietro una consolle, raccontati come una serata sola.</p>
+  </div>
+  <div id="nmsecs"></div>
+</div>
+
+<nav class="protobar">
+  <a href="index.html">Attuale</a>
+  <a href="index-mixer.html">Consolle</a>
+  <a href="index-radio.html">Radio</a>
+  <a href="index-disco.html">Disco</a>
+  <a href="index-notte.html" class="on">Serata</a>
+</nav>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/proto-shared.js"></script>
+<script>
+(function(){
+  var S=window.PSECTIONS;
+  var reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
+  /* posizione di ogni momento sulla serata 21:00 → 03:00 (6 ore) */
+  var POS=[0, 0.25, 0.5, 0.6667, 0.8333, 1];
+  var PAL=[  /* [luce bassa, luce alta, fascio] per ogni momento */
+    ['rgba(255,150,40,.30)','rgba(120,60,20,.35)','#ffb14d'],
+    ['rgba(124,60,255,.34)','rgba(60,25,120,.38)','#9d6bff'],
+    ['rgba(255,46,136,.42)','rgba(120,10,70,.42)','#ff2e88'],
+    ['rgba(90,60,255,.38)','rgba(30,20,110,.42)','#6b6bff'],
+    ['rgba(0,229,255,.30)','rgba(10,60,90,.40)','#3fd9ff'],
+    ['rgba(255,190,120,.24)','rgba(40,30,90,.42)','#ffd0a0']
+  ];
+  var HOURS=['21:00','22:00','23:00','00:00','01:00','02:00','03:00'];
+
+  var stage=document.getElementById('stage'), tl=document.getElementById('tl');
+  var fill=document.getElementById('fill'), head=document.getElementById('head'), marks=document.getElementById('marks');
+  var sky=document.getElementById('sky'), beams=document.getElementById('beams'), strobe=document.getElementById('strobe');
+  var hudT=document.getElementById('hud-time'), hudB=document.getElementById('hud-bpm');
+  var crowd=document.getElementById('crowd'), beat=document.getElementById('beat'), hintM=document.getElementById('hint-mom');
+
+  /* costruzione */
+  S.forEach(function(sec,i){
+    var d=document.createElement('article'); d.className='mom'; d.id='n-'+sec.id;
+    d.innerHTML='<div class="mom-head"><span class="mom-time">'+sec.hour+'</span><div><span>'+sec.hourLabel+' · '+sec.label+'</span><h2>'+sec.kicker+'</h2></div></div><div class="mom-inner">'+PBUILD(sec)+'</div>';
+    stage.appendChild(d);
+    marks.insertAdjacentHTML('beforeend','<div class="tl-mark" data-i="'+i+'" style="left:'+(POS[i]*100)+'%"><b>'+sec.hourLabel+'</b><i></i></div>');
+  });
+  HOURS.forEach(function(h,i){
+    marks.insertAdjacentHTML('beforeend','<div class="tl-hour" style="left:'+((i/(HOURS.length-1))*100)+'%">'+h+'</div>');
+  });
+  for(var k=0;k<14;k++) crowd.insertAdjacentHTML('beforeend','<i style="height:4px"></i>');
+  var momEls=[].slice.call(stage.children), markEls=[].slice.call(marks.querySelectorAll('.tl-mark'));
+  var crowdEls=[].slice.call(crowd.children);
+  [].slice.call(beams.children).forEach(function(b,i){ b.style.transform='rotate('+(-34+i*23)+'deg)'; });
+
+  function lerp(a,b,k){ return a+(b-a)*k; }
+  function mixRGBA(c1,c2,k){
+    var p=function(s){ return s.replace(/[^\d.,]/g,'').split(',').map(Number); };
+    var a=p(c1), b=p(c2);
+    return 'rgba('+Math.round(lerp(a[0],b[0],k))+','+Math.round(lerp(a[1],b[1],k))+','+Math.round(lerp(a[2],b[2],k))+','+lerp(a[3],b[3],k).toFixed(3)+')';
+  }
+  function mixHex(h1,h2,k){
+    var p=function(h){ return [parseInt(h.substr(1,2),16),parseInt(h.substr(3,2),16),parseInt(h.substr(5,2),16)]; };
+    var a=p(h1), b=p(h2);
+    return 'rgb('+Math.round(lerp(a[0],b[0],k))+','+Math.round(lerp(a[1],b[1],k))+','+Math.round(lerp(a[2],b[2],k))+')';
+  }
+
+  var t=0, cur=-1, bpm=96;
+  function render(){
+    t=Math.max(0,Math.min(1,t));
+    fill.style.width=(t*100)+'%';
+    head.style.left=(t*100)+'%';
+    tl.setAttribute('aria-valuenow',Math.round(t*100));
+
+    /* segmento corrente fra due momenti */
+    var i=0; while(i<POS.length-2 && t>POS[i+1]) i++;
+    var k=(t-POS[i])/(POS[i+1]-POS[i]); k=Math.max(0,Math.min(1,k));
+
+    /* luci */
+    sky.style.setProperty('--sky1', mixRGBA(PAL[i][0],PAL[i+1][0],k));
+    sky.style.setProperty('--sky2', mixRGBA(PAL[i][1],PAL[i+1][1],k));
+    beams.style.setProperty('--beam', mixHex(PAL[i][2],PAL[i+1][2],k));
+
+    /* ora e bpm */
+    var mins=Math.round(t*360), hh=(21+Math.floor(mins/60))%24, mm=mins%60;
+    hudT.textContent=String(hh).padStart(2,'0')+':'+String(mm).padStart(2,'0');
+    bpm=Math.round(lerp(S[i].bpm,S[i+1].bpm,k));
+    hudB.textContent=bpm;
+    beat.style.animationDuration=(60/bpm).toFixed(3)+'s';
+    if(reduce) beat.style.animation='none';
+
+    /* sala */
+    var dens=Math.sin(t*Math.PI)*0.75+0.25;
+    crowdEls.forEach(function(e,j){
+      var h=4+Math.round(dens*16*(0.55+0.45*Math.sin(j*1.7+t*9)));
+      e.style.height=h+'px'; e.classList.toggle('on', j<Math.round(dens*14));
+    });
+    beams.style.opacity=(0.28+dens*0.5).toFixed(2);
+
+    /* momento attivo = il più vicino */
+    var best=0,bd=9; POS.forEach(function(p,j){ var d=Math.abs(t-p); if(d<bd){bd=d;best=j;} });
+    if(best!==cur){
+      cur=best;
+      momEls.forEach(function(e,j){
+        e.classList.toggle('on', j===best);
+        if(j===best){ e.scrollTop=0; } else { e.style.opacity=''; e.style.transform=''; }
+      });
+      markEls.forEach(function(e,j){ e.classList.toggle('on', j===best); });
+      hintM.textContent=S[best].hour+' — '+S[best].hourLabel;
+    }
+    var m=momEls[best], prox=Math.max(0,Math.min(1,1-bd/0.14));
+    m.style.opacity=(0.22+0.78*prox).toFixed(2);
+    m.style.transform='translateY('+((1-prox)*16).toFixed(1)+'px)';
+  }
+
+  /* ---- interazione ---- */
+  var drag=false;
+  function fromX(e){
+    var r=tl.getBoundingClientRect();
+    return Math.max(0,Math.min(1,(e.clientX-r.left)/r.width));
+  }
+  tl.addEventListener('pointerdown',function(e){
+    if(e.target.closest('.tl-mark')) return;
+    drag=true; tl.setPointerCapture(e.pointerId); stop(); t=fromX(e); render();
+  });
+  tl.addEventListener('pointermove',function(e){ if(!drag)return; e.preventDefault(); t=fromX(e); render(); });
+  function up(){ if(!drag)return; drag=false; snap(); }
+  tl.addEventListener('pointerup',up); tl.addEventListener('pointercancel',up);
+
+  var wt;
+  addEventListener('wheel',function(e){
+    if(innerWidth<=880) return;
+    e.preventDefault(); stop();
+    t += (Math.abs(e.deltaX)>Math.abs(e.deltaY)?e.deltaX:e.deltaY)*0.0009; render();
+    clearTimeout(wt); wt=setTimeout(snap,300);
+  },{passive:false});
+
+  markEls.forEach(function(m){ m.addEventListener('click',function(){ goTo(+m.dataset.i); }); });
+  document.addEventListener('keydown',function(e){
+    if(innerWidth<=880) return;
+    if(e.key==='ArrowRight'){e.preventDefault(); goTo(Math.min(S.length-1,cur+1));}
+    if(e.key==='ArrowLeft'){e.preventDefault(); goTo(Math.max(0,cur-1));}
+    var n=parseInt(e.key,10); if(n>=1&&n<=S.length) goTo(n-1);
+  });
+
+  var raf=null;
+  function stop(){ if(raf){cancelAnimationFrame(raf); raf=null;} }
+  function animTo(target){
+    stop();
+    if(reduce){ t=target; render(); return; }
+    var from=t, t0=performance.now(), dur=Math.min(900,300+Math.abs(target-from)*900);
+    (function step(now){
+      var q=Math.min(1,(now-t0)/dur), e=1-Math.pow(1-q,3);
+      t=from+(target-from)*e; render();
+      if(q<1) raf=requestAnimationFrame(step); else raf=null;
+    })(performance.now());
+  }
+  function snap(){ var best=0,bd=9; POS.forEach(function(p,j){var d=Math.abs(t-p); if(d<bd){bd=d;best=j;}}); animTo(POS[best]); }
+  function goTo(i){ animTo(POS[i]); }
+
+  /* strobo leggero solo nel momento di picco */
+  if(!reduce){
+    var last=0;
+    (function loop(now){
+      var peak=Math.max(0,1-Math.abs(t-0.5)/0.16);
+      if(peak>0.02 && now-last > (60/bpm)*1000){
+        last=now;
+        strobe.style.opacity=(peak*0.10).toFixed(3);
+        setTimeout(function(){ strobe.style.opacity=0; },55);
+      }
+      requestAnimationFrame(loop);
+    })(0);
+  }
+
+  render();
+
+  /* ---- mobile ---- */
+  if(innerWidth<=880){
+    var line=document.getElementById('nmline'), secs=document.getElementById('nmsecs');
+    S.forEach(function(sec){
+      line.insertAdjacentHTML('beforeend','<a href="#s-'+sec.id+'">'+sec.hour+'</a>');
+      var d=document.createElement('section'); d.className='nm-sec'; d.id='s-'+sec.id;
+      d.innerHTML='<span class="t">'+sec.hour+'</span><span class="k">'+sec.hourLabel+' · '+sec.label+'</span><h2>'+sec.kicker+'</h2>'+PBUILD(sec);
+      secs.appendChild(d);
+    });
+    document.body.classList.add('mob');
+  }
+})();
+</script>
+</body>
+</html>

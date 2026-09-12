@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Guido Arcangeli DJ — Balli di gruppo, Cumbia, Dance | Toscana</title>
+<meta name="description" content="Guido Arcangeli: DJ, producer e sound engineer. Oltre 40 anni tra radio, dancing e discoteche. Serate, produzioni originali, basi e remix. Toscana e tutta Italia.">
+<meta name="theme-color" content="#05040a">
+<link rel="canonical" href="https://www.guidoarcangeli.com/">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="it_IT">
+<meta property="og:title" content="Guido Arcangeli DJ — Balli di gruppo, Cumbia, Dance">
+<meta property="og:description" content="DJ, producer e sound engineer. Serate, produzioni originali, remix e basi musicali.">
+<meta property="og:url" content="https://www.guidoarcangeli.com/">
+<meta property="og:image" content="assets/img/og.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%237c3cff'/%3E%3Ctext x='16' y='23' font-family='Arial Black,Arial' font-size='17' font-weight='900' text-anchor='middle' fill='%23fff'%3EG%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"MusicGroup","name":"Guido Arcangeli","alternateName":"Guido Arcangeli DJ",
+"url":"https://www.guidoarcangeli.com/","genre":["Cumbia","Dance","Kizomba","Balli di gruppo","Liscio"],
+"telephone":"+39 333 84 48 728","email":"info@guidoarcangeli.com",
+"address":{"@type":"PostalAddress","addressRegion":"Toscana","addressCountry":"IT"},
+"sameAs":["https://www.instagram.com/guidoarcangeli/","https://www.facebook.com/dj.guidoarcangeli","https://soundcloud.com/guidoarcangeli","https://www.youtube.com/channel/UCcVdSIVdgziaFblrGqeL6OQ"]}
+</script>
+<script>
+window.GA={imgFail:function(img){
+  if(img.dataset.tried!=='1'&&img.dataset.remote){img.dataset.tried='1';img.src=img.dataset.remote;return;}
+  img.style.display='none';
+  var f=img.parentNode&&img.parentNode.querySelector('.fallback, .ph');
+  if(f)f.style.display='grid';
+}};
+</script>
+</head>
+<body>
+<div class="grain" aria-hidden="true"></div>
+<div class="progress" aria-hidden="true"></div>
+
+<!-- ============ INTRO ============ -->
+<div id="intro">
+  <canvas id="gl-intro" aria-hidden="true"></canvas>
+  <div class="intro-ui">
+    <div class="intro-word">Guido Arcangeli</div>
+    <div class="intro-sub">DJ · Producer · Sound Engineer</div>
+    <div class="intro-bar"><i></i></div>
+  </div>
+  <div class="intro-num" aria-hidden="true">000</div>
+  <button class="intro-skip" type="button">Salta intro</button>
+</div>
+
+<!-- ============ NAV ============ -->
+<header class="nav">
+  <a class="brand" href="index.html" aria-label="Guido Arcangeli DJ — home">
+    <svg class="brand-mark" viewBox="0 0 40 40" aria-hidden="true">
+      <defs><linearGradient id="bg1" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#7c3cff"/><stop offset=".55" stop-color="#00e5ff"/><stop offset="1" stop-color="#ff2e88"/>
+      </linearGradient></defs>
+      <circle cx="20" cy="20" r="18.6" fill="none" stroke="url(#bg1)" stroke-width="1.4"/>
+      <circle cx="20" cy="20" r="12.4" fill="none" stroke="rgba(255,255,255,.28)" stroke-width="1"/>
+      <circle cx="20" cy="20" r="6.4" fill="none" stroke="rgba(255,255,255,.2)" stroke-width="1"/>
+      <circle cx="20" cy="20" r="2.5" fill="url(#bg1)"/>
+      <path d="M20 1.4 A18.6 18.6 0 0 1 38.6 20" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/>
+    </svg>
+    <span class="brand-txt">
+      <span class="brand-name">Guido Arcangeli</span>
+      <span class="brand-role">DJ / Producer</span>
+    </span>
+  </a>
+  <nav class="nav-links" aria-label="Principale">
+    <a href="#chi-sono">Chi sono</a>
+    <a href="#produzioni">Produzioni</a>
+    <a href="#serate">Serate</a>
+    <a href="archivio.html">Archivio</a>
+    <a href="biografia.html">Biografia</a>
+    <a href="news.html">News</a>
+  </nav>
+  <div class="nav-cta"><a class="btn btn--ghost" href="#contatti" data-magnetic="0.24">Prenota una serata</a></div>
+  <button class="burger" type="button" aria-label="Apri il menu" aria-expanded="false"><span></span><span></span></button>
+</header>
+
+<div class="menu" role="dialog" aria-label="Menu">
+  <a href="#chi-sono">Chi sono</a>
+  <a href="#produzioni">Produzioni</a>
+  <a href="#serate">Serate</a>
+  <a href="archivio.html">Archivio brani</a>
+  <a href="biografia.html">Biografia</a>
+  <a href="news.html">News &amp; media</a>
+  <a href="#contatti">Contatti</a>
+  <div class="menu-foot">
+    <a data-tel href="#"><span data-phone></span></a>
+    <a data-mail href="#">info@guidoarcangeli.com</a>
+  </div>
+</div>
+
+<main>
+
+<!-- ============ HERO ============ -->
+<section class="hero" id="top">
+  <canvas id="gl-hero" aria-hidden="true"></canvas>
+  <div class="hero-vinyl" aria-hidden="true">
+    <div class="hv-disc"></div>
+    <svg class="hv-ring" viewBox="0 0 100 100">
+      <defs><path id="ring" d="M50,50 m-45.5,0 a45.5,45.5 0 1,1 91,0 a45.5,45.5 0 1,1 -91,0"/></defs>
+      <text><textPath href="#ring" startOffset="0%">Guido Arcangeli · DJ · Producer · Cumbia · Dance · Kizomba · </textPath></text>
+    </svg>
+    <div class="hv-arm"><i></i><b></b></div>
+  </div>
+  <div class="hero-inner wrap">
+    <div data-rev="fade" style="display:flex;flex-wrap:wrap;gap:12px;align-items:center">
+        <span class="onair"><b></b>Toscana · dal 1976</span>
+        <span class="onair" style="border-color:transparent;background:none;padding-left:0">Resident · Trocadero Village &amp; Sombrero</span>
+      </div>
+    <h1 class="d1 hero-title" style="margin-top:.28em">
+      <span class="ln rl"><span>Guido</span></span>
+      <span class="ln rl"><span class="grad">Arcangeli</span></span>
+    </h1>
+    <div class="hero-meta">
+      <p class="lead" data-rev="up" data-delay=".1">
+        Quarant'anni dietro una consolle. Radio, dancing, discoteche e produzioni originali:
+        cumbia, balli di gruppo, dance e kizomba per far ballare davvero la sala.
+      </p>
+      <div class="hero-tags" data-rev="up" data-delay=".2">
+        <span class="tag">Cumbia</span><span class="tag">Balli di gruppo</span>
+        <span class="tag">Dance</span><span class="tag">Kizomba</span><span class="tag">Liscio</span>
+      </div>
+    </div>
+    <div class="mt-m" data-rev="up" data-delay=".3" style="display:flex;flex-wrap:wrap;gap:12px">
+      <a class="btn btn--solid" href="#contatti" data-magnetic="0.3">Prenota una serata</a>
+      <a class="btn" href="#produzioni" data-magnetic="0.3">Ascolta le produzioni</a>
+    </div>
+  </div>
+  <div class="scroll-cue" aria-hidden="true"><i></i><span>Scroll</span></div>
+</section>
+
+<!-- ============ MARQUEE ============ -->
+<div class="marquee" data-speed-mq="0.6" aria-hidden="true">
+  <div class="marquee-track">
+    <span>Cumbia<i class="dot"></i></span><span>Balli di gruppo<i class="dot"></i></span>
+    <span>Dance<i class="dot"></i></span><span>Kizomba<i class="dot"></i></span>
+    <span>Fox<i class="dot"></i></span><span>Reggaeton<i class="dot"></i></span>
+    <span>Liscio<i class="dot"></i></span><span>Revival 70/80<i class="dot"></i></span>
+  </div>
+</div>
+
+<!-- ============ CHI SONO ============ -->
+<section class="section" id="chi-sono">
+  <div class="wrap">
+    <div class="shead">
+      <div class="t">
+        <p class="eyebrow" data-rev="fade">01 — Chi sono</p>
+        <h2 class="d2" data-rev="up" data-scramble>Il mestiere<br><span class="stroke">di far ballare</span></h2>
+      </div>
+      <a class="btn btn--ghost" href="biografia.html" data-rev="fade" data-magnetic="0.24">Storia completa</a>
+    </div>
+
+    <div class="about-grid">
+      <div class="about-copy">
+        <p class="big" data-rev="up">Ho iniziato con la radio, nel 1976. Prima le frequenze e l'elettronica,
+        poi il microfono, poi la consolle: la stessa ossessione per il suono, applicata a tre mestieri diversi.</p>
+        <p data-rev="up" data-delay=".05">Speaker e direttore di emittenti toscane, fino a Radio Jamaica —
+        dieci anni di riconoscimenti, 10 nomination e il Gran Premio della Radio nel 1993, prima emittente
+        della Toscana a fine 2001.</p>
+        <p data-rev="up" data-delay=".1">In parallelo, i night club: Moulin del Topo a Firenze, il Bimbo's di Pistoia,
+        l'All Music Tramp di Montecatini. Da lì la specializzazione nel dancing e un modo di costruire la serata
+        che tiene insieme liscio, revival, cumbia e dance di oggi.</p>
+        <p data-rev="up" data-delay=".15">Oggi produco musica mia — iscritto SIAE, con Montefeltro Edizioni e
+        Bernardi Records — e suono ogni settimana nei migliori dancing e discoteche della Toscana.</p>
+
+        <div class="stats">
+          <div class="stat" data-rev="up"><b>1976</b><span>Prima volta in radio</span></div>
+          <div class="stat" data-rev="up" data-delay=".06"><b data-count="10" data-post="">10</b><span>Nomination radiofoniche</span></div>
+          <div class="stat" data-rev="up" data-delay=".12"><b data-count="50" data-post="+">50+</b><span>Produzioni pubblicate</span></div>
+          <div class="stat" data-rev="up" data-delay=".18"><b data-count="30" data-post="+">30+</b><span>Locali e dancing</span></div>
+        </div>
+      </div>
+
+      <figure class="about-portrait" data-rev="scale">
+        <div class="ph">Metti qui una foto verticale<br>→ assets/img/guido.jpg</div>
+        <img src="assets/img/guido.jpg" alt="Guido Arcangeli in consolle"
+             data-remote="https://www.guidoarcangeli.com/wp-content/uploads/2015/02/GUIDO-PIATTOl-980x400.jpg"
+             onerror="GA.imgFail(this)" loading="lazy">
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PRODUZIONI ============ -->
+<section class="section" id="produzioni">
+  <div class="wrap">
+    <div class="shead">
+      <div class="t">
+        <p class="eyebrow" data-rev="fade">02 — Produzioni</p>
+        <h2 class="d2" data-rev="up" data-scramble>Le ultime<br><span class="grad">uscite</span></h2>
+      </div>
+      <a class="btn btn--ghost" href="archivio.html" data-rev="fade" data-magnetic="0.24">Tutto l'archivio →</a>
+    </div>
+    <div class="tracks" id="tracks-featured" data-skew></div>
+  </div>
+</section>
+
+<!-- ============ FEATURED / PLAYER ============ -->
+<section class="section section--tight">
+  <div class="wrap">
+    <div class="feature" data-rev="scale">
+      <div class="feature-art">
+        <div class="ph" style="position:absolute;inset:0;display:grid;place-items:center;font-family:var(--f-mono);font-size:.6rem;letter-spacing:.2em;color:var(--ink-faint)">COVER</div>
+        <img src="assets/img/covers/esercitoselfie-colonnello-cover-1-200x200.jpg"
+             data-remote="https://www.guidoarcangeli.com/wp-content/uploads/2017/08/esercitoselfie-colonnello-cover-1-200x200.jpg"
+             alt="L'Esercito del Selfie (Remix)" onerror="GA.imgFail(this)" loading="lazy">
+      </div>
+      <div>
+        <p class="eyebrow">Brano del momento</p>
+        <h3 class="d3 mt-s">L'Esercito del Selfie <span class="stroke">(Remix)</span></h3>
+        <p class="lead mt-s">Il remix che gira di più nelle sale da ballo. Ascoltalo su SoundCloud
+        insieme al resto del catalogo, oppure scaricalo dai principali store.</p>
+        <div class="viz" aria-hidden="true"></div>
+        <div class="mt-m" style="display:flex;flex-wrap:wrap;gap:12px">
+          <a class="btn btn--solid" href="https://soundcloud.com/guidoarcangeli" target="_blank" rel="noopener" data-magnetic="0.28">Ascolta su SoundCloud</a>
+          <a class="btn" href="archivio.html" data-magnetic="0.28">Archivio brani</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SERATE ============ -->
+<section class="section" id="serate">
+  <div class="wrap">
+    <div class="shead">
+      <div class="t">
+        <p class="eyebrow" data-rev="fade">03 — Calendario</p>
+        <h2 class="d2" data-rev="up" data-scramble>Prossime<br><span class="stroke">serate</span></h2>
+      </div>
+      <a class="btn btn--ghost" data-wa href="#" target="_blank" rel="noopener" data-rev="fade" data-magnetic="0.24">Scrivimi su WhatsApp</a>
+    </div>
+    <div class="events" id="events" data-limit="6" data-skew></div>
+    <p class="faint mt-m" style="font-family:var(--f-mono);font-size:.66rem;letter-spacing:.14em;text-transform:uppercase">
+      Date soggette a conferma — per info e prenotazioni <a data-tel href="#" style="color:var(--c)"><span data-phone></span></a>
+    </p>
+  </div>
+</section>
+
+<!-- ============ LOCALI ============ -->
+<section class="section section--tight">
+  <div class="wrap">
+    <div class="shead">
+      <div class="t">
+        <p class="eyebrow" data-rev="fade">04 — Dove suono</p>
+        <h2 class="d2" data-rev="up" data-scramble>Locali e<br><span class="grad">residenze</span></h2>
+      </div>
+    </div>
+    <div class="venues" id="venues"></div>
+  </div>
+</section>
+
+<div class="marquee marquee--alt" data-reverse data-speed-mq="0.45" aria-hidden="true">
+  <div class="marquee-track">
+    <span>Trocadero Village<i class="dot"></i></span><span>Sombrero<i class="dot"></i></span>
+    <span>Grotta Maona<i class="dot"></i></span><span>Vistamare<i class="dot"></i></span>
+    <span>La Coroncina<i class="dot"></i></span><span>Papillon<i class="dot"></i></span>
+  </div>
+</div>
+
+<!-- ============ MEDIA ============ -->
+<section class="section section--tight" id="media">
+  <div class="wrap">
+    <div class="shead">
+      <div class="t">
+        <p class="eyebrow" data-rev="fade">05 — Media</p>
+        <h2 class="d2" data-rev="up" data-scramble>Video dal<br><span class="stroke">canale</span></h2>
+      </div>
+      <a class="btn btn--ghost" href="news.html" data-rev="fade" data-magnetic="0.24">Vedi tutto</a>
+    </div>
+    <div class="videos" id="videos" data-skew></div>
+  </div>
+</section>
+
+<section class="pin" id="galleria">
+  <div class="pin-stage">
+    <div class="pin-head">
+      <p class="eyebrow" data-rev="fade">06 — Fotografie</p>
+      <h2 class="d3 mt-s" data-rev="up" data-scramble>Dalle serate <span class="grad">→</span></h2>
+    </div>
+    <div class="pin-track"><figure class="pin-item"><img src="assets/img/gallery/01.jpg" alt="Trocadero Village" loading="lazy"><figcaption>01 — Trocadero Village</figcaption></figure><figure class="pin-item"><img src="assets/img/gallery/02.jpg" alt="Dietro la consolle" loading="lazy"><figcaption>02 — Dietro la consolle</figcaption></figure><figure class="pin-item"><img src="assets/img/gallery/03.jpg" alt="La pista" loading="lazy"><figcaption>03 — La pista</figcaption></figure><figure class="pin-item"><img src="assets/img/gallery/04.jpg" alt="Il pubblico" loading="lazy"><figcaption>04 — Il pubblico</figcaption></figure><figure class="pin-item"><img src="assets/img/gallery/05.jpg" alt="Live set" loading="lazy"><figcaption>05 — Live set</figcaption></figure><figure class="pin-item"><img src="assets/img/gallery/06.jpg" alt="Sala da ballo" loading="lazy"><figcaption>06 — Sala da ballo</figcaption></figure><figure class="pin-item"><img src="assets/img/gallery/07.jpg" alt="Luci di scena" loading="lazy"><figcaption>07 — Luci di scena</figcaption></figure><figure class="pin-item"><img src="assets/img/gallery/08.jpg" alt="Mixer" loading="lazy"><figcaption>08 — Mixer</figcaption></figure></div>
+    <div class="pin-bar"><i></i></div>
+  </div>
+</section>
+
+<!-- ============ CONTATTI ============ -->
+<section class="section" id="contatti">
+  <div class="wrap">
+    <div class="shead">
+      <div class="t">
+        <p class="eyebrow" data-rev="fade">07 — Contatti</p>
+        <h2 class="d2" data-rev="up" data-scramble>Facciamo<br><span class="grad">ballare la sala</span></h2>
+      </div>
+    </div>
+
+    <div class="contact-grid">
+      <div>
+        <p class="lead" data-rev="up">Serate in dancing e discoteca, feste private, matrimoni, eventi.
+        Scrivimi o chiamami: rispondo personalmente.</p>
+
+        <div class="mt-m">
+          <div class="cline" data-rev="up"><small>Telefono &amp; WhatsApp</small><a data-tel href="#"><span data-phone></span></a></div>
+          <div class="cline" data-rev="up" data-delay=".05"><small>Email principale</small><a href="mailto:info@guidoarcangeli.com">info@guidoarcangeli.com</a></div>
+          <div class="cline" data-rev="up" data-delay=".1"><small>Email alternativa</small><a href="mailto:guidoarcangeli@alice.it">guidoarcangeli@alice.it</a></div>
+          <div class="cline" data-rev="up" data-delay=".15"><small>Zona</small><span>Toscana e tutta Italia</span></div>
+        </div>
+
+        <div class="socials" data-auto data-rev="fade"></div>
+      </div>
+
+      <div class="noise-panel" data-rev="scale">
+        <p class="eyebrow">Richiesta serata</p>
+        <form id="contact-form" class="mt-m" novalidate>
+          <div class="field"><input id="f-name" type="text" placeholder=" " required><label for="f-name">Nome e cognome</label></div>
+          <div class="field"><input id="f-email" type="email" placeholder=" " required><label for="f-email">Email</label></div>
+          <div class="field"><input id="f-date" type="text" placeholder=" "><label for="f-date">Data e locale</label></div>
+          <div class="field"><textarea id="f-msg" placeholder=" " required></textarea><label for="f-msg">Messaggio</label></div>
+          <button class="btn btn--solid" type="submit" data-magnetic="0.26">Invia richiesta</button>
+          <p class="faint mt-s" style="font-size:.72rem">Il pulsante apre il tuo programma di posta con il messaggio già pronto.</p>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer-top">
+      <div>
+        <p class="eyebrow">Guido Arcangeli DJ</p>
+        <p class="lead mt-s" style="max-width:34ch">Perché la musica è l'unica lingua universale che abbiamo.</p>
+      </div>
+      <nav class="footer-nav" aria-label="Footer">
+        <a href="#chi-sono">Chi sono</a><a href="archivio.html">Archivio brani</a>
+        <a href="biografia.html">Biografia</a><a href="news.html">News</a>
+        <a href="#serate">Serate</a><a href="#contatti">Contatti</a>
+      </nav>
+    </div>
+    <div class="footer-word" aria-hidden="true">Arcangeli</div>
+    <div class="footer-bot">
+      <span>© <span data-year></span> Guido Arcangeli DJ — Tutti i diritti riservati</span>
+      <span>Toscana, Italia · P. IVA / SIAE</span>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/gl.js"></script>
+<script src="assets/js/main.js"></script>
+<script src="assets/js/fx.js"></script>
+</body>
+</html>

@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Guido Arcangeli DJ — Prototipo: Il Disco</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#05040a">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%237c3cff'/%3E%3Ctext x='16' y='23' font-family='Arial Black,Arial' font-size='17' font-weight='900' text-anchor='middle' fill='%23fff'%3EG%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/proto.css">
+<style>
+/* ============ SHELL: IL DISCO ============ */
+html,body{height:100%}
+body{overflow:hidden;background:
+  radial-gradient(900px 700px at 22% 50%, rgba(124,60,255,.16), transparent 62%),
+  radial-gradient(800px 600px at 95% 8%, rgba(0,229,255,.10), transparent 58%), var(--bg)}
+body.mob{overflow:auto}
+.dk{display:grid;grid-template-columns:minmax(360px,44%) 1fr;height:100dvh}
+
+/* ---- piatto ---- */
+.dk-stage{position:relative;display:grid;place-items:center;overflow:hidden;border-right:1px solid var(--line)}
+.dk-brand{position:absolute;top:16px;left:clamp(14px,2vw,28px);z-index:5;display:flex;align-items:center;gap:10px}
+.dk-brand b{font-family:var(--f-display);font-size:1rem;letter-spacing:.03em;line-height:1}
+.dk-brand small{display:block;font-family:var(--f-mono);font-size:.5rem;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-faint);margin-top:3px}
+
+.deck{position:relative;width:min(92%,620px);aspect-ratio:1;touch-action:none;cursor:grab}
+.deck:active{cursor:grabbing}
+.disc{position:absolute;inset:0;border-radius:50%;
+  background:
+    repeating-radial-gradient(circle at 50% 50%, rgba(255,255,255,.055) 0 1px, transparent 1px 4px),
+    radial-gradient(circle at 50% 50%, #17121f 0 17%, #0d0a14 17.5% 100%);
+  box-shadow:0 40px 90px rgba(0,0,0,.65), inset 0 0 90px rgba(0,0,0,.9), 0 0 0 1px rgba(255,255,255,.06);
+}
+.disc::after{content:'';position:absolute;inset:0;border-radius:50%;
+  background:conic-gradient(from 0deg, rgba(255,255,255,.09), transparent 22%, rgba(0,229,255,.07) 40%, transparent 58%, rgba(255,46,136,.08) 76%, transparent 96%);
+  mix-blend-mode:screen;animation:spin 5.4s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media(prefers-reduced-motion:reduce){.disc::after{animation:none}}
+
+.label{position:absolute;left:50%;top:50%;width:33%;aspect-ratio:1;transform:translate(-50%,-50%);
+  border-radius:50%;display:grid;place-items:center;text-align:center;
+  background:radial-gradient(circle at 34% 30%, #8a4bff, #5a1fd0 55%, #2c0f6b);
+  box-shadow:inset 0 0 26px rgba(0,0,0,.5), 0 0 34px rgba(124,60,255,.35);z-index:3}
+.label b{font-family:var(--f-display);font-size:clamp(.8rem,1.6vw,1.15rem);line-height:.95;letter-spacing:.02em}
+.label small{display:block;font-family:var(--f-mono);font-size:.42rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.65);margin-top:5px}
+.label i{position:absolute;left:50%;top:50%;width:9px;height:9px;border-radius:50%;
+  background:#05040a;transform:translate(-50%,-50%);box-shadow:inset 0 0 4px #000}
+
+/* corona dei solchi = navigazione */
+.ring{position:absolute;inset:0;z-index:2;will-change:transform}
+.groove{position:absolute;left:50%;top:50%;transform-origin:0 0;white-space:nowrap;
+  font-family:var(--f-mono);font-size:.66rem;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--ink-faint);transition:color .35s,text-shadow .35s;cursor:pointer;user-select:none;padding:6px 0}
+.groove b{font-family:var(--f-display);font-size:1.5em;letter-spacing:.02em;margin-right:.6em;color:inherit}
+.groove.on{color:var(--ink);text-shadow:0 0 18px rgba(0,229,255,.55)}
+.groove.on b{color:var(--c)}
+.groove-line{position:absolute;left:50%;top:50%;height:1px;transform-origin:0 50%;
+  background:linear-gradient(90deg,rgba(255,255,255,.03),rgba(255,255,255,.22));z-index:1}
+
+/* braccio */
+.arm{position:absolute;inset:0;z-index:6;pointer-events:none;
+  transform-origin:98% 80%;transition:transform .75s var(--ease)}
+.arm .pivot{position:absolute;left:98%;top:80%;width:34px;height:34px;border-radius:50%;
+  transform:translate(-50%,-50%);background:linear-gradient(160deg,#3a3350,#151122);
+  border:1px solid rgba(255,255,255,.22);box-shadow:0 6px 18px rgba(0,0,0,.7)}
+.arm .pivot::after{content:'';position:absolute;inset:11px;border-radius:50%;background:#0b0813;box-shadow:inset 0 0 6px #000}
+.arm .rod{position:absolute;right:2%;top:80%;width:30%;height:5px;border-radius:3px;
+  transform-origin:100% 50%;transform:translateY(-50%) rotate(81deg);
+  background:linear-gradient(90deg,#8f8aa8,#e2ddf2);box-shadow:0 4px 12px rgba(0,0,0,.7)}
+.arm .rod::before{content:'';position:absolute;left:-6px;top:-6px;width:30px;height:17px;border-radius:3px;
+  background:linear-gradient(180deg,#ff5ba3,#a0135a);box-shadow:0 0 20px rgba(255,46,136,.65)}
+.arm .rod::after{content:'';position:absolute;left:4px;top:11px;width:2px;height:10px;background:rgba(255,255,255,.6)}
+
+.rpm{position:absolute;left:clamp(14px,2vw,28px);bottom:18px;font-family:var(--f-mono);
+  font-size:.52rem;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-faint);z-index:5}
+.rpm b{color:var(--c)}
+.dk-hint{position:absolute;right:clamp(14px,2vw,28px);bottom:18px;font-family:var(--f-mono);
+  font-size:.52rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-faint);z-index:5;text-align:right}
+
+/* ---- pannello contenuti ---- */
+.dk-side{position:relative;display:flex;flex-direction:column;min-width:0}
+.dk-top{display:flex;align-items:center;justify-content:space-between;gap:14px;
+  padding:14px clamp(16px,2.2vw,32px);border-bottom:1px solid var(--line);flex:none}
+.dk-top nav{display:flex;gap:14px;font-family:var(--f-mono);font-size:.56rem;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-faint)}
+.dk-top nav a:hover{color:var(--ink)}
+.dk-side-num{font-family:var(--f-mono);font-size:.56rem;letter-spacing:.2em;text-transform:uppercase;color:var(--c)}
+.dk-wrap{flex:1;min-height:0;position:relative}
+.dk-pane{position:absolute;inset:0;overflow-y:auto;padding:clamp(20px,3vw,42px) clamp(16px,2.2vw,32px) 74px;
+  opacity:0;pointer-events:none;transform:translateY(16px);transition:opacity .4s,transform .55s var(--ease)}
+.dk-pane.on{opacity:1;pointer-events:auto;transform:none;transition-delay:.1s}
+.dk-pane::-webkit-scrollbar{width:5px}
+.dk-pane::-webkit-scrollbar-thumb{background:var(--line-2);border-radius:9px}
+.dk-pane h2{font-family:var(--f-display);font-size:clamp(1.7rem,3.6vw,3rem);line-height:.98;margin:6px 0 20px}
+.dk-pane h2 em{font-style:normal;-webkit-text-fill-color:transparent;-webkit-text-stroke:1px var(--c)}
+
+/* ============ MOBILE ============ */
+.dk-mobile{display:none}
+@media(max-width:880px){
+  .dk{display:none}
+  .dk-mobile{display:block;padding-bottom:70px}
+  .dm-top{position:sticky;top:0;z-index:50;background:rgba(5,4,10,.93);backdrop-filter:blur(12px);
+    border-bottom:1px solid var(--line);padding:12px 16px}
+  .dm-nav{display:flex;gap:6px;overflow-x:auto;margin-top:10px;scrollbar-width:none}
+  .dm-nav::-webkit-scrollbar{display:none}
+  .dm-nav a{flex:none;padding:7px 12px;border:1px solid var(--line);border-radius:999px;
+    font-family:var(--f-mono);font-size:.55rem;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-dim)}
+  .dm-hero{padding:34px 16px 26px;display:grid;gap:22px;justify-items:center;text-align:center}
+  .dm-disc{position:relative;width:min(64vw,260px);aspect-ratio:1;border-radius:50%;
+    background:repeating-radial-gradient(circle at 50% 50%, rgba(255,255,255,.05) 0 1px, transparent 1px 4px),
+      radial-gradient(circle at 50% 50%, #17121f 0 17%, #0d0a14 17.5% 100%);
+    box-shadow:0 20px 50px rgba(0,0,0,.6);animation:spin 6s linear infinite}
+  .dm-disc span{position:absolute;left:50%;top:50%;width:34%;aspect-ratio:1;transform:translate(-50%,-50%);
+    border-radius:50%;background:radial-gradient(circle at 34% 30%,#8a4bff,#5a1fd0 60%,#2c0f6b);display:grid;place-items:center;
+    font-family:var(--f-display);font-size:.85rem}
+  .dm-hero h1{font-family:var(--f-display);font-size:clamp(2.2rem,12vw,3.4rem);line-height:.9}
+  .dm-hero h1 em{font-style:normal;background:linear-gradient(100deg,var(--v),var(--c) 55%,var(--m));
+    -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  .dm-hero p{color:var(--ink-dim)}
+  .dm-sec{padding:34px 16px;border-top:1px solid var(--line)}
+  .dm-sec .n{font-family:var(--f-mono);font-size:.55rem;letter-spacing:.2em;color:var(--c);display:block;margin-bottom:8px}
+  .dm-sec h2{font-family:var(--f-display);font-size:clamp(1.7rem,8vw,2.4rem);line-height:.98;margin-bottom:18px}
+}
+</style>
+</head>
+<body>
+
+<div class="dk">
+  <!-- ---- piatto ---- -->
+  <div class="dk-stage">
+    <a class="dk-brand" href="index.html"><span><b>Guido Arcangeli</b><small>DJ · Producer · Sound Engineer</small></span></a>
+
+    <div class="deck" id="deck" role="slider" aria-label="Selettore dei solchi" aria-valuemin="1" aria-valuemax="6" aria-valuenow="1" tabindex="0">
+      <div class="disc"></div>
+      <div class="ring" id="ring"></div>
+      <div class="label"><span><b>GA</b><small>33 ⅓</small></span><i></i></div>
+      <div class="arm" id="arm"><span class="rod"></span><span class="pivot"></span></div>
+    </div>
+
+    <div class="rpm">Solco <b id="rpm-n">01</b> / 06 · 33 ⅓ rpm</div>
+    <div class="dk-hint">Ruota il disco<br>trascina · rotellina · ← →</div>
+  </div>
+
+  <!-- ---- contenuti ---- -->
+  <div class="dk-side">
+    <div class="dk-top">
+      <span class="dk-side-num" id="side-num">Solco 01 — Chi sono</span>
+      <nav><a href="archivio.html">Archivio</a><a href="biografia.html">Biografia</a><a href="news.html">News</a></nav>
+    </div>
+    <div class="dk-wrap" id="panes"></div>
+  </div>
+</div>
+
+<!-- ============ MOBILE ============ -->
+<div class="dk-mobile" id="mob">
+  <div class="dm-top">
+    <a class="dk-brand" href="index.html" style="position:static"><span><b>Guido Arcangeli</b><small>DJ · Producer</small></span></a>
+    <nav class="dm-nav" id="dmnav"></nav>
+  </div>
+  <div class="dm-hero">
+    <div class="dm-disc"><span>GA</span></div>
+    <div>
+      <h1>Guido<br><em>Arcangeli</em></h1>
+      <p>Quarant’anni dietro una consolle. Radio, dancing, discoteche e produzioni originali.</p>
+    </div>
+  </div>
+  <div id="dmsecs"></div>
+</div>
+
+<nav class="protobar">
+  <a href="index.html">Attuale</a>
+  <a href="index-mixer.html">Consolle</a>
+  <a href="index-radio.html">Radio</a>
+  <a href="index-disco.html" class="on">Disco</a>
+  <a href="index-notte.html">Serata</a>
+</nav>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/proto-shared.js"></script>
+<script>
+(function(){
+  var S=window.PSECTIONS, N=S.length, STEP=360/N;
+  var deck=document.getElementById('deck'), ring=document.getElementById('ring');
+  var arm=document.getElementById('arm'), panes=document.getElementById('panes');
+  var rpmN=document.getElementById('rpm-n'), sideNum=document.getElementById('side-num');
+  var reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
+  var rot=0, cur=-1, raf=null;
+
+  /* ---- solchi ---- */
+  S.forEach(function(sec,i){
+    var a=i*STEP;
+    ring.insertAdjacentHTML('beforeend',
+      '<div class="groove-line" data-a="'+a+'" style="width:46%;transform:rotate('+a+'deg)"></div>' +
+      '<div class="groove" data-i="'+i+'" data-a="'+a+'"><b>'+sec.num+'</b>'+sec.label+'</div>');
+  });
+  var grooves=[].slice.call(ring.querySelectorAll('.groove'));
+  function layout(){
+    var R=deck.clientWidth*0.205;                 /* appena fuori dall'etichetta centrale */
+    grooves.forEach(function(g,i){
+      g.style.transform='rotate('+(i*STEP)+'deg) translate('+R.toFixed(0)+'px,-50%)';
+    });
+  }
+
+  /* ---- pannelli ---- */
+  S.forEach(function(sec){
+    var d=document.createElement('article'); d.className='dk-pane'; d.id='d-'+sec.id;
+    d.innerHTML='<h2>'+sec.kicker.replace(/\s(\S+)$/,' <em>$1</em>')+'</h2>'+PBUILD(sec);
+    panes.appendChild(d);
+  });
+  var paneEls=[].slice.call(panes.children);
+
+  function render(){
+    ring.style.transform='rotate('+rot+'deg)';
+    var idx=((Math.round(-rot/STEP)%N)+N)%N;
+    grooves.forEach(function(g,i){
+      g.classList.toggle('on', i===idx);
+      var a=(((i*STEP+rot)%360)+360)%360, d=Math.min(a,360-a);   /* 0° = solco in ascolto */
+      g.style.opacity=(0.20+0.80*Math.pow(Math.max(0,1-d/180),1.6)).toFixed(2);
+    });
+    /* il braccio scende verso il centro man mano che si avanza nei solchi */
+    var prog=(((-rot/STEP)%N)+N)%N;
+    arm.style.transform='rotate('+(-prog*2.6).toFixed(2)+'deg)';
+    if(idx!==cur){
+      cur=idx;
+      paneEls.forEach(function(p,i){ p.classList.toggle('on', i===idx); if(i===idx) p.scrollTop=0; });
+      rpmN.textContent=S[idx].num;
+      sideNum.textContent='Solco '+S[idx].num+' — '+S[idx].label;
+      deck.setAttribute('aria-valuenow', idx+1);
+    }
+  }
+
+  /* ---- rotazione ---- */
+  function angleOf(e){
+    var r=deck.getBoundingClientRect();
+    return Math.atan2(e.clientY-(r.top+r.height/2), e.clientX-(r.left+r.width/2))*180/Math.PI;
+  }
+  var drag=false, a0=0, r0=0, moved=false;
+  deck.addEventListener('pointerdown',function(e){
+    if(e.target.closest('a')) return;
+    drag=true; moved=false; a0=angleOf(e); r0=rot; deck.setPointerCapture(e.pointerId); stop();
+  });
+  deck.addEventListener('pointermove',function(e){
+    if(!drag)return; e.preventDefault();
+    var d=angleOf(e)-a0;
+    if(d>180)d-=360; if(d<-180)d+=360;
+    if(Math.abs(d)>1.5) moved=true;
+    rot=r0+d; render();
+  });
+  function up(){ if(!drag)return; drag=false; snap(); }
+  deck.addEventListener('pointerup',up);
+  deck.addEventListener('pointercancel',up);
+
+  var wt;
+  deck.addEventListener('wheel',function(e){
+    e.preventDefault(); stop();
+    rot -= e.deltaY*0.22; render();
+    clearTimeout(wt); wt=setTimeout(snap,240);
+  },{passive:false});
+
+  grooves.forEach(function(g){
+    g.addEventListener('click',function(){ if(!moved) goTo(+g.dataset.i); });
+  });
+  deck.addEventListener('keydown',function(e){
+    if(e.key==='ArrowRight'||e.key==='ArrowDown'){e.preventDefault(); animTo(rot-STEP);}
+    if(e.key==='ArrowLeft'||e.key==='ArrowUp'){e.preventDefault(); animTo(rot+STEP);}
+  });
+  document.addEventListener('keydown',function(e){
+    var n=parseInt(e.key,10); if(n>=1&&n<=N) goTo(n-1);
+  });
+
+  function stop(){ if(raf){cancelAnimationFrame(raf); raf=null;} }
+  function animTo(target){
+    stop();
+    if(reduce){ rot=target; render(); return; }
+    var from=rot, t0=performance.now(), dur=Math.min(900,260+Math.abs(target-from)*2.6);
+    (function step(now){
+      var k=Math.min(1,(now-t0)/dur), e=1-Math.pow(1-k,3);
+      rot=from+(target-from)*e; render();
+      if(k<1) raf=requestAnimationFrame(step); else raf=null;
+    })(performance.now());
+  }
+  function snap(){ animTo(Math.round(rot/STEP)*STEP); }
+  function goTo(i){
+    var target=-i*STEP;
+    while(target-rot>180) target-=360;
+    while(target-rot<-180) target+=360;
+    animTo(target);
+  }
+
+  layout(); render();
+  addEventListener('resize',function(){ layout(); render(); });
+
+  /* ---- mobile ---- */
+  if(innerWidth<=880){
+    var nav=document.getElementById('dmnav'), secs=document.getElementById('dmsecs');
+    S.forEach(function(sec){
+      nav.insertAdjacentHTML('beforeend','<a href="#g-'+sec.id+'">'+sec.num+' '+sec.label+'</a>');
+      var d=document.createElement('section'); d.className='dm-sec'; d.id='g-'+sec.id;
+      d.innerHTML='<span class="n">Solco '+sec.num+' — '+sec.label+'</span><h2>'+sec.kicker+'</h2>'+PBUILD(sec);
+      secs.appendChild(d);
+    });
+    document.body.classList.add('mob');
+  }
+})();
+</script>
+</body>
+</html>

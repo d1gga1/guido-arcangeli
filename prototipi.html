@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Guido Arcangeli DJ — Quattro modi di navigare</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%237c3cff'/%3E%3Ctext x='16' y='23' font-family='Arial Black,Arial' font-size='17' font-weight='900' text-anchor='middle' fill='%23fff'%3EG%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/proto.css">
+<style>
+body{background:radial-gradient(1000px 700px at 50% -10%,rgba(124,60,255,.16),transparent 62%),var(--bg);min-height:100vh}
+.wrap{max-width:1180px;margin:0 auto;padding:clamp(40px,7vw,90px) clamp(18px,4vw,40px) 90px}
+h1{font-family:var(--f-display);font-size:clamp(2.2rem,6vw,4.4rem);line-height:.92}
+h1 em{font-style:normal;background:linear-gradient(100deg,var(--v),var(--c) 55%,var(--m));
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.sub{color:var(--ink-dim);max-width:62ch;margin-top:16px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin-top:44px}
+.card{display:block;padding:24px;border:1px solid var(--line);border-radius:16px;
+  background:linear-gradient(170deg,rgba(255,255,255,.045),rgba(255,255,255,.01));transition:.3s var(--ease)}
+.card:hover{transform:translateY(-4px);border-color:var(--line-2);background:linear-gradient(170deg,rgba(255,255,255,.09),rgba(255,255,255,.02))}
+.card .n{font-family:var(--f-mono);font-size:.55rem;letter-spacing:.22em;text-transform:uppercase;color:var(--c)}
+.card h2{font-family:var(--f-display);font-size:1.5rem;line-height:1;margin:10px 0 10px}
+.card p{color:var(--ink-dim);font-size:.88rem}
+.card ul{margin-top:14px;display:flex;flex-direction:column;gap:5px}
+.card li{font-family:var(--f-mono);font-size:.56rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint)}
+.card li::before{content:'— ';color:var(--v)}
+.card .go{display:inline-block;margin-top:18px;font-family:var(--f-mono);font-size:.58rem;letter-spacing:.16em;text-transform:uppercase}
+.old{margin-top:34px;display:flex;flex-wrap:wrap;gap:10px;align-items:center;
+  padding-top:24px;border-top:1px solid var(--line)}
+.old span{font-family:var(--f-mono);font-size:.56rem;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-faint)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <p class="sc-eyebrow">Prototipi di home — settembre 2026</p>
+  <h1>Quattro modi<br><em>di navigare</em></h1>
+  <p class="sub">Stessi contenuti, quattro impianti di navigazione diversi. Nessuno di questi tocca il sito
+  attuale: sono file a parte. Aprili, provali, e dimmi quale direzione ti convince — poi lo portiamo a
+  finitura completa (anche sulle pagine interne).</p>
+
+  <div class="grid">
+    <a class="card" href="index-mixer.html">
+      <span class="n">Prototipo 01</span>
+      <h2>La Consolle</h2>
+      <p>La pagina è un mixer. Sei canali affiancati, un fader per ognuno: lo alzi e il canale si apre.
+      Niente scroll verticale, il contenuto sta dentro il canale.</p>
+      <ul><li>Click sul canale o trascina il fader</li><li>Crossfader in basso</li><li>Tasti 1–6, Esc</li></ul>
+      <span class="go">Apri →</span>
+    </a>
+
+    <a class="card" href="index-radio.html">
+      <span class="n">Prototipo 02</span>
+      <h2>Il Sintonizzatore</h2>
+      <p>Omaggio al 1976 e alla radio. Ogni sezione è una stazione su una scala di frequenze: sintonizzi,
+      il fruscio sparisce e il contenuto si mette a fuoco.</p>
+      <ul><li>Trascina la scala o usa la rotellina</li><li>Preset 1–6</li><li>Aggancio automatico</li></ul>
+      <span class="go">Apri →</span>
+    </a>
+
+    <a class="card" href="index-disco.html">
+      <span class="n">Prototipo 03</span>
+      <h2>Il Disco</h2>
+      <p>Navigazione circolare: giri il vinile, il braccio scende di solco in solco. Il contenuto compare
+      di fianco. Si può girare all'infinito, non c'è inizio né fine.</p>
+      <ul><li>Trascina il disco o rotellina</li><li>Click sul solco</li><li>Frecce, tasti 1–6</li></ul>
+      <span class="go">Apri →</span>
+    </a>
+
+    <a class="card" href="index-notte.html">
+      <span class="n">Prototipo 04</span>
+      <h2>La Serata</h2>
+      <p>Il sito è una notte intera: dalle 21:00 all'ultimo ballo. Navighi nel tempo, le luci cambiano,
+      i BPM salgono, la sala si riempie.</p>
+      <ul><li>Trascina la timeline</li><li>Click sui momenti</li><li>Frecce, tasti 1–6</li></ul>
+      <span class="go">Apri →</span>
+    </a>
+  </div>
+
+  <div class="old">
+    <span>Per confronto:</span>
+    <a class="sc-btn sc-btn--sm" href="index.html">Sito attuale</a>
+    <a class="sc-btn sc-btn--sm" href="archivio.html">Archivio</a>
+    <a class="sc-btn sc-btn--sm" href="biografia.html">Biografia</a>
+    <a class="sc-btn sc-btn--sm" href="news.html">News</a>
+  </div>
+</div>
+</body>
+</html>
