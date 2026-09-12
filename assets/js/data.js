@@ -67,7 +67,7 @@ window.GA_DATA = (function () {
     return {
       title: t[0],
       url: OLD + t[1],
-      cover: 'assets/img/covers/' + base,
+      cover: 'covers/' + base,
       coverRemote: OLD + '/wp-content/uploads/' + t[2],
       year: t[3],
       genre: t[4]
