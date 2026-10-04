@@ -535,7 +535,26 @@
   }
 
   /* ============ 19. YEAR ============ */
+  /* la scritta gigante del footer occupa sempre esattamente la larghezza disponibile */
+  function initFooterWord() {
+    $$('.footer-word').forEach(function (el) {
+      if (!$('span', el)) el.innerHTML = '<span>' + el.textContent.trim() + '</span>';
+      var sp = $('span', el), lastW = 0;
+      function fit() {
+        var cw = el.clientWidth; if (!cw || cw === lastW) return; lastW = cw;
+        el.style.fontSize = '100px';
+        var w = sp.getBoundingClientRect().width || 1;
+        el.style.fontSize = (100 * cw / w * 0.995).toFixed(2) + 'px';
+      }
+      fit();
+      if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { lastW = 0; fit(); });
+      window.addEventListener('load', function () { lastW = 0; fit(); });
+      window.addEventListener('resize', fit);
+    });
+  }
+
   function initMisc() {
+    initFooterWord();
     $$('[data-year]').forEach(function (e) { e.textContent = new Date().getFullYear(); });
     if (D.contact) {
       $$('[data-phone]').forEach(function (e) { e.textContent = D.contact.phone; });

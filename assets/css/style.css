@@ -1084,3 +1084,16 @@ body.has-player .footer{padding-bottom:calc(110px + env(safe-area-inset-bottom,0
   .pl-toggle{width:46px;height:46px}
 }
 @media (max-width:520px){.player .pl-close{display:grid;width:32px;border:0}}
+
+/* ---------- Footer: allineamento ---------- */
+.footer-word{white-space:nowrap;overflow:hidden;line-height:.82;letter-spacing:-.01em}
+.footer-word span{display:inline-block}
+.footer-top > div{max-width:520px}
+.footer-nav{align-self:flex-start;margin-top:2px}
+@media (max-width:760px){
+  body.has-mbar .footer{padding-bottom:calc(30px + env(safe-area-inset-bottom,0px))} /* la barra contatti si nasconde nel footer */
+  .footer-top{gap:22px}
+  .footer-nav a:nth-last-child(-n+2){border-bottom:0}
+  .footer-word{margin-top:28px}
+}
+body.has-player .footer{padding-bottom:calc(100px + env(safe-area-inset-bottom,0px))!important}
