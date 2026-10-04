@@ -6,18 +6,25 @@
 <title>Guido Arcangeli DJ — Balli di gruppo, Cumbia, Dance | Toscana</title>
 <meta name="description" content="Guido Arcangeli: DJ, producer e sound engineer. Oltre 40 anni tra radio, dancing e discoteche. Serate, produzioni originali, basi e remix. Toscana e tutta Italia.">
 <meta name="theme-color" content="#05040a">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
 <link rel="canonical" href="https://www.guidoarcangeli.com/">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="it_IT">
 <meta property="og:title" content="Guido Arcangeli DJ — Balli di gruppo, Cumbia, Dance">
 <meta property="og:description" content="DJ, producer e sound engineer. Serate, produzioni originali, remix e basi musicali.">
 <meta property="og:url" content="https://www.guidoarcangeli.com/">
-<meta property="og:image" content="assets/img/og.jpg">
+<meta property="og:image" content="https://www.guidoarcangeli.com/assets/img/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%237c3cff'/%3E%3Ctext x='16' y='23' font-family='Arial Black,Arial' font-size='17' font-weight='900' text-anchor='middle' fill='%23fff'%3EG%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"></noscript>
 <link rel="stylesheet" href="assets/css/style.css">
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"MusicGroup","name":"Guido Arcangeli","alternateName":"Guido Arcangeli DJ",
@@ -179,7 +186,7 @@ window.GA={imgFail:function(img){
 
       <figure class="about-portrait" data-rev="scale">
         <div class="ph">Metti qui una foto verticale<br>→ assets/img/guido.jpg</div>
-        <img src="assets/img/guido.jpg" alt="Guido Arcangeli in consolle"
+        <img src="assets/img/guido.jpg" width="1200" height="1500" decoding="async" alt="Guido Arcangeli in consolle"
              data-remote="https://www.guidoarcangeli.com/wp-content/uploads/2015/02/GUIDO-PIATTOl-980x400.jpg"
              onerror="GA.imgFail(this)" loading="lazy">
       </figure>
@@ -207,20 +214,21 @@ window.GA={imgFail:function(img){
     <div class="feature" data-rev="scale">
       <div class="feature-art">
         <div class="ph" style="position:absolute;inset:0;display:grid;place-items:center;font-family:var(--f-mono);font-size:.6rem;letter-spacing:.2em;color:var(--ink-faint)">COVER</div>
-        <img src="covers/esercitoselfie-colonnello-cover-1-200x200.jpg"
+        <img src="covers/esercitoselfie-colonnello-cover-1-200x200.jpg" width="200" height="200" decoding="async"
              data-remote="https://www.guidoarcangeli.com/wp-content/uploads/2017/08/esercitoselfie-colonnello-cover-1-200x200.jpg"
              alt="L'Esercito del Selfie (Remix)" onerror="GA.imgFail(this)" loading="lazy">
       </div>
       <div>
         <p class="eyebrow">Brano del momento</p>
         <h3 class="d3 mt-s">L'Esercito del Selfie <span class="stroke">(Remix)</span></h3>
-        <p class="lead mt-s">Il remix che gira di più nelle sale da ballo. Ascoltalo su SoundCloud
-        insieme al resto del catalogo, oppure scaricalo dai principali store.</p>
+        <p class="lead mt-s">Il remix che gira di più nelle sale da ballo. Ascoltalo subito qui
+        oppure scaricalo in MP3, insieme a tutto il resto del catalogo.</p>
         <div class="viz" aria-hidden="true"></div>
         <div class="mt-m" style="display:flex;flex-wrap:wrap;gap:12px">
-          <a class="btn btn--solid" href="https://soundcloud.com/guidoarcangeli" target="_blank" rel="noopener" data-magnetic="0.28">Ascolta su SoundCloud</a>
-          <a class="btn" href="archivio.html" data-magnetic="0.28">Archivio brani</a>
+          <button class="btn btn--solid" type="button" data-play="21" data-magnetic="0.28"><span class="lbl">Ascolta ora</span></button>
+          <a class="btn" href="audio/22-l-esercito-del-selfie-remix.mp3" download="Guido Arcangeli - L'Esercito del Selfie (Remix).mp3" data-dl="21" data-magnetic="0.28">Scarica MP3</a>
         </div>
+        <p class="dl-count mt-s"><b data-dlc="21">—</b> download · <a href="archivio.html" style="color:var(--c)">tutto l'archivio →</a></p>
       </div>
     </div>
   </div>
@@ -284,8 +292,9 @@ window.GA={imgFail:function(img){
       <p class="eyebrow" data-rev="fade">06 — Fotografie</p>
       <h2 class="d3 mt-s" data-rev="up" data-scramble>Dalle serate <span class="grad">→</span></h2>
     </div>
-    <div class="pin-track"><figure class="pin-item"><img src="assets/img/gallery/01.jpg" alt="Trocadero Village" loading="lazy"><figcaption>01 — Trocadero Village</figcaption></figure><figure class="pin-item"><img src="assets/img/gallery/02.jpg" alt="Dietro la consolle" loading="lazy"><figcaption>02 — Dietro la consolle</figcaption></figure><figure class="pin-item"><img src="assets/img/gallery/03.jpg" alt="La pista" loading="lazy"><figcaption>03 — La pista</figcaption></figure><figure class="pin-item"><img src="assets/img/gallery/04.jpg" alt="Il pubblico" loading="lazy"><figcaption>04 — Il pubblico</figcaption></figure><figure class="pin-item"><img src="assets/img/gallery/05.jpg" alt="Live set" loading="lazy"><figcaption>05 — Live set</figcaption></figure><figure class="pin-item"><img src="assets/img/gallery/06.jpg" alt="Sala da ballo" loading="lazy"><figcaption>06 — Sala da ballo</figcaption></figure><figure class="pin-item"><img src="assets/img/gallery/07.jpg" alt="Luci di scena" loading="lazy"><figcaption>07 — Luci di scena</figcaption></figure><figure class="pin-item"><img src="assets/img/gallery/08.jpg" alt="Mixer" loading="lazy"><figcaption>08 — Mixer</figcaption></figure></div>
+    <div class="pin-track"><figure class="pin-item"><img src="assets/img/gallery/01.jpg" width="1100" height="1100" decoding="async" alt="Trocadero Village" loading="lazy"><figcaption>01 — Trocadero Village</figcaption></figure><figure class="pin-item"><img src="assets/img/gallery/02.jpg" width="1100" height="1100" decoding="async" alt="Dietro la consolle" loading="lazy"><figcaption>02 — Dietro la consolle</figcaption></figure><figure class="pin-item"><img src="assets/img/gallery/03.jpg" width="1100" height="1100" decoding="async" alt="La pista" loading="lazy"><figcaption>03 — La pista</figcaption></figure><figure class="pin-item"><img src="assets/img/gallery/04.jpg" width="1100" height="1100" decoding="async" alt="Il pubblico" loading="lazy"><figcaption>04 — Il pubblico</figcaption></figure><figure class="pin-item"><img src="assets/img/gallery/05.jpg" width="1100" height="1100" decoding="async" alt="Live set" loading="lazy"><figcaption>05 — Live set</figcaption></figure><figure class="pin-item"><img src="assets/img/gallery/06.jpg" width="1100" height="1100" decoding="async" alt="Sala da ballo" loading="lazy"><figcaption>06 — Sala da ballo</figcaption></figure><figure class="pin-item"><img src="assets/img/gallery/07.jpg" width="1100" height="1100" decoding="async" alt="Luci di scena" loading="lazy"><figcaption>07 — Luci di scena</figcaption></figure><figure class="pin-item"><img src="assets/img/gallery/08.jpg" width="1100" height="1100" decoding="async" alt="Mixer" loading="lazy"><figcaption>08 — Mixer</figcaption></figure></div>
     <div class="pin-bar"><i></i></div>
+    <p class="swipe-hint" aria-hidden="true"><i></i>Scorri le foto</p>
   </div>
 </section>
 
@@ -317,9 +326,9 @@ window.GA={imgFail:function(img){
       <div class="noise-panel" data-rev="scale">
         <p class="eyebrow">Richiesta serata</p>
         <form id="contact-form" class="mt-m" novalidate>
-          <div class="field"><input id="f-name" type="text" placeholder=" " required><label for="f-name">Nome e cognome</label></div>
-          <div class="field"><input id="f-email" type="email" placeholder=" " required><label for="f-email">Email</label></div>
-          <div class="field"><input id="f-date" type="text" placeholder=" "><label for="f-date">Data e locale</label></div>
+          <div class="field"><input id="f-name" type="text" placeholder=" " autocomplete="name" autocapitalize="words" enterkeyhint="next" required><label for="f-name">Nome e cognome</label></div>
+          <div class="field"><input id="f-email" type="email" placeholder=" " autocomplete="email" inputmode="email" autocapitalize="off" spellcheck="false" enterkeyhint="next" required><label for="f-email">Email</label></div>
+          <div class="field"><input id="f-date" type="text" placeholder=" " autocomplete="off" enterkeyhint="next"><label for="f-date">Data e locale</label></div>
           <div class="field"><textarea id="f-msg" placeholder=" " required></textarea><label for="f-msg">Messaggio</label></div>
           <button class="btn btn--solid" type="submit" data-magnetic="0.26">Invia richiesta</button>
           <p class="faint mt-s" style="font-size:.72rem">Il pulsante apre il tuo programma di posta con il messaggio già pronto.</p>

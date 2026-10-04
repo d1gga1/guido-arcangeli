@@ -5,6 +5,11 @@
    ============================================================ */
 (function (w) {
   'use strict';
+  // modalità leggera per telefoni/tablet (impostata da main.js, con ripiego)
+  function isLite() {
+    if (typeof w.GA_LITE === 'boolean') return w.GA_LITE;
+    return w.matchMedia('(pointer: coarse), (max-width: 760px)').matches;
+  }
 
   /* ---------------- mini gl helpers ---------------- */
   function compile(gl, type, src) {
@@ -24,7 +29,8 @@
     return p;
   }
   function ctx(canvas) {
-    var o = { alpha: true, antialias: true, premultipliedAlpha: false, powerPreference: 'high-performance' };
+    var lite = isLite();
+    var o = { alpha: true, antialias: !lite, premultipliedAlpha: false, powerPreference: lite ? 'default' : 'high-performance' };
     return canvas.getContext('webgl', o) || canvas.getContext('experimental-webgl', o);
   }
 
@@ -78,7 +84,9 @@
     var gl = ctx(canvas);
     if (!gl) { if (onReady) onReady(false); return null; }
 
-    var sampled = samplePointsFromText(lines, { width: 1500, height: 470, step: 3 });
+    var lite = isLite();
+    // su telefono ~1/3 delle particelle, un po' più grandi: stesso effetto, molta meno fatica
+    var sampled = samplePointsFromText(lines, { width: 1500, height: 470, step: lite ? 5 : 3 });
     var src = sampled.pts;
     var COUNT = src.length / 2;
     if (COUNT < 40) { if (onReady) onReady(false); return null; }
@@ -102,6 +110,7 @@
       'uniform float uAspect;',
       'uniform float uScale;',
       'uniform float uDisperse;',
+      'uniform float uPS;',
       'varying float vA;',
       'varying float vMix;',
       'void main(){',
@@ -118,7 +127,7 @@
       '  vec2 pos = p * uScale;',
       '  pos.x /= uAspect;',
       '  gl_Position = vec4(pos, 0.0, 1.0);',
-      '  gl_PointSize = mix(1.9, 3.3, t) * (0.85 + aSeed.z*0.8);',
+      '  gl_PointSize = mix(1.9, 3.3, t) * (0.85 + aSeed.z*0.8) * uPS;',
       '  vA = mix(0.20, 0.95, t) * (1.0 - uDisperse);',
       '  vMix = aSeed.z;',
       '}'
@@ -161,17 +170,20 @@
         uTime = gl.getUniformLocation(prog, 'uTime'),
         uAspect = gl.getUniformLocation(prog, 'uAspect'),
         uScale = gl.getUniformLocation(prog, 'uScale'),
-        uDisp = gl.getUniformLocation(prog, 'uDisperse');
+        uDisp = gl.getUniformLocation(prog, 'uDisperse'),
+        uPS = gl.getUniformLocation(prog, 'uPS');
 
     gl.enable(gl.BLEND);
     gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
     gl.clearColor(0, 0, 0, 0);
 
-    var dpr = Math.min(w.devicePixelRatio || 1, 2), aspect = 1;
+    var dpr = Math.min(w.devicePixelRatio || 1, lite ? 1.5 : 2), aspect = 1;
+    var psize = dpr / 2 * 1.6; // stessa misura a schermo, particelle più piene (sono meno)
     function resize() {
       var r = canvas.getBoundingClientRect();
-      canvas.width = Math.max(1, Math.floor(r.width * dpr));
-      canvas.height = Math.max(1, Math.floor(r.height * dpr));
+      var cw = Math.max(1, Math.floor(r.width * dpr)), ch = Math.max(1, Math.floor(r.height * dpr));
+      if (cw === canvas.width && ch === canvas.height) return;
+      canvas.width = cw; canvas.height = ch;
       gl.viewport(0, 0, canvas.width, canvas.height);
       aspect = (r.width || 1) / (r.height || 1);
     }
@@ -191,6 +203,7 @@
       gl.uniform1f(uAspect, aspect / sampled.aspect * 2.35);
       gl.uniform1f(uScale, api.scale);
       gl.uniform1f(uDisp, api.disperse);
+      gl.uniform1f(uPS, lite ? psize : 1.0);
       gl.drawArrays(gl.POINTS, 0, COUNT);
       requestAnimationFrame(frame);
     }
@@ -209,6 +222,7 @@
   function HeroScene(canvas) {
     var gl = ctx(canvas);
     if (!gl) return null;
+    var lite = isLite();
 
     /* --- layer 1: fullscreen nebula (raymarch-lite fbm) --- */
     var quadVS = [
@@ -217,7 +231,8 @@
     ].join('\n');
 
     var quadFS = [
-      'precision highp float;',
+      (lite ? 'precision mediump float;' : 'precision highp float;'),
+      '#define OCT ' + (lite ? '3' : '5'),
       'varying vec2 vUv;',
       'uniform vec2 uRes; uniform float uTime; uniform vec2 uMouse; uniform float uScroll;',
       'float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}',
@@ -227,7 +242,7 @@
       '  return mix(mix(hash(i),hash(i+vec2(1.0,0.0)),u.x),mix(hash(i+vec2(0.0,1.0)),hash(i+vec2(1.0,1.0)),u.x),u.y);',
       '}',
       'float fbm(vec2 p){float v=0.0,a=0.5;mat2 m=mat2(1.6,1.2,-1.2,1.6);',
-      '  for(int i=0;i<5;i++){v+=a*noise(p);p=m*p;a*=0.5;}return v;}',
+      '  for(int i=0;i<OCT;i++){v+=a*noise(p);p=m*p;a*=0.5;}return v;}',
       'void main(){',
       '  vec2 uv=vUv;',
       '  vec2 p=(gl_FragCoord.xy-0.5*uRes)/uRes.y;',
@@ -266,7 +281,7 @@
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
 
     /* --- layer 2: particelle 3D --- */
-    var N = 900;
+    var N = lite ? 420 : 900;
     var pdata = new Float32Array(N * 4); // x,y,z,seed
     for (var i = 0; i < N; i++) {
       pdata[i * 4] = Math.random() * 2 - 1;
@@ -276,7 +291,7 @@
     }
     var ptVS = [
       'attribute vec4 aP;',
-      'uniform float uTime; uniform vec2 uMouse; uniform float uAspect; uniform float uScroll;',
+      'uniform float uTime; uniform vec2 uMouse; uniform float uAspect; uniform float uScroll; uniform float uPx;',
       'varying float vA; varying float vS;',
       'void main(){',
       '  float z=fract(aP.z + uTime*0.028 + uScroll*0.25);',
@@ -288,7 +303,7 @@
       '  pos /= depth;',
       '  pos.x /= uAspect;',
       '  gl_Position=vec4(pos,0.0,1.0);',
-      '  gl_PointSize=mix(0.7,3.4,1.0-depth)*(0.6+aP.w);',
+      '  gl_PointSize=max(1.0,mix(0.7,3.4,1.0-depth)*(0.6+aP.w)*uPx);',
       '  vA=(1.0-depth)*0.85*smoothstep(0.0,0.14,z)*smoothstep(1.0,0.7,z);',
       '  vS=aP.w;',
       '}'
@@ -320,16 +335,21 @@
       time: gl.getUniformLocation(pPts, 'uTime'),
       mouse: gl.getUniformLocation(pPts, 'uMouse'),
       aspect: gl.getUniformLocation(pPts, 'uAspect'),
-      scroll: gl.getUniformLocation(pPts, 'uScroll')
+      scroll: gl.getUniformLocation(pPts, 'uScroll'),
+      px: gl.getUniformLocation(pPts, 'uPx')
     } : null;
     var aP = pPts ? gl.getAttribLocation(pPts, 'aP') : -1;
 
-    var dpr = Math.min(w.devicePixelRatio || 1, 1.75);
+    // la nebulosa è morbida per natura: su telefono la calcoliamo a bassa risoluzione
+    // e la lasciamo ingrandire al browser (≈ 6 volte meno pixel da calcolare)
+    var dpr = lite ? 0.75 : Math.min(w.devicePixelRatio || 1, 1.75);
     var aspect = 1;
     function resize() {
       var r = canvas.getBoundingClientRect();
-      canvas.width = Math.max(1, Math.floor(r.width * dpr));
-      canvas.height = Math.max(1, Math.floor(r.height * dpr));
+      var cw = Math.max(1, Math.floor(r.width * dpr)), ch = Math.max(1, Math.floor(r.height * dpr));
+      // su telefono la barra degli indirizzi che compare/scompare cambia l'altezza di poco: ignoriamo
+      if (cw === canvas.width && (ch === canvas.height || (lite && Math.abs(ch - canvas.height) < 140 * dpr))) return;
+      canvas.width = cw; canvas.height = ch;
       gl.viewport(0, 0, canvas.width, canvas.height);
       aspect = (r.width || 1) / (r.height || 1);
     }
@@ -349,10 +369,12 @@
     api.setScroll = function (v) { tscroll = v; };
     api.setVisible = function (v) { visible = v; };
 
+    var fskip = 0;
     function frame() {
       if (!alive) return;
       requestAnimationFrame(frame);
       if (!visible) return;
+      if (lite && (fskip++ & 1)) return; // 30 fps su telefono
       mx += (tmx - mx) * 0.055; my += (tmy - my) * 0.055;
       scroll += (tscroll - scroll) * 0.08;
       var time = (performance.now() - t0) / 1000;
@@ -378,6 +400,7 @@
         gl.uniform2f(uP.mouse, mx, my);
         gl.uniform1f(uP.aspect, aspect);
         gl.uniform1f(uP.scroll, scroll);
+        gl.uniform1f(uP.px, dpr / 1.75);
         gl.drawArrays(gl.POINTS, 0, N);
       }
     }

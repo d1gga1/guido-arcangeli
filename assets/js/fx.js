@@ -7,6 +7,7 @@
   var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
   var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   var coarse = matchMedia('(pointer: coarse)').matches;
+  var lite = coarse || matchMedia('(max-width: 760px)').matches;
   var clamp = function (v, a, b) { return Math.min(b, Math.max(a, v)); };
   var lerp = function (a, b, t) { return a + (b - a) * t; };
 
@@ -32,12 +33,19 @@
       var a = e.target.closest('a');
       if (!a || reduce) return;
       var href = a.getAttribute('href') || '';
-      if (!href || href.charAt(0) === '#' || a.target === '_blank' ||
+      if (!href || href.charAt(0) === '#' || a.target === '_blank' || a.hasAttribute('download') ||
+          /\.(mp3|wav|m4a|zip|pdf)(\?|$)/i.test(href) ||
           /^(mailto:|tel:|https?:\/\/|\/\/)/.test(href)) return;
       if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
       e.preventDefault();
       pt.classList.remove('out'); pt.classList.add('in');
-      setTimeout(function () { window.location.href = href; }, 640);
+      setTimeout(function () { window.location.href = href; }, lite ? 420 : 640);
+    });
+    // "Indietro" su iPhone/Android ripristina la pagina dalla cache: togliamo la tendina
+    window.addEventListener('pageshow', function (e) {
+      if (!e.persisted) return;
+      pt.classList.remove('in'); pt.classList.add('out');
+      setTimeout(function () { pt.classList.remove('out'); }, 900);
     });
   }
 
@@ -169,8 +177,8 @@
     addEventListener('resize', measure);
     var cur = 0;
     (function loop() {
+      if (small.matches) { setTimeout(loop, 500); return; } // su telefono è uno swipe nativo
       requestAnimationFrame(loop);
-      if (small.matches) return;
       var r = pin.getBoundingClientRect();
       var p = clamp(-r.top / Math.max(1, pin.offsetHeight - innerHeight), 0, 1);
       cur = lerp(cur, p * maxX, .12);
@@ -197,14 +205,15 @@
   /* ---------- 8. Vinile dell'hero: gira con lo scroll ---------- */
   function initVinyl() {
     var d = $('.hv-disc'); if (!d || reduce) return;
-    var extra = 0, tgt = 0, last = scrollY;
+    var extra = 0, tgt = 0, last = scrollY, shown = '';
     (function loop() {
       requestAnimationFrame(loop);
       tgt += (scrollY - last) * .28; last = scrollY;
+      if (Math.abs(tgt - extra) < .05) return;      // fermo: nessun ricalcolo di stile
       extra = lerp(extra, tgt, .1);
-      d.style.animationDuration = '7s';
-      d.style.setProperty('--extra', extra.toFixed(1) + 'deg');
-      d.style.rotate = extra.toFixed(1) + 'deg';
+      if (scrollY > innerHeight * 1.4) return;      // fuori schermo: non serve disegnarlo
+      var v = extra.toFixed(1) + 'deg';
+      if (v !== shown) { shown = v; d.style.rotate = v; }
     })();
   }
 

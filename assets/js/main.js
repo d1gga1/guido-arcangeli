@@ -10,6 +10,13 @@
   var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var coarse = window.matchMedia('(pointer: coarse)').matches;
+  // telefoni/tablet o connessione "risparmio dati": effetti più leggeri
+  var small = window.matchMedia('(max-width: 760px)').matches;
+  var conn = navigator.connection || {};
+  var lowEnd = !!conn.saveData || /(^|-)2g$/.test(conn.effectiveType || '') ||
+               (navigator.deviceMemory && navigator.deviceMemory <= 2);
+  var lite = coarse || small;
+  window.GA_LITE = lite;
   var lerp = function (a, b, t) { return a + (b - a) * t; };
   var clamp = function (v, a, b) { return Math.min(b, Math.max(a, v)); };
 
@@ -116,7 +123,12 @@
       var w = track.scrollWidth / (need + 1);
       var x = 0, dir = m.hasAttribute('data-reverse') ? 1 : -1;
       var speed = parseFloat(m.getAttribute('data-speed-mq')) || 0.55;
+      var vis = true;
+      if ('IntersectionObserver' in window) {
+        new IntersectionObserver(function (en) { vis = en[0].isIntersecting; }).observe(m);
+      }
       onFrame(function (y, vel) {
+        if (!vis) return;
         x += dir * (speed + Math.min(Math.abs(vel) * 0.055, 5));
         if (dir < 0 && x <= -w) x += w;
         if (dir > 0 && x >= 0) x -= w;
@@ -206,11 +218,14 @@
         document.body.classList.toggle('is-locked', open);
         $$('a', menu).forEach(function (a, i) { a.style.transitionDelay = open ? (0.16 + i * 0.055) + 's' : '0s'; });
       });
-      $$('a', menu).forEach(function (a) {
-        a.addEventListener('click', function () {
-          menu.classList.remove('open'); burger.classList.remove('open');
-          document.body.classList.remove('is-locked');
-        });
+      var closeMenu = function () {
+        menu.classList.remove('open'); burger.classList.remove('open');
+        burger.setAttribute('aria-expanded', 'false');
+        document.body.classList.remove('is-locked');
+      };
+      $$('a', menu).forEach(function (a) { a.addEventListener('click', closeMenu); });
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && menu.classList.contains('open')) { closeMenu(); burger.focus(); }
       });
     }
 
@@ -222,7 +237,7 @@
       var t = document.querySelector(id);
       if (!t) return;
       e.preventDefault();
-      var top = t.getBoundingClientRect().top + (SS.on ? SS.current : window.scrollY) - 64;
+      var top = t.getBoundingClientRect().top + (SS.on ? SS.current : window.scrollY) - (small ? 16 : 64);
       scrollTo(top);
     });
   }
@@ -254,10 +269,15 @@
   function initViz() {
     $$('.viz').forEach(function (v) {
       if (v.children.length === 0) {
-        for (var i = 0; i < 34; i++) v.appendChild(document.createElement('i'));
+        for (var i = 0; i < (small ? 22 : 34); i++) v.appendChild(document.createElement('i'));
       }
-      var bars = $$('i', v), t = Math.random() * 100;
+      var bars = $$('i', v), t = Math.random() * 100, vis = true, skip = 0;
+      if ('IntersectionObserver' in window) {
+        new IntersectionObserver(function (en) { vis = en[0].isIntersecting; }).observe(v);
+      }
       onFrame(function () {
+        if (!vis) return;
+        if (lite && (skip++ & 1)) return; // 30 fps su telefono: basta e avanza
         t += 0.055;
         for (var i = 0; i < bars.length; i++) {
           var h = 0.22 + 0.78 * Math.abs(Math.sin(t + i * 0.42) * Math.sin(t * 0.53 + i * 0.19));
@@ -270,7 +290,7 @@
   /* ============ 12. IMG fallback ============ */
   function imgTag(local, remote, alt, cls) {
     return '<img src="' + local + '" alt="' + alt.replace(/"/g, '&quot;') + '"' +
-      (cls ? ' class="' + cls + '"' : '') + ' loading="lazy" decoding="async" ' +
+      (cls ? ' class="' + cls + '"' : '') + ' width="200" height="200" loading="lazy" decoding="async" ' +
       'data-remote="' + remote + '" onerror="GA.imgFail(this)">';
   }
   window.GA = window.GA || {};
@@ -284,30 +304,48 @@
   };
 
   /* ============ 13. RENDER: TRACKS ============ */
-  function trackCard(t) {
+  var ICO = {
+    play: '<svg viewBox="0 0 24 24" aria-hidden="true"><path class="i-play" d="M8 5v14l11-7z"/><path class="i-pause" d="M7 5h4v14H7zM13 5h4v14h-4z"/></svg>',
+    dl: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 4h2v9.2l3.6-3.6 1.4 1.4-6 6-6-6 1.4-1.4 3.6 3.6zM5 18h14v2H5z"/></svg>'
+  };
+  var fmtN = function (n) { return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, '.'); };
+  function dlCount(i) {
+    var t = D.tracks[i], extra = 0;
+    try { extra = parseInt(localStorage.getItem('ga_dl_' + i) || '0', 10) || 0; } catch (e) {}
+    return (t.downloads || 0) + extra;
+  }
+  function dlName(t) { return 'Guido Arcangeli - ' + t.title.replace(/[\\/:*?"<>|]/g, '') + '.mp3'; }
+  function trackCard(t, i) {
+    var has = !!t.audio;
     return '' +
-      '<article class="track" data-tilt data-rev="up">' +
-        '<a href="' + t.url + '" target="_blank" rel="noopener">' +
-          '<div class="track-art">' +
-            '<div class="fallback" style="display:none">' + t.title.split('(')[0].trim() + '</div>' +
-            imgTag(t.cover, t.coverRemote, t.title) +
-            '<span class="play"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span>' +
+      '<article class="track" data-tilt data-rev="up" data-i="' + i + '">' +
+        '<div class="track-art">' +
+          '<div class="fallback" style="display:none">' + t.title.split('(')[0].trim() + '</div>' +
+          imgTag(t.cover, t.coverRemote, t.title) +
+          (has ? '<button class="play" type="button" data-play="' + i + '" aria-label="Ascolta ' + t.title.replace(/"/g, '&quot;') + '">' + ICO.play + '</button>' : '') +
+          '<span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span>' +
+        '</div>' +
+        '<div class="track-body">' +
+          '<h3>' + t.title + '</h3>' +
+          '<div class="meta"><i>' + t.genre + '</i><span>' + t.year + '</span></div>' +
+          (has ?
+          '<div class="track-actions">' +
+            '<button class="ta-play" type="button" data-play="' + i + '">' + ICO.play + '<span class="lbl">Ascolta</span></button>' +
+            '<a class="ta-dl" href="' + t.audio + '" download="' + dlName(t).replace(/"/g, '') + '" data-dl="' + i + '" aria-label="Scarica ' + t.title.replace(/"/g, '&quot;') + '">' + ICO.dl + '<span class="lbl">Scarica</span></a>' +
           '</div>' +
-          '<div class="track-body">' +
-            '<h3>' + t.title + '</h3>' +
-            '<div class="meta"><i>' + t.genre + '</i><span>' + t.year + '</span></div>' +
-          '</div>' +
-        '</a>' +
+          '<p class="dl-count"><b data-dlc="' + i + '">' + fmtN(dlCount(i)) + '</b> download</p>' : '') +
+        '</div>' +
       '</article>';
   }
   function renderTracks() {
     var host = $('#tracks-featured');
     if (host && D.tracks) {
-      host.innerHTML = D.tracks.slice(0, 10).map(trackCard).join('');
+      host.innerHTML = D.tracks.slice(0, 10).map(function (t, i) { return trackCard(t, i); }).join('');
+      if (!$('.swipe-hint', host.parentNode)) host.insertAdjacentHTML('afterend', '<p class="swipe-hint" aria-hidden="true"><i></i>Scorri</p>');
     }
     var all = $('#tracks-all');
     if (all && D.tracks) {
-      all.innerHTML = D.tracks.map(trackCard).join('');
+      all.innerHTML = D.tracks.map(function (t, i) { return trackCard(t, i); }).join('');
       initArchiveFilters();
     }
     initTilt();
@@ -373,7 +411,7 @@
     var host = $('#videos'); if (!host || !D.videos) return;
     host.innerHTML = D.videos.map(function (v) {
       return '<a class="vcard" data-rev="up" href="https://www.youtube.com/watch?v=' + v.id + '" target="_blank" rel="noopener">' +
-        '<img src="https://i.ytimg.com/vi/' + v.id + '/hqdefault.jpg" alt="' + v.title + '" loading="lazy">' +
+        '<img src="https://i.ytimg.com/vi/' + v.id + (small ? '/mqdefault.jpg' : '/hqdefault.jpg') + '" alt="' + v.title + '" width="480" height="270" loading="lazy" decoding="async">' +
         '<span class="pl"><b><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></b></span>' +
         '<span class="cap">' + v.title + '</span></a>';
     }).join('');
@@ -401,7 +439,7 @@
   var hero;
   function initHero() {
     var cv = $('#gl-hero'); if (!cv || !window.GA_GL || reduce) return;
-    hero = window.GA_GL.HeroScene(cv);
+    hero = lowEnd ? null : window.GA_GL.HeroScene(cv);
     if (!hero) { cv.style.background = 'radial-gradient(60% 60% at 30% 30%,rgba(124,60,255,.5),transparent),radial-gradient(50% 50% at 80% 70%,rgba(0,229,255,.35),transparent),#08061a'; return; }
     var sec = cv.closest('.hero');
     onFrame(function (y) {
@@ -422,7 +460,9 @@
   function runIntro(done) {
     var intro = $('#intro');
     if (!intro) { done(); return; }
-    if (reduce || sessionStorage.getItem('ga_intro') === '1') {
+    var seen = false;
+    try { seen = sessionStorage.getItem('ga_intro') === '1'; } catch (e) {}
+    if (reduce || lowEnd || seen) {
       intro.classList.add('done');
       setTimeout(function () { intro.remove(); }, 100);
       done(); return;
@@ -430,13 +470,22 @@
     document.body.classList.add('is-locked');
 
     var cv = $('#gl-intro');
-    var scene = window.GA_GL ? window.GA_GL.IntroScene(cv, ['GUIDO', 'ARCANGELI']) : null;
+    var scene = null;
     var word = $('.intro-word'), sub = $('.intro-sub'), bar = $('.intro-bar i'), num = $('.intro-num');
 
-    var t0 = performance.now(), DUR = 2200, closed = false;
+    var t0 = performance.now(), DUR = lite ? 1500 : 2200, closed = false;
+    // le particelle disegnano il nome col font Anton: lo aspettiamo (max 600 ms)
+    var fontReady = (document.fonts && document.fonts.load)
+      ? Promise.race([document.fonts.load("400 120px 'Anton'"), new Promise(function (r) { setTimeout(r, 600); })])
+      : Promise.resolve();
+    fontReady.then(function () {
+      if (!closed && window.GA_GL) scene = window.GA_GL.IntroScene(cv, ['GUIDO', 'ARCANGELI']);
+    }, function () {
+      if (!closed && window.GA_GL) scene = window.GA_GL.IntroScene(cv, ['GUIDO', 'ARCANGELI']);
+    });
     function close() {
       if (closed) return; closed = true;
-      sessionStorage.setItem('ga_intro', '1');
+      try { sessionStorage.setItem('ga_intro', '1'); } catch (e) {}
       if (scene) {
         var s0 = performance.now();
         (function out() {
@@ -456,7 +505,7 @@
 
     var skip = $('.intro-skip');
     if (skip) skip.addEventListener('click', close);
-    intro.addEventListener('click', function (e) { if (performance.now() - t0 > 900) close(); });
+    intro.addEventListener('click', function (e) { if (performance.now() - t0 > (lite ? 300 : 900)) close(); });
 
     (function loop() {
       var p = clamp((performance.now() - t0) / DUR, 0, 1);
@@ -496,6 +545,155 @@
     }
   }
 
+  /* ============ 20. BARRA CONTATTI (telefono) ============ */
+  function initMobileBar() {
+    if (!D.contact || $('.mbar')) return;
+    var raw = D.contact.phoneRaw || '';
+    var bar = document.createElement('div');
+    bar.className = 'mbar';
+    bar.innerHTML =
+      '<a href="tel:' + raw + '" aria-label="Chiama Guido"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1A17 17 0 0 1 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1z"/></svg>Chiama</a>' +
+      '<a class="wa" href="https://wa.me/' + raw.replace('+', '') + '?text=' + encodeURIComponent('Ciao Guido, vorrei informazioni per una serata') + '" target="_blank" rel="noopener" aria-label="Scrivi su WhatsApp"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.2.3-.9.9-.9 2.2s.9 2.5 1 2.7c.1.2 1.8 2.8 4.4 3.9 1.6.7 2.3.8 3.1.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.1-1.2l-.4-.2z"/></svg>WhatsApp</a>';
+    document.body.appendChild(bar);
+    document.body.classList.add('has-mbar');
+    // nascosta vicino ai contatti e nel footer (ci sono già i pulsanti)
+    var block = 0;
+    if ('IntersectionObserver' in window) {
+      var io = new IntersectionObserver(function (en) {
+        en.forEach(function (x) { x.target.__in = x.isIntersecting; });
+        block = $$('#contatti, .footer').filter(function (e) { return e.__in; }).length;
+      });
+      $$('#contatti, .footer').forEach(function (e) { io.observe(e); });
+    }
+    var shown = false;
+    onFrame(function (y) {
+      var want = y > innerHeight * 0.7 && !block;
+      if (want !== shown) { shown = want; bar.classList.toggle('show', want); }
+    });
+  }
+
+  /* ============ 21. PLAYER AUDIO ============ */
+  function initPlayer() {
+    if (!D.tracks) return;
+    $$('[data-dlc]').forEach(function (el) { el.textContent = fmtN(dlCount(+el.getAttribute('data-dlc'))); });
+    var audio = new Audio(); audio.preload = 'none';
+    var cur = -1, bar = null;
+    function fmtT(s) { s = Math.max(0, Math.floor(s || 0)); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); }
+    function build() {
+      if (bar) return bar;
+      bar = document.createElement('div');
+      bar.className = 'player'; bar.setAttribute('role', 'region'); bar.setAttribute('aria-label', 'Lettore musicale');
+      bar.innerHTML =
+        '<div class="pl-seek" role="slider" aria-label="Posizione" tabindex="0" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i></i></div>' +
+        '<div class="pl-row">' +
+          '<img class="pl-cover" alt="" width="200" height="200">' +
+          '<div class="pl-info"><b class="pl-title"></b><span class="pl-time">0:00 / 0:00</span></div>' +
+          '<button class="pl-btn pl-prev" type="button" aria-label="Brano precedente"><svg viewBox="0 0 24 24"><path d="M6 5h2v14H6zM20 5v14L9.5 12z"/></svg></button>' +
+          '<button class="pl-btn pl-toggle" type="button" aria-label="Pausa">' + ICO.play + '</button>' +
+          '<button class="pl-btn pl-next" type="button" aria-label="Brano successivo"><svg viewBox="0 0 24 24"><path d="M16 5h2v14h-2zM4 5v14l10.5-7z"/></svg></button>' +
+          '<a class="pl-btn pl-dl" aria-label="Scarica">' + ICO.dl + '</a>' +
+          '<button class="pl-btn pl-close" type="button" aria-label="Chiudi lettore"><svg viewBox="0 0 24 24"><path d="M6.4 5 12 10.6 17.6 5 19 6.4 13.4 12l5.6 5.6-1.4 1.4-5.6-5.6L6.4 19 5 17.6l5.6-5.6L5 6.4z"/></svg></button>' +
+        '</div>';
+      document.body.appendChild(bar);
+      $('.pl-toggle', bar).addEventListener('click', function () { toggle(cur); });
+      $('.pl-prev', bar).addEventListener('click', function () { step(-1); });
+      $('.pl-next', bar).addEventListener('click', function () { step(1); });
+      $('.pl-close', bar).addEventListener('click', function () {
+        audio.pause(); bar.classList.remove('show'); document.body.classList.remove('has-player'); sync();
+      });
+      var seek = $('.pl-seek', bar);
+      function seekTo(e) {
+        if (!audio.duration) return;
+        var r = seek.getBoundingClientRect();
+        audio.currentTime = clamp((e.clientX - r.left) / r.width, 0, 1) * audio.duration;
+      }
+      seek.addEventListener('pointerdown', function (e) { seekTo(e); seek.setPointerCapture(e.pointerId); });
+      seek.addEventListener('pointermove', function (e) { if (e.buttons) seekTo(e); });
+      seek.addEventListener('keydown', function (e) {
+        if (e.key === 'ArrowRight') audio.currentTime += 5; else if (e.key === 'ArrowLeft') audio.currentTime -= 5;
+      });
+      return bar;
+    }
+    function playable(i) { return D.tracks[i] && D.tracks[i].audio; }
+    function step(d) {
+      var n = D.tracks.length, i = cur;
+      for (var k = 0; k < n; k++) { i = (i + d + n) % n; if (playable(i)) { play(i); return; } }
+    }
+    function sync() {
+      var playing = !audio.paused;
+      $$('[data-play]').forEach(function (b) {
+        var on = +b.getAttribute('data-play') === cur && playing;
+        b.classList.toggle('is-on', on);
+        b.setAttribute('aria-pressed', on ? 'true' : 'false');
+        var l = $('.lbl', b); if (l) l.textContent = on ? 'Pausa' : 'Ascolta';
+      });
+      $$('.track[data-i]').forEach(function (c) {
+        c.classList.toggle('is-playing', +c.getAttribute('data-i') === cur && playing);
+        c.classList.toggle('is-current', +c.getAttribute('data-i') === cur);
+      });
+      if (bar) {
+        bar.classList.toggle('paused', !playing);
+        $('.pl-toggle', bar).setAttribute('aria-label', playing ? 'Pausa' : 'Riproduci');
+      }
+    }
+    function play(i) {
+      var t = D.tracks[i]; if (!t || !t.audio) return;
+      build();
+      if (cur !== i) {
+        cur = i; audio.src = t.audio;
+        $('.pl-title', bar).textContent = t.title;
+        var c = $('.pl-cover', bar); c.src = t.cover; c.onerror = function () { c.src = 'assets/img/vinyl.jpg'; };
+        var dl = $('.pl-dl', bar); dl.href = t.audio; dl.setAttribute('download', dlName(t)); dl.setAttribute('data-dl', i);
+        $('.pl-seek i', bar).style.transform = 'scaleX(0)';
+        if ('mediaSession' in navigator && window.MediaMetadata) {
+          navigator.mediaSession.metadata = new MediaMetadata({
+            title: t.title, artist: 'Guido Arcangeli', album: t.genre + ' · ' + t.year,
+            artwork: [{ src: new URL(t.cover, location.href).href, sizes: '200x200', type: 'image/jpeg' }]
+          });
+        }
+      }
+      bar.classList.add('show'); document.body.classList.add('has-player');
+      var pr = audio.play(); if (pr && pr.catch) pr.catch(function () { sync(); });
+      sync();
+    }
+    function toggle(i) {
+      if (i === cur && !audio.paused) { audio.pause(); return; }
+      play(i);
+    }
+    document.addEventListener('click', function (e) {
+      var b = e.target.closest('[data-play]');
+      if (b) { e.preventDefault(); toggle(+b.getAttribute('data-play')); return; }
+      var d = e.target.closest('[data-dl]');
+      if (d) {
+        // il download parte dal link; qui aggiorniamo il contatore di questo visitatore
+        var i = +d.getAttribute('data-dl'), k = 'ga_dl_' + i;
+        try { localStorage.setItem(k, String((parseInt(localStorage.getItem(k) || '0', 10) || 0) + 1)); } catch (err) {}
+        $$('[data-dlc="' + i + '"]').forEach(function (el) {
+          el.textContent = fmtN(dlCount(i));
+          el.classList.remove('bump'); void el.offsetWidth; el.classList.add('bump');
+        });
+      }
+    });
+    audio.addEventListener('play', sync);
+    audio.addEventListener('pause', sync);
+    audio.addEventListener('ended', function () { step(1); });
+    audio.addEventListener('timeupdate', function () {
+      if (!bar || !audio.duration) return;
+      var p = audio.currentTime / audio.duration;
+      $('.pl-seek i', bar).style.transform = 'scaleX(' + p.toFixed(4) + ')';
+      $('.pl-seek', bar).setAttribute('aria-valuenow', Math.round(p * 100));
+      $('.pl-time', bar).textContent = fmtT(audio.currentTime) + ' / ' + fmtT(audio.duration);
+    });
+    if ('mediaSession' in navigator) {
+      try {
+        navigator.mediaSession.setActionHandler('play', function () { audio.play(); });
+        navigator.mediaSession.setActionHandler('pause', function () { audio.pause(); });
+        navigator.mediaSession.setActionHandler('previoustrack', function () { step(-1); });
+        navigator.mediaSession.setActionHandler('nexttrack', function () { step(1); });
+      } catch (e) {}
+    }
+  }
+
   /* ============ BOOT ============ */
   function boot() {
     initSmooth();
@@ -515,6 +713,8 @@
     initViz();
     initCounters();
     initForm();
+    initMobileBar();
+    initPlayer();
     runIntro(function () {
       document.body.classList.add('ready');
       initHero();

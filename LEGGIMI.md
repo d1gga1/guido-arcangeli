@@ -25,6 +25,28 @@ Per tornare indietro basta cancellarli.
 Sito statico, senza WordPress e senza dipendenze esterne: si carica su
 qualsiasi hosting copiando la cartella così com'è.
 
+## 0bis. Ottimizzazione mobile (ottobre 2026)
+
+- Telefoni: sfondo WebGL calcolato a bassa risoluzione e a 30 fps, meno particelle,
+  intro più corta (1,5 s) e saltata su connessioni "risparmio dati"
+- Grana, vignettatura e animazioni ferme quando non sono a schermo (meno batteria)
+- Safe area per iPhone con notch, niente zoom su iOS nei campi, bottoni ≥ 40px
+- Barra in basso "Chiama / WhatsApp" che compare scorrendo (solo telefono)
+- Produzioni in home e galleria come caroselli a scorrimento; filtri archivio su una riga
+- Tasto "Indietro" del telefono non lascia più la tendina di transizione sullo schermo
+- Font non bloccanti, `vinyl.jpg` alleggerita (218 → 62 KB), icona per la schermata Home
+- Copia dei file originali in `_backup_prima_mobile/` (si può cancellare quando sei soddisfatto)
+
+## 0ter. Ascolto e download dei brani
+
+Ogni brano ha i pulsanti **Ascolta** e **Scarica**, più il numero di download.
+Le canzoni stanno nella cartella **`audio/`** (copiate da `uploads/`, nomi `01-titolo.mp3` … `50-…`).
+Per pubblicare il sito basta caricare `audio/`: la cartella `uploads/` (2,8 GB) non serve online.
+
+In `assets/js/data.js` ogni riga brano ora finisce con `'audio/xx-titolo.mp3', 1234`:
+il file da riprodurre e il numero di download di partenza (puoi cambiarli a mano).
+Quando un visitatore scarica, il suo contatore sale di 1 (solo sul suo dispositivo).
+
 ## 1. Immagini
 
 **Il sito è già completo: nessun riquadro vuoto.** Tutte le immagini di
