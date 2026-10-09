@@ -788,6 +788,7 @@
       if (!D.tracks[i]) return;
       if (cur === i && box.classList.contains('open')) { close(); return; }
       cur = i; opener = btn;
+      if (SS.on) SS.target = SS.current = window.scrollY; // ferma lo scroll morbido ancora in corsa
       render(i); place(btn);
       box.classList.add('open'); scrim.classList.add('open');
       if (btn) btn.setAttribute('aria-expanded', 'true');
@@ -825,8 +826,12 @@
       }
     });
     window.addEventListener('resize', function () { close(); });
+    // lo scroll del sito e' "morbido" e continua a muoversi dopo la rotella:
+    // il menu segue il pulsante e si chiude solo se il pulsante esce dallo schermo
     window.addEventListener('scroll', function () {
-      if (box.classList.contains('open') && !window.matchMedia('(max-width:640px)').matches) close();
+      if (!box.classList.contains('open') || !opener || window.matchMedia('(max-width:640px)').matches) return;
+      var r = opener.getBoundingClientRect();
+      if (r.bottom < 0 || r.top > window.innerHeight) close(); else place(opener);
     }, { passive: true });
   }
 

@@ -58,6 +58,10 @@ si apre un menu con tre scelte. I file vanno messi così, **con lo stesso nome**
 | Solo base | `audio/basi/` | `audio/basi/22-l-esercito-del-selfie-remix.mp3` |
 | Solo testo | `audio/testi/` | `audio/testi/22-l-esercito-del-selfie-remix.pdf` |
 
+Basi e testi sono stati presi da `uploads/download-manager-files/` (i file del vecchio
+plugin WordPress) e rinominati; i testi in Word/txt sono stati convertiti in PDF.
+L'abbinamento brano → file è in `_tmp/mappa_basi_testi.py`.
+
 Se un file non c'è ancora, nel menu quella voce appare grigia con scritto
 "Non ancora disponibile": si possono caricare basi e testi un po' alla volta.
 Il tipo di file (es. testo in `.pdf` oppure `.mp3` con la sola voce) si cambia
