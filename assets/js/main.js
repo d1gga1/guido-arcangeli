@@ -314,7 +314,10 @@
     try { extra = parseInt(localStorage.getItem('ga_dl_' + i) || '0', 10) || 0; } catch (e) {}
     return (t.downloads || 0) + extra;
   }
-  function dlName(t) { return 'Guido Arcangeli - ' + t.title.replace(/[\\/:*?"<>|]/g, '') + '.mp3'; }
+  function dlName(t, suffix, url) {
+    var ext = ((url || t.audio || '').split('?')[0].match(/\.([a-z0-9]+)$/i) || [0, 'mp3'])[1];
+    return 'Guido Arcangeli - ' + t.title.replace(/[\\/:*?"<>|]/g, '') + (suffix ? ' (' + suffix + ')' : '') + '.' + ext;
+  }
   function trackCard(t, i) {
     var has = !!t.audio;
     return '' +
@@ -331,7 +334,7 @@
           (has ?
           '<div class="track-actions">' +
             '<button class="ta-play" type="button" data-play="' + i + '">' + ICO.play + '<span class="lbl">Ascolta</span></button>' +
-            '<a class="ta-dl" href="' + t.audio + '" download="' + dlName(t).replace(/"/g, '') + '" data-dl="' + i + '" aria-label="Scarica ' + t.title.replace(/"/g, '&quot;') + '">' + ICO.dl + '<span class="lbl">Scarica</span></a>' +
+            '<button class="ta-dl" type="button" data-dl="' + i + '" aria-haspopup="dialog" aria-label="Scarica ' + t.title.replace(/"/g, '&quot;') + '">' + ICO.dl + '<span class="lbl">Scarica</span></button>' +
           '</div>' +
           '<p class="dl-count"><b data-dlc="' + i + '">' + fmtN(dlCount(i)) + '</b> download</p>' : '') +
         '</div>' +
@@ -610,7 +613,7 @@
           '<button class="pl-btn pl-prev" type="button" aria-label="Brano precedente"><svg viewBox="0 0 24 24"><path d="M6 5h2v14H6zM20 5v14L9.5 12z"/></svg></button>' +
           '<button class="pl-btn pl-toggle" type="button" aria-label="Pausa">' + ICO.play + '</button>' +
           '<button class="pl-btn pl-next" type="button" aria-label="Brano successivo"><svg viewBox="0 0 24 24"><path d="M16 5h2v14h-2zM4 5v14l10.5-7z"/></svg></button>' +
-          '<a class="pl-btn pl-dl" aria-label="Scarica">' + ICO.dl + '</a>' +
+          '<button class="pl-btn pl-dl" type="button" aria-haspopup="dialog" aria-label="Scarica">' + ICO.dl + '</button>' +
           '<button class="pl-btn pl-close" type="button" aria-label="Chiudi lettore"><svg viewBox="0 0 24 24"><path d="M6.4 5 12 10.6 17.6 5 19 6.4 13.4 12l5.6 5.6-1.4 1.4-5.6-5.6L6.4 19 5 17.6l5.6-5.6L5 6.4z"/></svg></button>' +
         '</div>';
       document.body.appendChild(bar);
@@ -662,7 +665,7 @@
         cur = i; audio.src = t.audio;
         $('.pl-title', bar).textContent = t.title;
         var c = $('.pl-cover', bar); c.src = t.cover; c.onerror = function () { c.src = 'assets/img/vinyl.jpg'; };
-        var dl = $('.pl-dl', bar); dl.href = t.audio; dl.setAttribute('download', dlName(t)); dl.setAttribute('data-dl', i);
+        $('.pl-dl', bar).setAttribute('data-dl', i);
         $('.pl-seek i', bar).style.transform = 'scaleX(0)';
         if ('mediaSession' in navigator && window.MediaMetadata) {
           navigator.mediaSession.metadata = new MediaMetadata({
@@ -682,16 +685,6 @@
     document.addEventListener('click', function (e) {
       var b = e.target.closest('[data-play]');
       if (b) { e.preventDefault(); toggle(+b.getAttribute('data-play')); return; }
-      var d = e.target.closest('[data-dl]');
-      if (d) {
-        // il download parte dal link; qui aggiorniamo il contatore di questo visitatore
-        var i = +d.getAttribute('data-dl'), k = 'ga_dl_' + i;
-        try { localStorage.setItem(k, String((parseInt(localStorage.getItem(k) || '0', 10) || 0) + 1)); } catch (err) {}
-        $$('[data-dlc="' + i + '"]').forEach(function (el) {
-          el.textContent = fmtN(dlCount(i));
-          el.classList.remove('bump'); void el.offsetWidth; el.classList.add('bump');
-        });
-      }
     });
     audio.addEventListener('play', sync);
     audio.addEventListener('pause', sync);
@@ -711,6 +704,130 @@
         navigator.mediaSession.setActionHandler('nexttrack', function () { step(1); });
       } catch (e) {}
     }
+  }
+
+  /* ============ 22. MENU "SCARICA": completo / base / testo ============ */
+  function bumpDl(i) {
+    // il download parte dal link; qui aggiorniamo il contatore di questo visitatore
+    var k = 'ga_dl_' + i;
+    try { localStorage.setItem(k, String((parseInt(localStorage.getItem(k) || '0', 10) || 0) + 1)); } catch (err) {}
+    $$('[data-dlc="' + i + '"]').forEach(function (el) {
+      el.textContent = fmtN(dlCount(i));
+      el.classList.remove('bump'); void el.offsetWidth; el.classList.add('bump');
+    });
+  }
+  function initDlMenu() {
+    if (!D.tracks) return;
+    var IC = {
+      full: '<svg viewBox="0 0 24 24"><path d="M12 3v10.55A4 4 0 1 0 14 17V7h4V3z"/></svg>',
+      base: '<svg viewBox="0 0 24 24"><path d="M3 10h2v4H3zM7 6h2v12H7zM11 3h2v18h-2zM15 7h2v10h-2zM19 10h2v4h-2z"/></svg>',
+      mic:  '<svg viewBox="0 0 24 24"><path d="M12 14a3 3 0 0 0 3-3V5a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.92V21h2v-3.08A7 7 0 0 0 19 11z"/></svg>',
+      doc:  '<svg viewBox="0 0 24 24"><path d="M6 2h8l6 6v14H6zm7 1.5V9h5.5zM8 12v2h8v-2zm0 4v2h8v-2z"/></svg>',
+      go:   '<svg viewBox="0 0 24 24"><path d="M11 4h2v9.2l3.6-3.6 1.4 1.4-6 6-6-6 1.4-1.4 3.6 3.6zM5 18h14v2H5z"/></svg>',
+      x:    '<svg viewBox="0 0 24 24"><path d="M6.4 5 12 10.6 17.6 5 19 6.4 13.4 12l5.6 5.6-1.4 1.4-5.6-5.6L6.4 19 5 17.6l5.6-5.6L5 6.4z"/></svg>'
+    };
+    function extOf(u) { return ((u || '').split('?')[0].match(/\.([a-z0-9]+)$/i) || [0, ''])[1].toUpperCase(); }
+    function isAudio(u) { return /^(MP3|WAV|M4A|AAC|OGG|FLAC)$/.test(extOf(u)); }
+    function versions(t) {
+      return [
+        { key: 'audio', name: 'Brano completo', suffix: '',           sub: 'Voce + musica · ' + extOf(t.audio), ico: IC.full },
+        { key: 'base',  name: 'Solo base',      suffix: 'Base',       sub: 'Musica senza voce · ' + extOf(t.base), ico: IC.base },
+        { key: 'testo', name: 'Solo testo',     suffix: 'Testo',
+          sub: (isAudio(t.testo) ? 'Solo voce · ' : 'Le parole della canzone · ') + extOf(t.testo),
+          ico: isAudio(t.testo) ? IC.mic : IC.doc }
+      ];
+    }
+
+    var scrim = document.createElement('div'); scrim.className = 'dlm-scrim';
+    var box = document.createElement('div');
+    box.className = 'dlm'; box.setAttribute('role', 'dialog'); box.setAttribute('aria-label', 'Scegli cosa scaricare');
+    document.body.appendChild(scrim); document.body.appendChild(box);
+
+    var cur = -1, opener = null, avail = {};
+    // controlla se il file c'e' davvero sul sito (solo online, non aprendo i file dal disco)
+    function check(url, cb) {
+      if (!url) return cb(false);
+      if (url in avail) return cb(avail[url]);
+      if (location.protocol === 'file:' || !window.fetch) return cb(true);
+      fetch(url, { method: 'HEAD', cache: 'no-cache' })
+        .then(function (r) { avail[url] = r.ok; cb(r.ok); })
+        .catch(function () { cb(true); });
+    }
+    function render(i) {
+      var t = D.tracks[i];
+      box.innerHTML =
+        '<div class="dlm-head"><div><span class="dlm-k">Scarica</span><b class="dlm-title"></b></div>' +
+        '<button class="dlm-x" type="button" aria-label="Chiudi">' + IC.x + '</button></div>' +
+        versions(t).map(function (v) {
+          var url = t[v.key];
+          return '<a class="dlm-opt" data-k="' + v.key + '"' + (url ? ' href="' + url + '" download="' + dlName(t, v.suffix, url).replace(/"/g, '') + '"' : ' aria-disabled="true"') + '>' +
+            '<span class="dlm-ic">' + v.ico + '</span>' +
+            '<span class="dlm-tx"><b>' + v.name + '</b><small>' + v.sub + '</small></span>' +
+            '<span class="dlm-go">' + IC.go + '</span></a>';
+        }).join('');
+      $('.dlm-title', box).textContent = t.title;
+      $$('.dlm-opt', box).forEach(function (a) {
+        check(t[a.getAttribute('data-k')], function (ok) {
+          if (ok || cur !== i) return;
+          a.classList.add('is-na'); a.removeAttribute('href'); a.removeAttribute('download');
+          a.setAttribute('aria-disabled', 'true');
+          $('small', a).textContent = 'Non ancora disponibile';
+        });
+      });
+    }
+    function place(btn) {
+      if (window.matchMedia('(max-width:640px)').matches) { box.style.left = box.style.top = ''; return; }
+      var r = btn.getBoundingClientRect(), w = box.offsetWidth, h = box.offsetHeight, m = 12;
+      var x = clamp(r.left + r.width / 2 - w / 2, m, window.innerWidth - w - m);
+      var below = r.bottom + 8 + h < window.innerHeight - m || r.top - 8 - h < m;
+      var y = below ? r.bottom + 8 : r.top - 8 - h;
+      box.style.left = Math.round(x) + 'px'; box.style.top = Math.round(Math.max(m, y)) + 'px';
+      box.style.setProperty('--dlm-o', (below ? 'top ' : 'bottom ') + Math.round(r.left + r.width / 2 - x) + 'px');
+    }
+    function open(i, btn) {
+      if (!D.tracks[i]) return;
+      if (cur === i && box.classList.contains('open')) { close(); return; }
+      cur = i; opener = btn;
+      render(i); place(btn);
+      box.classList.add('open'); scrim.classList.add('open');
+      if (btn) btn.setAttribute('aria-expanded', 'true');
+      var f = $('.dlm-opt', box); if (f) f.focus({ preventScroll: true });
+    }
+    function close(back) {
+      if (!box.classList.contains('open')) return;
+      box.classList.remove('open'); scrim.classList.remove('open');
+      if (opener) { opener.setAttribute('aria-expanded', 'false'); if (back) opener.focus({ preventScroll: true }); }
+      cur = -1;
+    }
+
+    document.addEventListener('click', function (e) {
+      var o = e.target.closest('.dlm-opt');
+      if (o) {
+        if (!o.getAttribute('href')) { e.preventDefault(); return; }
+        bumpDl(cur);
+        setTimeout(function () { close(true); }, 60);
+        return;
+      }
+      if (e.target.closest('.dlm-x')) { close(true); return; }
+      var b = e.target.closest('[data-dl]');
+      if (b) { e.preventDefault(); open(+b.getAttribute('data-dl'), b); return; }
+      if (!e.target.closest('.dlm')) close();
+    });
+    document.addEventListener('keydown', function (e) {
+      if (!box.classList.contains('open')) return;
+      if (e.key === 'Escape') { e.preventDefault(); close(true); return; }
+      if (e.key === 'ArrowDown' || e.key === 'ArrowUp' || e.key === 'Tab') {
+        var items = $$('.dlm-opt, .dlm-x', box), k = items.indexOf(document.activeElement);
+        if (e.key === 'Tab' && k < 0) return;
+        e.preventDefault();
+        var d = (e.key === 'ArrowUp' || (e.key === 'Tab' && e.shiftKey)) ? -1 : 1;
+        items[(k + d + items.length) % items.length].focus();
+      }
+    });
+    window.addEventListener('resize', function () { close(); });
+    window.addEventListener('scroll', function () {
+      if (box.classList.contains('open') && !window.matchMedia('(max-width:640px)').matches) close();
+    }, { passive: true });
   }
 
   /* ============ BOOT ============ */
@@ -734,6 +851,7 @@
     initForm();
     initMobileBar();
     initPlayer();
+    initDlMenu();
     runIntro(function () {
       document.body.classList.add('ready');
       initHero();

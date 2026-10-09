@@ -47,6 +47,23 @@ In `assets/js/data.js` ogni riga brano ora finisce con `'audio/xx-titolo.mp3', 1
 il file da riprodurre e il numero di download di partenza (puoi cambiarli a mano).
 Quando un visitatore scarica, il suo contatore sale di 1 (solo sul suo dispositivo).
 
+### Scarica: brano completo, solo base, solo testo (ottobre 2026)
+
+Cliccando **Scarica** (nelle card, nel "Brano del momento" e nel lettore in basso)
+si apre un menu con tre scelte. I file vanno messi così, **con lo stesso nome** del brano:
+
+| Scelta | Cartella | Esempio |
+|---|---|---|
+| Brano completo | `audio/` | `audio/22-l-esercito-del-selfie-remix.mp3` |
+| Solo base | `audio/basi/` | `audio/basi/22-l-esercito-del-selfie-remix.mp3` |
+| Solo testo | `audio/testi/` | `audio/testi/22-l-esercito-del-selfie-remix.pdf` |
+
+Se un file non c'è ancora, nel menu quella voce appare grigia con scritto
+"Non ancora disponibile": si possono caricare basi e testi un po' alla volta.
+Il tipo di file (es. testo in `.pdf` oppure `.mp3` con la sola voce) si cambia
+in `assets/js/data.js`, blocco `VERSIONI`. Il contatore download sale con
+qualunque delle tre scelte.
+
 ## 1. Immagini
 
 **Il sito è già completo: nessun riquadro vuoto.** Tutte le immagini di

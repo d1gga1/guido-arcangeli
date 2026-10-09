@@ -10,7 +10,27 @@ window.GA_DATA = (function () {
   /* -------- BRANI --------
      [ titolo, url pagina, file copertina, anno, genere, file audio, download ]
      - file audio: la canzone dentro la cartella audio/ (play + download)
-     - download: numero di partenza mostrato sul sito (modificabile)     */
+     - download: numero di partenza mostrato sul sito (modificabile)
+
+     VERSIONI DA SCARICARE (menu del pulsante "Scarica"):
+     - Brano completo -> il file audio qui sopra (cartella audio/)
+     - Solo base      -> stesso nome, dentro la cartella audio/basi/
+     - Solo testo     -> stesso nome, dentro la cartella audio/testi/
+       es. audio/22-l-esercito-del-selfie-remix.mp3
+           audio/basi/22-l-esercito-del-selfie-remix.mp3
+           audio/testi/22-l-esercito-del-selfie-remix.pdf
+     Se un file manca, nel menu quella voce appare come "in arrivo".
+     Il tipo di file di basi e testi si cambia in VERSIONI qui sotto
+     (es. testo: 'pdf' per le parole, 'mp3' per la sola voce).            */
+  var VERSIONI = {
+    base:  { cartella: 'audio/basi/',  estensione: 'mp3' },
+    testo: { cartella: 'audio/testi/', estensione: 'pdf' }
+  };
+  function versione(audio, v) {
+    if (!audio) return '';
+    var nome = audio.split('/').pop().replace(/\.[^.]+$/, '');
+    return v.cartella + nome + '.' + v.estensione;
+  }
   var T = [
     ['Embrace a Dream','/audio/embrace-a-dream/','2023/08/cover-ambrace-a-dream-copia-200x200.jpg',2023,'Dance','audio/01-embrace-a-dream.mp3',360],
     ['Se Stiamo Insieme (Cumbia o Kizomba Remix)','/audio/se-stiamo-insieme-cumbia-kizomba-remix/','2023/02/sestiamoinsieme-200x200.png',2023,'Cumbia','audio/02-se-stiamo-insieme-cumbia-o-kizomba-remix.mp3',463],
@@ -74,6 +94,8 @@ window.GA_DATA = (function () {
       year: t[3],
       genre: t[4],
       audio: t[5] || '',
+      base: versione(t[5], VERSIONI.base),
+      testo: versione(t[5], VERSIONI.testo),
       downloads: t[6] || 0
     };
   });
