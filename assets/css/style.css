@@ -1097,3 +1097,13 @@ body.has-player .footer{padding-bottom:calc(110px + env(safe-area-inset-bottom,0
   .footer-word{margin-top:28px}
 }
 body.has-player .footer{padding-bottom:calc(100px + env(safe-area-inset-bottom,0px))!important}
+
+/* ---------- Credit "Powered by Danova Tech" ---------- */
+.footer-credit{display:flex;justify-content:center;margin-top:26px}
+.powered{display:inline-flex;align-items:center;gap:14px;font-family:var(--f-mono);font-size:.6rem;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-faint);transition:color .35s var(--ease)}
+.powered-logo{display:inline-flex;align-items:center;padding:5px 10px;border:1px solid var(--line-2);border-radius:8px;background:#070d1d;transition:border-color .35s var(--ease),box-shadow .35s var(--ease),transform .35s var(--ease)}
+.powered-logo img{display:block;height:32px;width:auto}
+.powered:hover{color:var(--ink-dim)}
+.powered:hover .powered-logo{border-color:rgba(0,229,255,.45);box-shadow:0 0 18px rgba(0,229,255,.18);transform:translateY(-1px)}
+.powered:focus-visible{outline:none}
+.powered:focus-visible .powered-logo{border-color:var(--c)}
