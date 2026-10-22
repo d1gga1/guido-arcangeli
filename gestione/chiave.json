@@ -1,0 +1,8 @@
+{
+ "v": 1,
+ "kdf": "PBKDF2-SHA256",
+ "iter": 600000,
+ "salt": "LJsvwM6Uhp1MkrzQ0ZHwqA==",
+ "iv": "3zi8zfpBQ1/0QF+U",
+ "data": "xCpvW6LhmSAmbSpj+kRopQlTiBBrzuUYo+v8SJMH44th43bXSf1a0+AfaSlZTJJvlzzR191nFEC9YfEzqoh24UzMwklK0jgaNwOdUr+mplA+NWSm8HPGobzqYIHBLbeIfhgp/mUdi+afdUKC7nCsh6tDGyXGwNPYnXVuP8oXSRPMZWYfx/Cc9kKCiBC6tDxO1SoXBn58760ejUvJZmnT12Cl2gpyQyTZUQ=="
+}
