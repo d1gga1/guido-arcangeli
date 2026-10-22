@@ -353,6 +353,8 @@ body::after{
 .track-body h3{font-size:.9rem;font-weight:600;line-height:1.3;letter-spacing:-.01em}
 .track-body .meta{margin-top:.5em;font-family:var(--f-mono);font-size:.58rem;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-faint);display:flex;gap:.8em;flex-wrap:wrap}
 .track-body .meta i{font-style:normal;color:var(--c)}
+.track-body .authors{margin-top:.35em;font-size:.7rem;line-height:1.35;color:var(--ink-faint)}
+.feature-authors{margin-top:.6em;font-family:var(--f-mono);font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-faint)}
 
 /* ---------- Events ---------- */
 .events{border-top:1px solid var(--line)}

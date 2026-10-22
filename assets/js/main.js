@@ -308,10 +308,13 @@
     play: '<svg viewBox="0 0 24 24" aria-hidden="true"><path class="i-play" d="M8 5v14l11-7z"/><path class="i-pause" d="M7 5h4v14H7zM13 5h4v14h-4z"/></svg>',
     dl: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 4h2v9.2l3.6-3.6 1.4 1.4-6 6-6-6 1.4-1.4 3.6 3.6zM5 18h14v2H5z"/></svg>'
   };
+  var escH = function (x) { return String(x == null ? '' : x).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); };
+  // chiave del contatore download: il file audio (non la posizione, che cambia quando si aggiungono brani)
+  function dlKey(i) { var t = D.tracks[i]; return 'ga_dl_' + ((t && t.audio) || i); }
   var fmtN = function (n) { return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, '.'); };
   function dlCount(i) {
     var t = D.tracks[i], extra = 0;
-    try { extra = parseInt(localStorage.getItem('ga_dl_' + i) || '0', 10) || 0; } catch (e) {}
+    try { extra = parseInt(localStorage.getItem(dlKey(i)) || '0', 10) || 0; } catch (e) {}
     return (t.downloads || 0) + extra;
   }
   function dlName(t, suffix, url) {
@@ -323,14 +326,15 @@
     return '' +
       '<article class="track" data-tilt data-rev="up" data-i="' + i + '">' +
         '<div class="track-art">' +
-          '<div class="fallback" style="display:none">' + t.title.split('(')[0].trim() + '</div>' +
+          '<div class="fallback" style="display:none">' + escH(t.title.split('(')[0].trim()) + '</div>' +
           imgTag(t.cover, t.coverRemote, t.title) +
           (has ? '<button class="play" type="button" data-play="' + i + '" aria-label="Ascolta ' + t.title.replace(/"/g, '&quot;') + '">' + ICO.play + '</button>' : '') +
           '<span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span>' +
         '</div>' +
         '<div class="track-body">' +
-          '<h3>' + t.title + '</h3>' +
-          '<div class="meta"><i>' + t.genre + '</i><span>' + t.year + '</span></div>' +
+          '<h3>' + escH(t.title) + '</h3>' +
+          (t.authors ? '<p class="authors">' + escH(t.authors) + '</p>' : '') +
+          '<div class="meta"><i>' + escH(t.genre) + '</i><span>' + escH(t.year) + '</span></div>' +
           (has ?
           '<div class="track-actions">' +
             '<button class="ta-play" type="button" data-play="' + i + '">' + ICO.play + '<span class="lbl">Ascolta</span></button>' +
@@ -340,7 +344,23 @@
         '</div>' +
       '</article>';
   }
+  /* "Brano del momento" in home: scelto dal pannello di gestione */
+  function renderFeature() {
+    var box = $('#feature'); if (!box || !D.tracks || !D.tracks.length) return;
+    var i = D.featured || 0, t = D.tracks[i];
+    var img = $('.feature-art img', box);
+    if (img) { img.dataset.tried = ''; img.dataset.remote = t.coverRemote || ''; img.alt = t.title; img.src = t.cover; }
+    var m = t.title.match(/^(.*?)\s*(\(.*\))\s*$/);
+    $('.feature-title', box).innerHTML = m ? escH(m[1]) + ' <span class="stroke">' + escH(m[2]) + '</span>' : escH(t.title);
+    var au = $('.feature-authors', box);
+    if (au) { au.textContent = t.authors ? 'di ' + t.authors : ''; au.style.display = t.authors ? '' : 'none'; }
+    if (D.featuredText) $('.feature-lead', box).textContent = D.featuredText;
+    $$('[data-play],[data-dl],[data-dlc]', box).forEach(function (el) {
+      ['data-play', 'data-dl', 'data-dlc'].forEach(function (a) { if (el.hasAttribute(a)) el.setAttribute(a, i); });
+    });
+  }
   function renderTracks() {
+    renderFeature();
     var host = $('#tracks-featured');
     if (host && D.tracks) {
       host.innerHTML = D.tracks.slice(0, 10).map(function (t, i) { return trackCard(t, i); }).join('');
@@ -355,6 +375,16 @@
   }
 
   function initArchiveFilters() {
+    // generi nuovi aggiunti dal pannello: compare il filtro quando hanno almeno 2 brani
+    var wrap = $('.chips');
+    if (wrap) {
+      var have = {}, cnt = {};
+      $$('.chip[data-filter]', wrap).forEach(function (c) { have[c.getAttribute('data-filter')] = 1; });
+      D.tracks.forEach(function (t) { if (t.genre) cnt[t.genre] = (cnt[t.genre] || 0) + 1; });
+      Object.keys(cnt).forEach(function (g) {
+        if (!have[g] && cnt[g] >= 2) wrap.insertAdjacentHTML('beforeend', '<button class="chip" data-filter="' + escH(g) + '" type="button">' + escH(g) + '</button>');
+      });
+    }
     var chips = $$('.chip[data-filter]'), input = $('#track-search'), count = $('#track-count');
     var cards = $$('#tracks-all .track');
     var data = D.tracks;
@@ -364,7 +394,7 @@
       cards.forEach(function (c, i) {
         var t = data[i];
         var okG = cur === 'all' || t.genre === cur;
-        var okQ = !q || (t.title + ' ' + t.genre + ' ' + t.year).toLowerCase().indexOf(q) > -1;
+        var okQ = !q || (t.title + ' ' + (t.authors || '') + ' ' + t.genre + ' ' + t.year).toLowerCase().indexOf(q) > -1;
         var show = okG && okQ;
         c.style.display = show ? '' : 'none';
         if (show) n++;
@@ -709,7 +739,7 @@
   /* ============ 22. MENU "SCARICA": completo / base / testo ============ */
   function bumpDl(i) {
     // il download parte dal link; qui aggiorniamo il contatore di questo visitatore
-    var k = 'ga_dl_' + i;
+    var k = dlKey(i);
     try { localStorage.setItem(k, String((parseInt(localStorage.getItem(k) || '0', 10) || 0) + 1)); } catch (err) {}
     $$('[data-dlc="' + i + '"]').forEach(function (el) {
       el.textContent = fmtN(dlCount(i));
@@ -835,6 +865,16 @@
     }, { passive: true });
   }
 
+  /* accesso discreto all'area riservata: 5 tocchi veloci sul "©" in fondo alla pagina */
+  function initSecret() {
+    var el = $('.footer-bot span'); if (!el) return;
+    var n = 0, tm = null;
+    el.addEventListener('click', function () {
+      n++; clearTimeout(tm); tm = setTimeout(function () { n = 0; }, 1500);
+      if (n >= 5) location.href = 'gestione/';
+    });
+  }
+
   /* ============ BOOT ============ */
   function boot() {
     initSmooth();
@@ -844,6 +884,7 @@
     renderVenues();
     renderVideos();
     renderSocial();
+    initSecret();
     initMisc();
     initNav();
     initMarquee();

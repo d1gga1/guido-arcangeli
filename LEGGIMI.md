@@ -1,5 +1,41 @@
 # Sito Guido Arcangeli DJ — nuova versione
 
+## ★ Area riservata: Guido aggiorna il sito da solo (ottobre 2026)
+
+Indirizzo: **guidoarcangeli.com/gestione/** — non è collegato da nessuna parte
+e Google non lo indicizza. In alternativa: **5 tocchi veloci sul "©"** in fondo
+a qualsiasi pagina.
+
+Da lì Guido, con nome utente e password, può:
+- **aggiungere, modificare, eliminare e riordinare i brani** (titolo, autori,
+  genere, anno, copertina, brano completo, solo base, video YouTube)
+- **scrivere il testo** di una canzone: il PDF scaricabile viene creato da solo
+  (oppure caricare un PDF/Word già pronto)
+- scegliere il **Brano del momento** della home e la sua frase
+- gestire **serate** e **video**
+
+Ogni "Salva e pubblica" va direttamente online (1–2 minuti). Non serve il computer di Devid.
+
+### Configurazione — una volta sola (la fa Devid)
+1. Pubblica il sito come sempre: `bash pubblica.sh`
+2. Su GitHub crea un token: <https://github.com/settings/personal-access-tokens/new>
+   — Repository access: solo `guido-arcangeli` — Permissions → **Contents: Read and write**
+   — scadenza la più lunga possibile
+3. Apri **guidoarcangeli.com/gestione/**: la prima volta compare "Collega il sito".
+   Incolla il token, scegli **nome utente e password per Guido** → "Salva configurazione".
+
+Il token viene salvato in `gestione/chiave.json` **cifrato** (AES-256, chiave ricavata
+da nome utente + password con 600.000 passaggi PBKDF2): senza credenziali è inutile.
+Usa una password lunga. Guido può cambiarla da "Account". Se il token scade o la
+password si perde: "Configurazione" nella schermata di accesso e si rifà il punto 3.
+
+### Come convivono il pannello e `pubblica.sh`
+I brani, le serate e i video ora stanno in **`assets/js/contenuti.js`** (non più in
+`data.js`). `pubblica.sh` prima di pubblicare **scarica le modifiche fatte da Guido**
+(contenuti, file caricati, file eliminati), quindi non le sovrascrive mai.
+Se `contenuti.js` è stato cambiato sia online sia sul computer, lo script si ferma e
+spiega cosa fare.
+
 ## 0. Prototipi di navigazione (nuovo)
 
 Apri **`prototipi.html`** per confrontare quattro home con impianti di
@@ -119,14 +155,14 @@ assets/js/main.js      animazioni, scroll, filtri, form
 
 Apri **`assets/js/data.js`** con un editor di testo. Trovi tre blocchi:
 
-**Serate** — aggiungi o togli righe, la data va in formato `AAAA-MM-GG`.
+**Serate** — dal pannello `/gestione/` oppure in `assets/js/contenuti.js` (blocco `serate`), data in formato `AAAA-MM-GG`.
 Il sito mostra solo le date future e le ordina da solo.
 
 ```js
 { date:'2026-11-08', venue:'Nome del locale', city:'Città (PR)', note:'Dalle 22:00' },
 ```
 
-**Brani** — ogni riga è `[ titolo, link, copertina, anno, genere ]`.
+**Brani** — ora si gestiscono dal pannello `/gestione/` (o a mano in `assets/js/contenuti.js`).
 
 **Locali**, **video YouTube** (basta l'ID del video) e **contatti**: stessa logica.
 
