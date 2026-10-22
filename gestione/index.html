@@ -278,6 +278,9 @@ main{max-width:1100px;margin:0 auto;padding:22px 16px 120px}
 
 var CONTENT_PATH = 'assets/js/contenuti.js';
 var KEY_PATH = 'gestione/chiave.json';
+var MODEL_PATH = 'assets/modello-brano.html';   // modello delle pagine brano/NOME.html
+var SITE = 'https://www.guidoarcangeli.com/';
+var MODELLO = null;
 var ITER = 600000;
 var MAX_FILE = 95 * 1024 * 1024;
 var GENERI = ['Ballabile','Cumbia','Dance','Remix','Kizomba','Latin','Bachata','Reggaeton','Club','Liscio','Lento','Pop'];
@@ -394,6 +397,60 @@ function loadContent() {
     });
 }
 
+/* ---------------- pagine dei brani (brano/NOME.html) ----------------
+   Una pagina per brano, con la copertina nell'anteprima quando lo si condivide
+   su WhatsApp/Facebook/Telegram. Rifatte a ogni salvataggio: vanno su GitHub
+   solo quelle cambiate. STESSE REGOLE di genera-pagine-brani.py e main.js. */
+function slugifyP(x) {
+  return String(x || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 80);
+}
+function paginaBrano(b, slug) {
+  var t = b.titolo || '';
+  var info = [b.genere, b.anno].filter(function (v) { return v; }).join(' · ');
+  var descr = 'Ascolta e scarica «' + t + '» di Guido Arcangeli' + (info ? ' (' + info.replace(/ · /g, ', ') + ')' : '') + ': brano completo, base e testo.';
+  var cop = b.copertina || '', img;
+  if (/^https?:\/\//.test(cop)) img = cop; else if (cop) img = SITE + cop;
+  else if (b.copertinaWeb) img = b.copertinaWeb; else img = SITE + 'assets/img/og.jpg';
+  var v = {
+    TITOLO: esc(t), DESCRIZIONE: esc(descr), IMMAGINE: esc(encodeURI(img)),
+    COPERTINA: esc(cop || 'assets/img/vinyl.jpg'), URL: esc(SITE + 'brano/' + slug + '.html'),
+    SLUG: slug, AUTORI: esc(b.autori ? 'di ' + b.autori : ''), INFO: esc(info ? 'Brano · ' + info : 'Brano')
+  };
+  return MODELLO.replace(/\{\{([A-Z]+)\}\}/g, function (m, k) { return k in v ? v[k] : m; });
+}
+function pagineBrani() {
+  var out = {}, used = {};
+  (C.brani || []).forEach(function (b) {
+    var base = slugifyP(String(b.audio || '').split('/').pop().replace(/\.[a-z0-9]+$/i, '')) || slugifyP(b.titolo) || 'brano';
+    var s = base, n = 2; while (used[s]) s = base + '-' + (n++);
+    used[s] = 1; out['brano/' + s + '.html'] = paginaBrano(b, s);
+  });
+  return out;
+}
+function gitSha(text) {   // lo "sha" che GitHub darebbe al file: se e' uguale, la pagina non e' cambiata
+  var body = new TextEncoder().encode(text), head = new TextEncoder().encode('blob ' + body.length + '\0');
+  var all = new Uint8Array(head.length + body.length); all.set(head); all.set(body, head.length);
+  return crypto.subtle.digest('SHA-1', all).then(function (h) {
+    return Array.prototype.map.call(new Uint8Array(h), function (x) { return ('0' + x.toString(16)).slice(-2); }).join('');
+  });
+}
+function pageChanges() {
+  if (!MODELLO) return Promise.resolve({ add: [], del: [], sha: {} });
+  var pages = pagineBrani(), paths = Object.keys(pages), sha = {};
+  return Promise.all(paths.map(function (p) { return gitSha(pages[p]).then(function (h) { sha[p] = h; }); })).then(function () {
+    return {
+      add: paths.filter(function (p) { return TREE[p] !== sha[p]; }).map(function (p) { return { path: p, mode: '100644', type: 'blob', content: pages[p] }; }),
+      del: Object.keys(TREE).filter(function (p) { return /^brano\/[^/]+\.html$/.test(p) && !(p in pages); }),
+      sha: sha
+    };
+  });
+}
+function loadModel() {
+  return gh('GET', '/contents/' + MODEL_PATH + '?ref=' + encodeURIComponent(S.branch) + '&t=' + Date.now(), null, { accept: 'application/vnd.github.raw', text: true })
+    .then(function (txt) { MODELLO = txt; }, function () { MODELLO = null; });
+}
+
 /* Un salvataggio = un commit con tutti i file insieme.
    files: [{ path, b64 }]  — del: [path]  — content: true per riscrivere contenuti.js */
 var queue = Promise.resolve();
@@ -415,14 +472,20 @@ function doPublish(msg, files, del, label) {
         .then(function (sha) { done += f.b64.length; entries.push({ path: f.path, mode: '100644', type: 'blob', sha: sha }); });
     });
   });
+  var PG = null;
   function attempt(n) {
     var refSha;
-    return gh('GET', '/git/ref/heads/' + encodeURIComponent(S.branch)).then(function (ref) {
+    return pageChanges().then(function (pg) {
+      PG = pg;
+      return gh('GET', '/git/ref/heads/' + encodeURIComponent(S.branch));
+    }).then(function (ref) {
       refSha = ref.object.sha;
       return gh('GET', '/git/commits/' + refSha);
     }).then(function (cm) {
       var tree = entries.slice();
       tree.push({ path: CONTENT_PATH, mode: '100644', type: 'blob', content: serializeContent(C) });
+      PG.add.forEach(function (e) { tree.push(e); });
+      PG.del.forEach(function (d) { tree.push({ path: d, mode: '100644', type: 'blob', sha: null }); });
       del.forEach(function (d) {
         if (TREE[d] && !files.some(function (f) { return f.path === d; })) tree.push({ path: d, mode: '100644', type: 'blob', sha: null });
       });
@@ -439,6 +502,7 @@ function doPublish(msg, files, del, label) {
   return p.then(function () { return attempt(0); }).then(function () {
     files.forEach(function (f) { TREE[f.path] = 'x'; });
     del.forEach(function (d) { if (!files.some(function (f) { return f.path === d; })) delete TREE[d]; });
+    if (PG) { Object.keys(PG.sha).forEach(function (p) { TREE[p] = PG.sha[p]; }); PG.del.forEach(function (d) { delete TREE[d]; }); }
     hideBusy(); setStatus('ok', 'Tutto pubblicato');
     toast('Salvato. Sul sito tra 1–2 minuti.', 'ok');
   }).catch(function (e) {
@@ -580,7 +644,7 @@ $('#b-account').addEventListener('click', function () {
 
 function enterApp() {
   show('app'); $('.tab[data-tab=brani]').click(); busy('Carico i contenuti…', '', null);
-  return Promise.all([loadContent(), loadTree()]).then(function () {
+  return Promise.all([loadContent(), loadTree(), loadModel()]).then(function () {
     hideBusy(); renderAll();
   }).catch(function (e) {
     hideBusy();

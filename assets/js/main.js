@@ -321,6 +321,111 @@
     var ext = ((url || t.audio || '').split('?')[0].match(/\.([a-z0-9]+)$/i) || [0, 'mp3'])[1];
     return 'Guido Arcangeli - ' + t.title.replace(/[\\/:*?"<>|]/g, '') + (suffix ? ' (' + suffix + ')' : '') + '.' + ext;
   }
+
+  /* ============ CONDIVIDI ============ */
+  var SH_ICO = {
+    wa: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.5-.3z"/></svg>',
+    fb: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13.5 22v-8h2.7l.4-3.2h-3.1V8.8c0-.9.3-1.5 1.6-1.5h1.7V4.4a22 22 0 0 0-2.5-.1c-2.4 0-4.1 1.5-4.1 4.2v2.3H7.5V14h2.7v8z"/></svg>',
+    ig: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 7.3a4.7 4.7 0 1 0 0 9.4 4.7 4.7 0 0 0 0-9.4zm0 7.7a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm6-7.9a1.1 1.1 0 1 1-2.2 0 1.1 1.1 0 0 1 2.2 0zM21.9 8.2c0-1.6-.4-3-1.6-4.2S17.5 2.1 15.9 2c-1.6-.1-6.3-.1-7.9 0-1.6.1-3 .4-4.2 1.6S2.1 6.5 2 8.1c-.1 1.6-.1 6.3 0 7.9.1 1.6.4 3 1.6 4.2s2.6 1.5 4.2 1.6c1.6.1 6.3.1 7.9 0 1.6-.1 3-.4 4.2-1.6s1.5-2.6 1.6-4.2c.1-1.6.1-6.2 0-7.8zm-2.1 9.5a3.2 3.2 0 0 1-1.8 1.8c-1.3.5-4.3.4-5.7.4s-4.4.1-5.7-.4a3.2 3.2 0 0 1-1.8-1.8c-.5-1.3-.4-4.3-.4-5.7s-.1-4.4.4-5.7A3.2 3.2 0 0 1 6.6 4.5c1.3-.5 4.3-.4 5.7-.4s4.4-.1 5.7.4a3.2 3.2 0 0 1 1.8 1.8c.5 1.3.4 4.3.4 5.7s.1 4.4-.4 5.7z"/></svg>',
+    tg: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.4 3.6 2.9 10.7c-1.3.5-1.2 1.2-.2 1.5l4.7 1.5 1.8 5.6c.2.6.4.8.9.8.4 0 .6-.2.9-.4l2.3-2.2 4.7 3.5c.9.5 1.5.2 1.7-.8l3.1-14.6c.3-1.3-.5-1.9-1.4-1.5zM9.6 14.1l8.8-5.6c.4-.3.8-.1.5.2l-7.5 6.8-.3 3.1z"/></svg>',
+    x:  '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.8 3h3.1l-6.8 7.7L22 21h-6.2l-4.9-6.4L5.3 21H2.2l7.2-8.3L1.8 3h6.4l4.4 5.8zm-1.1 16.2h1.7L7.4 4.7H5.6z"/></svg>',
+    link: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.6 13.4a1 1 0 0 1 0-1.4l3-3a1 1 0 1 1 1.4 1.4l-3 3a1 1 0 0 1-1.4 0zm-2.1 6.1a4.5 4.5 0 0 1-3.2-7.7l2.1-2.1a1 1 0 1 1 1.4 1.4l-2.1 2.1a2.5 2.5 0 0 0 3.5 3.5l2.1-2.1a1 1 0 1 1 1.4 1.4l-2.1 2.1a4.5 4.5 0 0 1-3.1 1.4zm7.4-5.6a1 1 0 0 1-.7-1.7l2.1-2.1a2.5 2.5 0 0 0-3.5-3.5l-2.1 2.1a1 1 0 1 1-1.4-1.4l2.1-2.1a4.5 4.5 0 0 1 6.4 6.4l-2.1 2.1a1 1 0 0 1-.8.2z"/></svg>',
+    more: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 16a3 3 0 0 0-2.4 1.2l-6.8-3.4a3 3 0 0 0 0-1.6l6.8-3.4A3 3 0 1 0 15 7l-6.8 3.4a3 3 0 1 0 0 3.2L15 17a3 3 0 1 0 3-1z"/></svg>'
+  };
+  var canNativeShare = !!(navigator.share) && matchMedia('(hover:none),(pointer:coarse)').matches;
+  /* nome della pagina del brano (brano/NOME.html): il nome del file audio, oppure il titolo.
+     STESSA REGOLA in genera-pagine-brani.py e nel pannello /gestione/ */
+  function slugify(x) {
+    return String(x || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 80);
+  }
+  var SLUGS = null;
+  function trackSlug(i) {
+    if (!SLUGS) {
+      SLUGS = []; var used = {};
+      (D.tracks || []).forEach(function (t) {
+        var b = slugify((t.audio || '').split('/').pop().replace(/\.[a-z0-9]+$/i, '')) || slugify(t.title) || 'brano';
+        var s = b, n = 2; while (used[s]) s = b + '-' + (n++);
+        used[s] = 1; SLUGS.push(s);
+      });
+    }
+    return SLUGS[i];
+  }
+  var SITE = 'https://www.guidoarcangeli.com/';
+  function trackUrl(i) {
+    var path = 'brano/' + trackSlug(i) + '.html';
+    return /^https?:$/.test(location.protocol) ? new URL(path, document.baseURI).href : SITE + path;
+  }
+  function shareText(t) { return '🎵 Ascolta «' + t.title + '» di Guido Arcangeli'; }
+  function shareRow(i) {
+    var t = D.tracks[i], n = t.title.replace(/"/g, '&quot;');
+    var b = function (k, label, cls) {
+      return '<button type="button" class="sh-b sh-' + k + (cls ? ' ' + cls : '') + '" data-sh="' + k + '" data-shi="' + i + '" aria-label="' + label + ': ' + n + '" title="' + label + '">' + SH_ICO[k] + '</button>';
+    };
+    return '<div class="share" role="group" aria-label="Condividi">' +
+      '<span class="sh-k">Condividi</span>' +
+      '<div class="sh-row">' +
+        b('wa', 'Condividi su WhatsApp') + b('fb', 'Condividi su Facebook') + b('ig', 'Condividi su Instagram') +
+        b('tg', 'Condividi su Telegram', 'sh-xtra') + b('x', 'Condividi su X', 'sh-xtra') +
+        (canNativeShare ? b('more', 'Altre app') : b('link', 'Copia il link')) +
+      '</div></div>';
+  }
+  function shToast(msg) {
+    var el = $('.sh-toast');
+    if (!el) { el = document.createElement('div'); el.className = 'sh-toast'; el.setAttribute('role', 'status'); document.body.appendChild(el); }
+    el.textContent = msg; el.classList.remove('on'); void el.offsetWidth; el.classList.add('on');
+    clearTimeout(el._t); el._t = setTimeout(function () { el.classList.remove('on'); }, 3600);
+  }
+  function copyText(txt, ok) {
+    var done = function () { shToast(ok); };
+    if (navigator.clipboard && window.isSecureContext) { navigator.clipboard.writeText(txt).then(done, fallback); }
+    else fallback();
+    function fallback() {
+      var ta = document.createElement('textarea'); ta.value = txt; ta.setAttribute('readonly', '');
+      ta.style.cssText = 'position:fixed;top:0;left:0;opacity:0'; document.body.appendChild(ta); ta.select();
+      try { document.execCommand('copy'); done(); } catch (e) { window.prompt('Copia il link:', txt); }
+      ta.remove();
+    }
+  }
+  function doShare(k, i) {
+    var t = D.tracks[i]; if (!t) return;
+    var url = trackUrl(i), txt = shareText(t), eu = encodeURIComponent(url), et = encodeURIComponent(txt);
+    var pop = function (u) { window.open(u, '_blank', 'noopener,width=620,height=560'); };
+    if (k === 'wa') pop('https://wa.me/?text=' + encodeURIComponent(txt + ' → ' + url));
+    else if (k === 'fb') pop('https://www.facebook.com/sharer/sharer.php?u=' + eu);
+    else if (k === 'tg') pop('https://t.me/share/url?url=' + eu + '&text=' + et);
+    else if (k === 'x') pop('https://twitter.com/intent/tweet?text=' + et + '&url=' + eu);
+    else if (k === 'link') copyText(url, 'Link copiato!');
+    else if (k === 'ig' || k === 'more') {
+      // Instagram non ha un link di condivisione dal web: sul telefono si apre il menu
+      // "Condividi" del sistema (dove c'e' Instagram), al computer si copia il link
+      if (navigator.share) navigator.share({ title: t.title, text: txt, url: url }).catch(function () {});
+      else copyText(txt + ' → ' + url, 'Link copiato! Incollalo in una storia o in un messaggio su Instagram');
+    }
+  }
+  function initShare() {
+    document.addEventListener('click', function (e) {
+      var b = e.target.closest('[data-sh]'); if (!b) return;
+      e.preventDefault(); doShare(b.getAttribute('data-sh'), +b.getAttribute('data-shi'));
+    });
+  }
+  // arrivo da un link condiviso: archivio.html#brano-xxx → porta al brano e lo evidenzia
+  function goSharedTrack() {
+    var m = location.hash.match(/^#brano-(.+)$/); if (!m || !D.tracks) return;
+    var slug = decodeURIComponent(m[1]), i = -1;
+    D.tracks.forEach(function (t, k) {
+      var old = (t.audio || '').split('/').pop().replace(/\.[a-z0-9]+$/i, '');
+      if (i < 0 && (trackSlug(k) === slug || old === slug)) i = k;
+    });
+    var card = i >= 0 && $('#tracks-all .track[data-i="' + i + '"]'); if (!card) return;
+    card.classList.add('in');
+    setTimeout(function () {
+      var r = card.getBoundingClientRect();
+      scrollTo(r.top + (SS.on ? SS.current : window.scrollY) - Math.max(80, (window.innerHeight - r.height) / 2));
+      card.classList.add('is-shared');
+      setTimeout(function () { card.classList.remove('is-shared'); }, 4200);
+    }, 250);
+  }
   function trackCard(t, i) {
     var has = !!t.audio;
     return '' +
@@ -341,29 +446,41 @@
             '<button class="ta-dl" type="button" data-dl="' + i + '" aria-haspopup="dialog" aria-label="Scarica ' + t.title.replace(/"/g, '&quot;') + '">' + ICO.dl + '<span class="lbl">Scarica</span></button>' +
           '</div>' +
           '<p class="dl-count"><b data-dlc="' + i + '">' + fmtN(dlCount(i)) + '</b> download</p>' : '') +
+          shareRow(i) +
         '</div>' +
       '</article>';
   }
   /* "Brano del momento" in home: scelto dal pannello di gestione */
   function renderFeature() {
     var box = $('#feature'); if (!box || !D.tracks || !D.tracks.length) return;
-    var i = D.featured || 0, t = D.tracks[i];
+    var i = pageTrack(), t;
+    if (i === -2) { location.replace('archivio.html'); return; }   // brano eliminato
+    if (i < 0) i = D.featured || 0;
+    t = D.tracks[i];
     var img = $('.feature-art img', box);
     if (img) { img.dataset.tried = ''; img.dataset.remote = t.coverRemote || ''; img.alt = t.title; img.src = t.cover; }
     var m = t.title.match(/^(.*?)\s*(\(.*\))\s*$/);
     $('.feature-title', box).innerHTML = m ? escH(m[1]) + ' <span class="stroke">' + escH(m[2]) + '</span>' : escH(t.title);
     var au = $('.feature-authors', box);
     if (au) { au.textContent = t.authors ? 'di ' + t.authors : ''; au.style.display = t.authors ? '' : 'none'; }
-    if (D.featuredText) $('.feature-lead', box).textContent = D.featuredText;
+    if (D.featuredText && pageTrack() < 0) $('.feature-lead', box).textContent = D.featuredText;
+    var sh = $('.feature-share', box); if (sh) sh.innerHTML = shareRow(i);
     $$('[data-play],[data-dl],[data-dlc]', box).forEach(function (el) {
       ['data-play', 'data-dl', 'data-dlc'].forEach(function (a) { if (el.hasAttribute(a)) el.setAttribute(a, i); });
     });
+  }
+  /* pagina di un singolo brano (brano/xxx.html): indice del brano, -1 se non e' quella pagina, -2 se non esiste piu' */
+  function pageTrack() {
+    var s = document.body.getAttribute('data-brano'); if (!s || !D.tracks) return -1;
+    for (var k = 0; k < D.tracks.length; k++) if (trackSlug(k) === s) return k;
+    return -2;
   }
   function renderTracks() {
     renderFeature();
     var host = $('#tracks-featured');
     if (host && D.tracks) {
-      host.innerHTML = D.tracks.slice(0, 10).map(function (t, i) { return trackCard(t, i); }).join('');
+      var skip = pageTrack();
+      host.innerHTML = D.tracks.map(function (t, i) { return i === skip ? '' : trackCard(t, i); }).filter(Boolean).slice(0, 10).join('');
       if (!$('.swipe-hint', host.parentNode)) host.insertAdjacentHTML('afterend', '<p class="swipe-hint" aria-hidden="true"><i></i>Scorri</p>');
     }
     var all = $('#tracks-all');
@@ -898,11 +1015,14 @@
     initMobileBar();
     initPlayer();
     initDlMenu();
+    initShare();
     runIntro(function () {
       document.body.classList.add('ready');
       initHero();
       initReveal();
+      goSharedTrack();
     });
+    window.addEventListener('hashchange', goSharedTrack);
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);

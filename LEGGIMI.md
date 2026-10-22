@@ -36,6 +36,33 @@ I brani, le serate e i video ora stanno in **`assets/js/contenuti.js`** (non pi�
 Se `contenuti.js` è stato cambiato sia online sia sul computer, lo script si ferma e
 spiega cosa fare.
 
+## 0quater. Condividi i brani (ottobre 2026)
+
+Sotto ogni brano (archivio, home e "Brano del momento") c'è la riga **Condividi**:
+WhatsApp, Facebook, Instagram, Telegram, X e "copia link".
+
+- Il link porta a `archivio.html#brano-NOME-FILE` (es. `#brano-01-embrace-a-dream`):
+  chi lo apre arriva direttamente su quel brano, evidenziato.
+- **Instagram** non permette di condividere link dal web: sul telefono si apre il menu
+  "Condividi" del sistema (dove c'è Instagram), al computer il link viene copiato.
+- Sul telefono Telegram e X sono dentro il tasto "altre app" (menu di sistema).
+- Copia dei file prima della modifica: `_tmp/backup_prima_condivisione/`.
+
+### Pagina di ogni brano (anteprima con la copertina)
+Ogni brano ha la sua pagina **`brano/NOME.html`** (es. `brano/01-embrace-a-dream.html`):
+è il link che viene condiviso, e su WhatsApp/Facebook/Telegram l'anteprima mostra
+**copertina, titolo e descrizione** del brano. Dentro la pagina si ascolta, si scarica
+e si ricondivide.
+
+- Le pagine **si creano da sole**: dal pannello `/gestione/` a ogni "Salva e pubblica",
+  e da `pubblica.sh` (con `genera-pagine-brani.py`). Non vanno modificate a mano.
+- L'aspetto di tutte le pagine è in **`assets/modello-brano.html`**.
+- NOME = nome del file audio del brano: se si cambia il file audio, cambia il link.
+- I vecchi link `archivio.html#brano-…` continuano a funzionare.
+- Facebook tiene in memoria le anteprime: se cambi copertina a un brano già condiviso,
+  aggiorna l'anteprima da <https://developers.facebook.com/tools/debug/>.
+- Copia dei file prima della modifica: `_tmp/backup_prima_pagine_brani/`.
+
 ## 0. Prototipi di navigazione (nuovo)
 
 Apri **`prototipi.html`** per confrontare quattro home con impianti di

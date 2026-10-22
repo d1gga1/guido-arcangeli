@@ -1157,3 +1157,45 @@ body.has-player .footer{padding-bottom:calc(100px + env(safe-area-inset-bottom,0
   .dlm-tx b{font-size:1rem}
 }
 @media (prefers-reduced-motion:reduce){.dlm,.dlm.open{transition:none}}
+
+/* ---------- Condividi (sotto ogni brano) ---------- */
+.share{margin-top:12px;padding-top:11px;border-top:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.sh-k{font-family:var(--f-mono);font-size:.54rem;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-faint)}
+.sh-row{display:flex;gap:5px}
+.sh-b{width:30px;height:30px;display:grid;place-items:center;border-radius:50%;border:1px solid var(--line-2);background:none;color:var(--ink-dim);cursor:pointer;padding:0;transition:color .25s,background .25s,border-color .25s,transform .25s var(--ease)}
+.sh-b svg{width:14px;height:14px;fill:currentColor}
+.sh-b:hover,.sh-b:focus-visible{color:#fff;transform:translateY(-2px)}
+.sh-wa:hover,.sh-wa:focus-visible{background:#25d366;border-color:#25d366}
+.sh-fb:hover,.sh-fb:focus-visible{background:#1877f2;border-color:#1877f2}
+.sh-ig:hover,.sh-ig:focus-visible{background:linear-gradient(45deg,#f9a825,#e1306c 50%,#833ab4);border-color:#e1306c}
+.sh-tg:hover,.sh-tg:focus-visible{background:#229ed9;border-color:#229ed9}
+.sh-x:hover,.sh-x:focus-visible{background:#000;border-color:#fff}
+.sh-link:hover,.sh-link:focus-visible,.sh-more:hover,.sh-more:focus-visible{background:rgba(0,229,255,.14);border-color:var(--c);color:var(--c)}
+.feature-share .share{margin-top:18px;max-width:420px;justify-content:flex-start;gap:14px}
+.feature-share .sh-b{width:38px;height:38px}
+.feature-share .sh-b svg{width:17px;height:17px}
+@media (hover:none){
+  .sh-b:hover{transform:none;background:none;border-color:var(--line-2);color:var(--ink-dim)}
+  .sh-b:active{transform:scale(.92)}
+}
+/* card strette (telefono, 2 colonne): Telegram e X restano nel tasto "altre app" */
+@media (max-width:760px){
+  .track .sh-xtra{display:none}
+  .track .share{justify-content:center}
+  .track .sh-k{display:none}
+  .sh-row{gap:6px}
+  .sh-b{width:32px;height:32px}
+}
+.track.is-shared{border-color:var(--c);animation:shPulse 1.4s var(--ease) 3}
+@keyframes shPulse{0%,100%{box-shadow:0 0 0 1px rgba(0,229,255,.3),0 0 0 0 rgba(0,229,255,.5)}50%{box-shadow:0 0 0 1px rgba(0,229,255,.6),0 0 0 12px rgba(0,229,255,0)}}
+.sh-toast{position:fixed;left:50%;bottom:calc(96px + env(safe-area-inset-bottom,0px));z-index:995;transform:translate(-50%,12px);max-width:calc(100vw - 32px);
+  padding:12px 18px;border-radius:999px;border:1px solid rgba(0,229,255,.45);background:rgba(12,9,26,.97);color:var(--ink);
+  font-family:var(--f-mono);font-size:.66rem;letter-spacing:.08em;text-align:center;opacity:0;pointer-events:none;transition:opacity .25s,transform .35s var(--ease)}
+.sh-toast.on{opacity:1;transform:translate(-50%,0)}
+@media (prefers-reduced-motion:reduce){.track.is-shared{animation:none}.sh-toast{transition:none}}
+
+/* ---------- Pagina del singolo brano (brano/*.html) ---------- */
+.brano-hero{padding-bottom:clamp(30px,5vw,70px)}
+.brano-back{display:inline-block;font-family:var(--f-mono);font-size:.64rem;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-dim);border-bottom:1px solid var(--line-2);padding-bottom:3px;transition:color .3s,border-color .3s}
+.brano-back:hover{color:var(--c);border-color:var(--c)}
+.brano-hero .feature-title{font-size:clamp(1.8rem,4.4vw,3.4rem)}
