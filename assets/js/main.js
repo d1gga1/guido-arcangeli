@@ -306,7 +306,8 @@
   /* ============ 13. RENDER: TRACKS ============ */
   var ICO = {
     play: '<svg viewBox="0 0 24 24" aria-hidden="true"><path class="i-play" d="M8 5v14l11-7z"/><path class="i-pause" d="M7 5h4v14H7zM13 5h4v14h-4z"/></svg>',
-    dl: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 4h2v9.2l3.6-3.6 1.4 1.4-6 6-6-6 1.4-1.4 3.6 3.6zM5 18h14v2H5z"/></svg>'
+    dl: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 4h2v9.2l3.6-3.6 1.4 1.4-6 6-6-6 1.4-1.4 3.6 3.6zM5 18h14v2H5z"/></svg>',
+    video: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h12a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1zm14 4.5 5-3v9l-5-3z"/></svg>'
   };
   var escH = function (x) { return String(x == null ? '' : x).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); };
   // chiave del contatore download: il file audio (non la posizione, che cambia quando si aggiungono brani)
@@ -444,6 +445,7 @@
           '<div class="track-actions">' +
             '<button class="ta-play" type="button" data-play="' + i + '">' + ICO.play + '<span class="lbl">Ascolta</span></button>' +
             '<button class="ta-dl" type="button" data-dl="' + i + '" aria-haspopup="dialog" aria-label="Scarica ' + t.title.replace(/"/g, '&quot;') + '">' + ICO.dl + '<span class="lbl">Scarica</span></button>' +
+            (t.video ? '<a class="ta-video" href="brano/' + trackSlug(i) + '.html#video">' + ICO.video + '<span class="lbl">Guarda il video</span></a>' : '') +
           '</div>' +
           '<p class="dl-count"><b data-dlc="' + i + '">' + fmtN(dlCount(i)) + '</b> download</p>' : '') +
           shareRow(i) +
@@ -465,6 +467,16 @@
     if (au) { au.textContent = t.authors ? 'di ' + t.authors : ''; au.style.display = t.authors ? '' : 'none'; }
     if (D.featuredText && pageTrack() < 0) $('.feature-lead', box).textContent = D.featuredText;
     var sh = $('.feature-share', box); if (sh) sh.innerHTML = shareRow(i);
+    /* video del brano (campo "video" in contenuti.js, es. audio/video/nome.mp4) */
+    var fv = $('.feature-video', box);
+    if (t.video) {
+      if (!fv) { fv = document.createElement('div'); fv.className = 'feature-video'; fv.id = 'video'; (sh || $('.feature-title', box)).insertAdjacentElement('afterend', fv); }
+      if (fv.getAttribute('data-src') !== t.video) {
+        fv.setAttribute('data-src', t.video);
+        fv.innerHTML = '<video controls playsinline preload="metadata" poster="' + escH(t.cover) + '" src="' + escH(t.video) + '"></video>';
+      }
+      if (location.hash === '#video') setTimeout(function () { fv.scrollIntoView({ block: 'center' }); }, 300);
+    } else if (fv) fv.remove();
     $$('[data-play],[data-dl],[data-dlc]', box).forEach(function (el) {
       ['data-play', 'data-dl', 'data-dlc'].forEach(function (a) { if (el.hasAttribute(a)) el.setAttribute(a, i); });
     });
@@ -746,6 +758,9 @@
     if (!D.tracks) return;
     $$('[data-dlc]').forEach(function (el) { el.textContent = fmtN(dlCount(+el.getAttribute('data-dlc'))); });
     var audio = new Audio(); audio.preload = 'none';
+    // video e musica non suonano insieme
+    audio.addEventListener('play', function () { $$('video').forEach(function (v) { if (!v.paused) v.pause(); }); });
+    document.addEventListener('play', function (e) { if (e.target && e.target.tagName === 'VIDEO' && !audio.paused) audio.pause(); }, true);
     var cur = -1, bar = null;
     function fmtT(s) { s = Math.max(0, Math.floor(s || 0)); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); }
     function build() {

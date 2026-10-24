@@ -29,6 +29,7 @@ window.GA_DATA = (function () {
       base: b.base || '',
       testo: b.testo || '',
       youtube: b.youtube || '',
+      video: b.video || '',
       downloads: +b.download || 0
     };
   });

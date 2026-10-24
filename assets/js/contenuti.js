@@ -11,7 +11,7 @@ window.GA_CONTENUTI = {
  },
  "brani": [
   {
-   "titolo": "Ex Novo Band feat. Guido Arcangeli – Verso il Mare",
+   "titolo": "Verso il Mare – Ex Novo Band – feat. Guido Arcangeli",
    "autori": "A. Capaccioli – G. Donasoldi",
    "anno": 2026,
    "genere": "Ballabile",
@@ -23,6 +23,37 @@ window.GA_CONTENUTI = {
    "parole": "",
    "download": 0,
    "youtube": "CPcA_6zNuo8",
+   "pagina": ""
+  },
+  {
+   "titolo": "Aria di casa mia – feat. Guido Arcangeli DJ",
+   "autori": "S. Barbot – G. Donasoldi",
+   "anno": 2026,
+   "genere": "Dance",
+   "copertina": "covers/aria-di-casa-mia.jpg",
+   "copertinaWeb": "",
+   "audio": "audio/aria-di-casa-mia.mp3",
+   "base": "audio/basi/aria-di-casa-mia.mp3",
+   "testo": "",
+   "parole": "",
+   "download": 0,
+   "youtube": "",
+   "video": "audio/video/aria-di-casa-mia.mp4",
+   "pagina": ""
+  },
+  {
+   "titolo": "Hablamos de ti – Massimo Gestri DJ",
+   "autori": "N. Naldi – M. Gestri – G. Donasoldi",
+   "anno": 2025,
+   "genere": "Cumbia",
+   "copertina": "covers/hablamos-de-ti.jpg",
+   "copertinaWeb": "",
+   "audio": "audio/hablamos-de-ti.mp3",
+   "base": "audio/basi/hablamos-de-ti.mp3",
+   "testo": "",
+   "parole": "",
+   "download": 0,
+   "youtube": "",
    "pagina": ""
   },
   {

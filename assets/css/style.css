@@ -1032,6 +1032,11 @@ a,button,input,textarea,label,.chip{touch-action:manipulation}
   transition:background .3s,border-color .3s,color .3s;
 }
 .track-actions svg{width:14px;height:14px;fill:currentColor;flex:none}
+.track-actions .ta-video{grid-column:1/-1;text-decoration:none;border-color:rgba(255,46,136,.45)}
+.track-actions .ta-video:hover{background:rgba(255,46,136,.12)}
+/* video dentro "Brano del momento" e pagina del brano */
+.feature-video{margin-top:clamp(18px,2.4vw,28px);max-width:460px;border-radius:var(--r);overflow:hidden;border:1px solid var(--line);background:#000;scroll-margin-top:90px}
+.feature-video video{display:block;width:100%;height:auto;aspect-ratio:1/1;background:#000}
 .track-actions .ta-play.is-on,.track-actions .ta-play:hover{background:var(--ink);color:#08060f;border-color:transparent}
 .track-actions .ta-dl{border-color:rgba(0,229,255,.45)}
 .track-actions .ta-dl:hover{background:rgba(0,229,255,.12);border-color:var(--c)}
@@ -1199,3 +1204,5 @@ body.has-player .footer{padding-bottom:calc(100px + env(safe-area-inset-bottom,0
 .brano-back{display:inline-block;font-family:var(--f-mono);font-size:.64rem;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-dim);border-bottom:1px solid var(--line-2);padding-bottom:3px;transition:color .3s,border-color .3s}
 .brano-back:hover{color:var(--c);border-color:var(--c)}
 .brano-hero .feature-title{font-size:clamp(1.8rem,4.4vw,3.4rem)}
+/* titolo su piu righe: interlinea piu ariosa, cosi le righe non si sovrappongono */
+.feature-title{line-height:1.02;text-wrap:balance}
