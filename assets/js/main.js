@@ -313,10 +313,27 @@
   // chiave del contatore download: il file audio (non la posizione, che cambia quando si aggiungono brani)
   function dlKey(i) { var t = D.tracks[i]; return 'ga_dl_' + ((t && t.audio) || i); }
   var fmtN = function (n) { return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, '.'); };
+  /* crescita giornaliera dei download: dal 25/10/2026 ogni brano guadagna ogni giorno
+     un numero "casuale" tra 20 e 30. Il numero è ricavato da brano + giorno, quindi
+     è uguale per tutti i visitatori e non cambia ricaricando la pagina. */
+  var DL_START = new Date(2026, 9, 24), DL_MIN = 20, DL_MAX = 30, DL_CACHE = {};
+  function dlDaily(i) {
+    var t = D.tracks[i], key = (t && t.audio) || (t && t.title) || String(i);
+    var now = new Date(), today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    var days = Math.max(0, Math.round((today - DL_START) / 864e5));
+    var ck = key + '@' + days; if (DL_CACHE[ck] != null) return DL_CACHE[ck];
+    var sum = 0;
+    for (var d = 1; d <= days; d++) {
+      var h = 2166136261, str = key + '|' + d;
+      for (var c = 0; c < str.length; c++) { h ^= str.charCodeAt(c); h = Math.imul(h, 16777619); }
+      sum += DL_MIN + ((h >>> 0) % (DL_MAX - DL_MIN + 1));
+    }
+    return (DL_CACHE[ck] = sum);
+  }
   function dlCount(i) {
     var t = D.tracks[i], extra = 0;
     try { extra = parseInt(localStorage.getItem(dlKey(i)) || '0', 10) || 0; } catch (e) {}
-    return (t.downloads || 0) + extra;
+    return (t.downloads || 0) + dlDaily(i) + extra;
   }
   function dlName(t, suffix, url) {
     var ext = ((url || t.audio || '').split('?')[0].match(/\.([a-z0-9]+)$/i) || [0, 'mp3'])[1];

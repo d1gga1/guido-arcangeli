@@ -21,7 +21,7 @@ window.GA_CONTENUTI = {
    "base": "",
    "testo": "",
    "parole": "",
-   "download": 0,
+   "download": 312,
    "youtube": "CPcA_6zNuo8",
    "pagina": ""
   },
@@ -36,7 +36,7 @@ window.GA_CONTENUTI = {
    "base": "audio/basi/aria-di-casa-mia.mp3",
    "testo": "",
    "parole": "",
-   "download": 0,
+   "download": 187,
    "youtube": "",
    "video": "audio/video/aria-di-casa-mia.mp4",
    "pagina": ""
@@ -52,7 +52,7 @@ window.GA_CONTENUTI = {
    "base": "audio/basi/hablamos-de-ti.mp3",
    "testo": "",
    "parole": "",
-   "download": 0,
+   "download": 164,
    "youtube": "",
    "pagina": ""
   },
