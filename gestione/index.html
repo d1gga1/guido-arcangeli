@@ -405,6 +405,26 @@ function slugifyP(x) {
   return String(x || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase()
     .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 80);
 }
+/* dati strutturati (schema.org) della pagina brano: deve dare lo stesso risultato
+   di jsonld_brano() in genera-pagine-brani.py */
+function jsonldBrano(b, slug) {
+  var t = b.titolo || '', url = SITE + 'brano/' + slug + '.html', cop = b.copertina || '', img;
+  if (/^https?:\/\//.test(cop)) img = cop; else if (cop) img = SITE + cop; else img = b.copertinaWeb || SITE + 'assets/img/og.jpg';
+  var rec = { '@type': 'MusicRecording', '@id': url + '#brano', name: t, url: url, image: encodeURI(img),
+    inLanguage: 'it', publisher: { '@type': 'Person', '@id': SITE + '#guido', name: 'Guido Arcangeli' } };
+  if (b.genere) rec.genre = b.genere;
+  if (b.anno) rec.datePublished = String(b.anno);
+  if (b.autori) rec.composer = String(b.autori).split(/\s*[–—-]\s*|,/).map(function (a) { return a.trim(); })
+    .filter(Boolean).map(function (a) { return { '@type': 'Person', name: a }; });
+  if (b.audio) rec.audio = { '@type': 'AudioObject', contentUrl: encodeURI(SITE + b.audio), encodingFormat: 'audio/mpeg' };
+  if (b.video) rec.subjectOf = { '@type': 'VideoObject', name: t, contentUrl: encodeURI(SITE + b.video), thumbnailUrl: encodeURI(img), uploadDate: String(b.anno || '') };
+  if (b.youtube) rec.sameAs = 'https://www.youtube.com/watch?v=' + b.youtube;
+  var g = { '@context': 'https://schema.org', '@graph': [rec, { '@type': 'BreadcrumbList', itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: SITE },
+    { '@type': 'ListItem', position: 2, name: 'Archivio brani', item: SITE + 'archivio.html' },
+    { '@type': 'ListItem', position: 3, name: t, item: url }] }] };
+  return '<script type="application/ld+json">' + JSON.stringify(g).replace(/<\//g, '<\\/') + '<\/script>';
+}
 function paginaBrano(b, slug) {
   var t = b.titolo || '';
   var info = [b.genere, b.anno].filter(function (v) { return v; }).join(' · ');
@@ -415,7 +435,8 @@ function paginaBrano(b, slug) {
   var v = {
     TITOLO: esc(t), DESCRIZIONE: esc(descr), IMMAGINE: esc(encodeURI(img)),
     COPERTINA: esc(cop || 'assets/img/vinyl.jpg'), URL: esc(SITE + 'brano/' + slug + '.html'),
-    SLUG: slug, AUTORI: esc(b.autori ? 'di ' + b.autori : ''), INFO: esc(info ? 'Brano · ' + info : 'Brano')
+    SLUG: slug, AUTORI: esc(b.autori ? 'di ' + b.autori : ''), INFO: esc(info ? 'Brano · ' + info : 'Brano'),
+    JSONLD: jsonldBrano(b, slug)
   };
   return MODELLO.replace(/\{\{([A-Z]+)\}\}/g, function (m, k) { return k in v ? v[k] : m; });
 }

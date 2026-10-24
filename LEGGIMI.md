@@ -1,5 +1,20 @@
 # Sito Guido Arcangeli DJ — nuova versione
 
+## ★ SEO — Google e assistenti AI (ottobre 2026)
+
+- **Nuova pagina `dj-toscana.html`** ("DJ in Toscana"): servizi, zone con i locali veri, domande frequenti.
+  È linkata dal footer, dal menu del telefono e dai contatti in home.
+- **Dati strutturati (schema.org)** in tutte le pagine: Guido come persona e come attività (DJ in Toscana,
+  zone servite, contatti), domande frequenti, ogni brano come registrazione musicale, archivio come elenco.
+- **Generati a ogni `pubblica.sh`** (da `genera-pagine-brani.py`):
+  `sitemap.xml`, `llms.txt` (riassunto del sito per ChatGPT, Claude, Perplexity…), elenco testuale dei brani
+  in fondo all'archivio, serate future come eventi per Google.
+  Il testo fisso di `llms.txt` sta in `assets/llms-base.md`.
+- **`robots.txt`**: tutti i motori e i crawler AI sono benvenuti; esclusa solo `/gestione/`.
+- Le modifiche fatte da Guido dal pannello aggiornano subito le pagine dei brani; sitemap, llms.txt
+  ed elenco in archivio si aggiornano alla prossima `pubblica.sh`.
+- Copia dei file prima della modifica: `_tmp/backup_prima_seo/`.
+
 ## ★ Area riservata: Guido aggiorna il sito da solo (ottobre 2026)
 
 Indirizzo: **guidoarcangeli.com/gestione/** — non è collegato da nessuna parte

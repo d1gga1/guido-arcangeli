@@ -4,7 +4,7 @@
      Le pagine vengono create da sole: dal pannello /gestione/ a ogni
      salvataggio e da pubblica.sh. Se cambi questo file, cambiano tutte.
      Segnaposto: {{TITOLO}} {{DESCRIZIONE}} {{IMMAGINE}} {{COPERTINA}}
-                 {{URL}} {{SLUG}} {{AUTORI}} {{INFO}}
+                 {{URL}} {{SLUG}} {{AUTORI}} {{INFO}} e JSONLD (dati strutturati)
      ============================================================ -->
 <html lang="it">
 <head>
@@ -22,7 +22,7 @@
 <meta property="og:url" content="{{URL}}">
 <meta property="og:image" content="{{IMMAGINE}}">
 <meta property="og:image:alt" content="Copertina di {{TITOLO}}">
-<meta name="twitter:card" content="summary">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="{{TITOLO}} — Guido Arcangeli">
 <meta name="twitter:description" content="{{DESCRIZIONE}}">
 <meta name="twitter:image" content="{{IMMAGINE}}">
@@ -35,7 +35,7 @@
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
 <noscript><link href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"></noscript>
-<link rel="stylesheet" href="assets/css/style.css?v=20261024b">
+<link rel="stylesheet" href="assets/css/style.css?v=20261024c">
 <script>
 window.GA={imgFail:function(img){
   if(img.dataset.tried!=='1'&&img.dataset.remote){img.dataset.tried='1';img.src=img.dataset.remote;return;}
@@ -44,6 +44,7 @@ window.GA={imgFail:function(img){
   if(f)f.style.display='grid';
 }};
 </script>
+{{JSONLD}}
 </head>
 <body data-brano="{{SLUG}}">
 <div class="grain" aria-hidden="true"></div>
@@ -85,6 +86,7 @@ window.GA={imgFail:function(img){
   <a href="news.html">News &amp; media</a>
   <a href="index.html#serate">Serate</a>
   <a href="index.html#contatti">Contatti</a>
+  <a href="dj-toscana.html">DJ in Toscana</a>
   <div class="menu-foot">
     <a data-tel href="#"><span data-phone></span></a>
     <a href="mailto:info@guidoarcangeli.com">info@guidoarcangeli.com</a>
@@ -140,6 +142,7 @@ window.GA={imgFail:function(img){
         <a href="index.html">Home</a><a href="archivio.html">Archivio brani</a>
         <a href="biografia.html">Biografia</a><a href="news.html">News</a>
         <a href="index.html#serate">Serate</a><a href="index.html#contatti">Contatti</a>
+        <a href="dj-toscana.html">DJ in Toscana</a>
       </nav>
     </div>
     <div class="footer-word" aria-hidden="true">Arcangeli</div>
