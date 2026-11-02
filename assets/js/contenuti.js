@@ -4,7 +4,7 @@
    Si può modificare anche a mano: è JSON dentro window.GA_CONTENUTI.
    ============================================================ */
 window.GA_CONTENUTI = {
- "aggiornato": "2026-11-02T20:51:17.884Z",
+ "aggiornato": "2026-11-02T23:21:49.701Z",
  "momento": {
   "audio": "audio/verso-il-mare.mp3",
   "frase": "La nuova uscita con la Ex Novo Band: una ballata sotto la luna, verso il mare. Ascoltala subito qui oppure scaricala: brano completo, solo base o solo testo."
@@ -846,6 +846,10 @@ window.GA_CONTENUTI = {
   }
  ],
  "video": [
+  {
+   "id": "ms7RBI4AFKU",
+   "title": "Dancing Papillon"
+  },
   {
    "id": "CPcA_6zNuo8",
    "title": "Ex Novo Band feat. Guido Arcangeli DJ — Verso il Mare"
