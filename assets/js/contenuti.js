@@ -4,7 +4,7 @@
    Si può modificare anche a mano: è JSON dentro window.GA_CONTENUTI.
    ============================================================ */
 window.GA_CONTENUTI = {
- "aggiornato": "2026-11-02T23:33:40.762Z",
+ "aggiornato": "2026-11-02T23:47:59.402Z",
  "momento": {
   "audio": "audio/verso-il-mare.mp3",
   "frase": "La nuova uscita con la Ex Novo Band: una ballata sotto la luna, verso il mare. Ascoltala subito qui oppure scaricala: brano completo, solo base o solo testo."
@@ -808,42 +808,6 @@ window.GA_CONTENUTI = {
   }
  ],
  "serate": [
-  {
-   "date": "2026-09-12",
-   "venue": "Trocadero Village",
-   "city": "Viareggio (LU)",
-   "note": "Resident DJ — il sabato"
-  },
-  {
-   "date": "2026-09-19",
-   "venue": "Discoteca Sombrero",
-   "city": "San Miniato (PI)",
-   "note": "Resident DJ"
-  },
-  {
-   "date": "2026-09-26",
-   "venue": "Dancing Grotta Maona",
-   "city": "Montecatini Terme (PT)",
-   "note": "Balli di gruppo & liscio"
-  },
-  {
-   "date": "2026-10-03",
-   "venue": "Vistamare",
-   "city": "Marina di Massa (MS)",
-   "note": "Terrazza sul Tirreno — cena su prenotazione"
-  },
-  {
-   "date": "2026-10-10",
-   "venue": "Dancing La Coroncina",
-   "city": "Siena",
-   "note": "Dalle 22:00"
-  },
-  {
-   "date": "2026-10-17",
-   "venue": "Disco Papillon",
-   "city": "Piano di Mommio (LU)",
-   "note": "Musica a 360°"
-  },
   {
    "date": "2026-11-03",
    "venue": "Dancing Papillon",
