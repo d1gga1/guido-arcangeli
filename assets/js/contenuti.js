@@ -4,7 +4,7 @@
    Si può modificare anche a mano: è JSON dentro window.GA_CONTENUTI.
    ============================================================ */
 window.GA_CONTENUTI = {
- "aggiornato": "2026-11-03T01:05:23.561Z",
+ "aggiornato": "2026-11-03T02:26:18.957Z",
  "momento": {
   "audio": "audio/verso-il-mare.mp3",
   "frase": "La nuova uscita con la Ex Novo Band: una ballata sotto la luna, verso il mare. Ascoltala subito qui oppure scaricala: brano completo, solo base o solo testo."
@@ -777,21 +777,6 @@ window.GA_CONTENUTI = {
    "pagina": "https://www.guidoarcangeli.com/audio/sole-e-mare-cumbia-download/"
   },
   {
-   "titolo": "Linda Muchachita (Cumbia)",
-   "autori": "",
-   "anno": 2015,
-   "genere": "Cumbia",
-   "copertina": "covers/Untitled-2-200x200.jpg",
-   "copertinaWeb": "https://www.guidoarcangeli.com/wp-content/uploads/2015/04/Untitled-2-200x200.jpg",
-   "audio": "audio/49-linda-muchachita-cumbia.mp3",
-   "base": "audio/basi/49-linda-muchachita-cumbia.mp3",
-   "testo": "audio/testi/49-linda-muchachita-cumbia.pdf",
-   "parole": "",
-   "download": 599,
-   "youtube": "",
-   "pagina": "https://www.guidoarcangeli.com/audio/linda-muchachita-cumbia-download/"
-  },
-  {
    "titolo": "Love Me Tonight (Cumbia)",
    "autori": "",
    "anno": 2015,
@@ -805,6 +790,21 @@ window.GA_CONTENUTI = {
    "download": 583,
    "youtube": "",
    "pagina": "https://www.guidoarcangeli.com/audio/love-me-tonight-cumbia-download/"
+  },
+  {
+   "titolo": "Linda Muchachita (Cumbia)",
+   "autori": "",
+   "anno": 2015,
+   "genere": "Cumbia",
+   "copertina": "covers/Untitled-2-200x200.jpg",
+   "copertinaWeb": "https://www.guidoarcangeli.com/wp-content/uploads/2015/04/Untitled-2-200x200.jpg",
+   "audio": "audio/49-linda-muchachita-cumbia.mp3",
+   "base": "audio/basi/49-linda-muchachita-cumbia.mp3",
+   "testo": "audio/testi/49-linda-muchachita-cumbia.pdf",
+   "parole": "",
+   "download": 599,
+   "youtube": "",
+   "pagina": "https://www.guidoarcangeli.com/audio/linda-muchachita-cumbia-download/"
   }
  ],
  "serate": [
