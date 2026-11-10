@@ -558,26 +558,192 @@
     apply();
   }
 
-  /* ============ 14. RENDER: EVENTS ============ */
+  /* ============ 14. RENDER: EVENTS (serate) ============
+     Ogni serata (assets/js/contenuti.js → serate) può avere: titolo, ora,
+     descrizione, locandina, foto [] e video [] ({file, poster} oppure {youtube}).
+     Home: prossime serate (+ le ultime passate se le prossime sono poche).
+     serate.html: prossime e passate, con locandina, foto e video. */
   var MESI = ['GEN','FEB','MAR','APR','MAG','GIU','LUG','AGO','SET','OTT','NOV','DIC'];
+  var MESI_L = ['gennaio','febbraio','marzo','aprile','maggio','giugno','luglio','agosto','settembre','ottobre','novembre','dicembre'];
+  var GIORNI = ['Domenica','Lunedì','Martedì','Mercoledì','Giovedì','Venerdì','Sabato'];
+  function escH(x) { return String(x == null ? '' : x).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+  function evDate(e) { var p = String(e.date || '').split('-'); return new Date(+p[0], (+p[1] || 1) - 1, +p[2] || 1); }
+  function evSlug(s) { return String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 50); }
+  function evId(e) { return 'ev-' + (e.id || (e.date + '-' + evSlug(e.venue))); }
+  function evFull(e) { var d = evDate(e); return GIORNI[d.getDay()] + ' ' + d.getDate() + ' ' + MESI_L[d.getMonth()] + ' ' + d.getFullYear(); }
+  function evTitle(e) { return e.titolo || e.venue || 'Serata'; }
+  function evPlace(e) { return [e.titolo && e.venue && e.titolo !== e.venue ? e.venue : '', e.city].filter(Boolean).join(' · '); }
+  function evSplit() {
+    var now = new Date(); now.setHours(0, 0, 0, 0);
+    var list = (D.events || []).slice().sort(function (a, b) { return a.date < b.date ? -1 : a.date > b.date ? 1 : 0; });
+    return { next: list.filter(function (e) { return evDate(e) >= now; }),
+             past: list.filter(function (e) { return evDate(e) < now; }).reverse() };
+  }
+  function evWa(e) {
+    var d = evDate(e);
+    return 'https://wa.me/' + (D.contact.phoneRaw || '').replace('+', '') + '?text=' +
+      encodeURIComponent('Ciao Guido, info sulla serata di ' + evFull(e).toLowerCase() + ' — ' + evTitle(e) + (e.venue && e.venue !== evTitle(e) ? ' (' + e.venue + ')' : ''));
+  }
+  var ARROW = '<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M5 12h12l-5-5 1.4-1.4L20.8 12l-7.4 7.4L12 18l5-5H5z"/></svg>';
+  function evMediaCount(e) {
+    var f = (e.foto || []).length, v = (e.video || []).length;
+    return [f ? f + (f === 1 ? ' foto' : ' foto') : '', v ? v + (v === 1 ? ' video' : ' video') : ''].filter(Boolean).join(' · ');
+  }
+  function evThumb(e) {
+    if (e.locandina) return e.locandina;
+    if ((e.foto || []).length) return e.foto[0];
+    var v = (e.video || []).filter(function (x) { return x.poster || x.youtube; })[0];
+    return v ? (v.poster || 'https://i.ytimg.com/vi/' + v.youtube + '/mqdefault.jpg') : '';
+  }
   function renderEvents() {
     var host = $('#events'); if (!host || !D.events) return;
-    var now = new Date(); now.setHours(0, 0, 0, 0);
-    var list = D.events.slice().sort(function (a, b) { return a.date < b.date ? -1 : 1; });
-    var next = list.filter(function (e) { return new Date(e.date) >= now; });
-    if (!next.length) next = list.slice(-6);
-    var lim = host.getAttribute('data-limit');
-    if (lim) next = next.slice(0, parseInt(lim, 10));
-    host.innerHTML = next.map(function (e) {
-      var d = new Date(e.date);
-      return '<a class="event" data-rev="up" href="https://wa.me/' + (D.contact.phoneRaw || '').replace('+', '') +
-        '?text=' + encodeURIComponent('Ciao Guido, info sulla serata del ' + d.getDate() + ' ' + MESI[d.getMonth()] + ' al ' + e.venue) + '" target="_blank" rel="noopener">' +
-        '<span class="date">' + String(d.getDate()).padStart(2, '0') + '<small>' + MESI[d.getMonth()] + ' ' + d.getFullYear() + '</small></span>' +
-        '<span class="info"><h3>' + e.venue + '</h3><p>' + e.city + (e.note ? ' — ' + e.note : '') + '</p></span>' +
-        '<span class="go">Info <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M5 12h12l-5-5 1.4-1.4L20.8 12l-7.4 7.4L12 18l5-5H5z"/></svg></span>' +
+    var s = evSplit(), lim = parseInt(host.getAttribute('data-limit') || '6', 10);
+    var next = s.next.slice(0, lim), past = next.length < 3 ? s.past.slice(0, 4 - next.length) : [];
+    function row(e, isPast) {
+      var d = evDate(e), mc = evMediaCount(e);
+      return '<a class="event' + (isPast ? ' event--past' : '') + '" data-rev="up" href="serate.html#' + evId(e) + '">' +
+        '<span class="date">' + String(d.getDate()).padStart(2, '0') + '<small>' + MESI[d.getMonth()] + ' <b>' + d.getFullYear() + '</b></small></span>' +
+        '<span class="info">' + (isPast ? '<em class="ev-flag">Serata passata' + (mc ? ' · ' + mc : '') + '</em>' : '') +
+          '<h3>' + escH(evTitle(e)) + '</h3>' +
+          '<p>' + escH([evFull(e) + (e.ora ? ' · ore ' + e.ora : ''), evPlace(e)].filter(Boolean).join(' — ')) + '</p></span>' +
+        (evThumb(e) ? '<span class="ev-thumb"><img src="' + escH(evThumb(e)) + '" alt="" loading="lazy" decoding="async"></span>' : '') +
+        '<span class="go">' + (isPast ? 'Foto e video' : 'Dettagli') + ' ' + ARROW + '</span>' +
         '</a>';
-    }).join('');
+    }
+    host.innerHTML = next.map(function (e) { return row(e, false); }).join('') + past.map(function (e) { return row(e, true); }).join('');
   }
+
+  /* ---- pagina serate.html ---- */
+  var LB = { items: [], i: 0, el: null };
+  function evCard(e, isPast, one) {
+    var foto = e.foto || [], vids = e.video || [], id = evId(e);
+    var desc = String(e.descrizione || '').split(/\n+/).filter(Boolean).map(function (p) { return '<p>' + escH(p) + '</p>'; }).join('');
+    var media = '';
+    if (vids.length) media += '<div class="ev-vids">' + vids.map(function (v) {
+      if (v.youtube) return '<a class="vcard" href="https://www.youtube.com/watch?v=' + escH(v.youtube) + '" target="_blank" rel="noopener">' +
+        '<img src="https://i.ytimg.com/vi/' + escH(v.youtube) + '/hqdefault.jpg" alt="Video della serata" loading="lazy" decoding="async">' +
+        '<span class="pl"><b><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></b></span></a>';
+      return '<video controls playsinline preload="none"' + (v.poster ? ' poster="' + escH(v.poster) + '"' : '') + ' src="' + escH(v.file) + '"></video>';
+    }).join('') + '</div>';
+    if (foto.length) media += '<div class="ev-photos">' + foto.map(function (f, k) {
+      return '<button type="button" class="ev-ph" data-lb="' + escH(id) + '" data-k="' + (k + (e.locandina ? 1 : 0)) + '" aria-label="Apri foto ' + (k + 1) + '">' +
+        '<img src="' + escH(f) + '" alt="Foto della serata ' + (k + 1) + '" loading="lazy" decoding="async"></button>';
+    }).join('') + '</div>';
+    var plain = !e.locandina && !foto.length && !vids.length && !e.descrizione;
+    return '<article class="ev' + (e.locandina ? '' : ' ev--noposter') + (plain ? ' ev--plain' : '') + '" id="' + escH(id) + '" data-rev="up">' +
+      (e.locandina ? '<button type="button" class="ev-poster" data-lb="' + escH(id) + '" data-k="0" aria-label="Ingrandisci la locandina">' +
+        '<img src="' + escH(e.locandina) + '" alt="Locandina: ' + escH(evTitle(e)) + '" loading="lazy" decoding="async"></button>' : '') +
+      '<div class="ev-body">' +
+        '<p class="ev-when">' + escH(evFull(e)) + (e.ora ? ' <span>· ore ' + escH(e.ora) + '</span>' : '') + '</p>' +
+        '<h3>' + escH(evTitle(e)) + '</h3>' +
+        (evPlace(e) ? '<p class="ev-where">' + escH(evPlace(e)) + '</p>' : '') +
+        (e.note ? '<p class="ev-note">' + escH(e.note) + '</p>' : '') +
+        (desc ? '<div class="ev-desc">' + desc + '</div>' : '') +
+        media +
+        '<div class="ev-acts">' +
+          (isPast ? '' : '<a class="btn btn--solid" href="' + evWa(e) + '" target="_blank" rel="noopener">Info e prenotazioni</a>') +
+          (one ? '' : '<a class="btn btn--ghost" href="' + escH(evPage(e)) + '">Pagina della serata</a>') +
+        '</div>' +
+        evShareRow(e) +
+      '</div></article>';
+  }
+  /* ---- condividi una serata: il link è la sua pagina serata/ID.html,
+     che su WhatsApp/Facebook/Telegram mostra la locandina nell'anteprima ---- */
+  function evSlugId(e) { return e.id || (e.date + '-' + evSlug(e.venue)); }
+  function evPage(e) { return 'serata/' + evSlugId(e) + '.html'; }
+  function evUrl(e) { return /^https?:$/.test(location.protocol) ? new URL(evPage(e), document.baseURI).href : SITE + evPage(e); }
+  function evShareText(e) {
+    var past = evDate(e) < new Date(new Date().setHours(0, 0, 0, 0));
+    return (past ? '📸 Foto e video della serata: ' : '🎶 Vi aspetto! ') + evTitle(e) + ' — ' + evFull(e) +
+      (e.ora && !past ? ' ore ' + e.ora : '') + (evPlace(e) ? ' · ' + evPlace(e) : '');
+  }
+  function evShareRow(e) {
+    var id = escH(evId(e)), n = escH(evTitle(e));
+    var b = function (k, label, cls) {
+      return '<button type="button" class="sh-b sh-' + k + (cls ? ' ' + cls : '') + '" data-esh="' + k + '" data-eid="' + id + '" aria-label="' + label + ': ' + n + '" title="' + label + '">' + SH_ICO[k] + '</button>';
+    };
+    return '<div class="share ev-share" role="group" aria-label="Condividi la serata">' +
+      '<span class="sh-k">Condividi la serata</span>' +
+      '<div class="sh-row">' +
+        b('wa', 'Condividi su WhatsApp') + b('fb', 'Condividi su Facebook') + b('ig', 'Condividi su Instagram') +
+        b('tg', 'Condividi su Telegram', 'sh-xtra') + b('x', 'Condividi su X', 'sh-xtra') +
+        (canNativeShare ? b('more', 'Altre app') : b('link', 'Copia il link')) +
+      '</div></div>';
+  }
+  function doShareEv(k, e) {
+    var url = evUrl(e), txt = evShareText(e), eu = encodeURIComponent(url), et = encodeURIComponent(txt);
+    var pop = function (u) { window.open(u, '_blank', 'noopener,width=620,height=560'); };
+    if (k === 'wa') pop('https://wa.me/?text=' + encodeURIComponent(txt + ' → ' + url));
+    else if (k === 'fb') pop('https://www.facebook.com/sharer/sharer.php?u=' + eu);
+    else if (k === 'tg') pop('https://t.me/share/url?url=' + eu + '&text=' + et);
+    else if (k === 'x') pop('https://twitter.com/intent/tweet?text=' + et + '&url=' + eu);
+    else if (k === 'link') copyText(url, 'Link della serata copiato!');
+    else if (navigator.share) navigator.share({ title: evTitle(e), text: txt, url: url }).catch(function () {});
+    else copyText(txt + ' → ' + url, k === 'ig' ? 'Link copiato: incollalo nella storia o nel post di Instagram' : 'Link copiato!');
+  }
+  function renderEventPage() {
+    var hn = $('#ev-next'), hp = $('#ev-past'), ho = $('#ev-one'); if (!hn && !hp && !ho) return;
+    var s = evSplit(), byId = {};
+    (D.events || []).forEach(function (e) { byId[evId(e)] = e; });
+    if (ho) {   // pagina di una sola serata (serata/ID.html)
+      var e1 = byId['ev-' + ho.getAttribute('data-ev')];
+      if (e1) ho.innerHTML = evCard(e1, evDate(e1) < new Date(new Date().setHours(0, 0, 0, 0)), true);
+    }
+    if (hn) hn.innerHTML = s.next.length ? s.next.map(function (e) { return evCard(e, false); }).join('')
+      : '<p class="lead">Il calendario si sta aggiornando: per date e prenotazioni scrivi a Guido su WhatsApp.</p>';
+    if (hp) hp.innerHTML = s.past.length ? s.past.map(function (e) { return evCard(e, true); }).join('') : '<p class="lead">Ancora nessuna serata passata.</p>';
+    document.addEventListener('click', function (ev) {
+      var b = ev.target.closest('[data-lb]');
+      if (b) {
+        var e = byId[b.getAttribute('data-lb')]; if (!e) return;
+        openLb([e.locandina].concat(e.foto || []).filter(Boolean), +b.getAttribute('data-k') || 0, evTitle(e) + ' — ' + evFull(e));
+        return;
+      }
+      var sh = ev.target.closest('[data-esh]');
+      if (sh) { ev.preventDefault(); var e2 = byId[sh.getAttribute('data-eid')]; if (e2) doShareEv(sh.getAttribute('data-esh'), e2); }
+    });
+    // arrivo da un link "serate.html#ev-…": vai alla serata dopo il disegno
+    var h = location.hash && document.getElementById(decodeURIComponent(location.hash.slice(1)));
+    if (h) setTimeout(function () { h.classList.add('in'); scrollTo(h.getBoundingClientRect().top + window.scrollY - 90); }, 350);
+  }
+  function openLb(items, i, cap) {
+    if (!items.length) return;
+    LB.items = items; LB.i = i; LB.cap = cap;
+    if (!LB.el) {
+      LB.el = document.createElement('div'); LB.el.className = 'lb'; LB.el.setAttribute('role', 'dialog'); LB.el.setAttribute('aria-modal', 'true');
+      LB.el.innerHTML = '<div class="lb-media"></div><p class="lb-cap"></p>' +
+        '<button type="button" class="lb-x" aria-label="Chiudi">×</button>' +
+        '<button type="button" class="lb-p" aria-label="Foto precedente">‹</button><button type="button" class="lb-n" aria-label="Foto successiva">›</button>';
+      document.body.appendChild(LB.el);
+      LB.el.addEventListener('click', function (e) {
+        if (e.target.closest('.lb-x') || e.target === LB.el || e.target.classList.contains('lb-media')) closeLb();
+        else if (e.target.closest('.lb-p')) stepLb(-1);
+        else if (e.target.closest('.lb-n')) stepLb(1);
+      });
+      document.addEventListener('keydown', function (e) {
+        if (!LB.el.classList.contains('open')) return;
+        if (e.key === 'Escape') closeLb(); else if (e.key === 'ArrowLeft') stepLb(-1); else if (e.key === 'ArrowRight') stepLb(1);
+      });
+      var x0 = null;
+      LB.el.addEventListener('touchstart', function (e) { x0 = e.touches[0].clientX; }, { passive: true });
+      LB.el.addEventListener('touchend', function (e) { if (x0 == null) return; var dx = e.changedTouches[0].clientX - x0; if (Math.abs(dx) > 50) stepLb(dx < 0 ? 1 : -1); x0 = null; });
+    }
+    showLb(); LB.el.classList.add('open'); document.body.classList.add('is-locked');
+    $('.lb-x', LB.el).focus({ preventScroll: true });
+  }
+  /* voce del lightbox: 'percorso.jpg' (foto) | {video, poster} | {youtube} */
+  function showLb() {
+    var it = LB.items[LB.i], box = $('.lb-media', LB.el);
+    if (typeof it === 'string') it = { foto: it };
+    if (it.video) box.innerHTML = '<video controls autoplay playsinline' + (it.poster ? ' poster="' + escH(it.poster) + '"' : '') + ' src="' + escH(it.video) + '"></video>';
+    else if (it.youtube) box.innerHTML = '<iframe src="https://www.youtube-nocookie.com/embed/' + escH(it.youtube) + '?autoplay=1&rel=0&playsinline=1" title="Video" allow="autoplay; encrypted-media; fullscreen; picture-in-picture" allowfullscreen></iframe>';
+    else box.innerHTML = '<img alt="' + escH(it.titolo || '') + '" src="' + escH(it.foto) + '">';
+    var cap = (typeof LB.cap === 'function' ? LB.cap(LB.items[LB.i], LB.i) : LB.cap) || '';
+    $('.lb-cap', LB.el).textContent = cap + (LB.items.length > 1 ? (cap ? '  ·  ' : '') + (LB.i + 1) + ' / ' + LB.items.length : '');
+    var many = LB.items.length > 1; $('.lb-p', LB.el).hidden = $('.lb-n', LB.el).hidden = !many;
+  }
+  function stepLb(d) { LB.i = (LB.i + d + LB.items.length) % LB.items.length; showLb(); }
+  function closeLb() { LB.el.classList.remove('open'); document.body.classList.remove('is-locked'); $('.lb-media', LB.el).innerHTML = ''; }
 
   /* ============ 15. RENDER: VENUES / VIDEO / SOCIAL ============ */
   function renderVenues() {
@@ -595,6 +761,35 @@
         '<span class="cap">' + v.title + '</span></a>';
     }).join('');
   }
+  /* ---- GALLERIA "Dalle serate" (home: striscia orizzontale; news: griglia) ----
+     Voci dal pannello /gestione/ → Galleria. Se è vuota resta la galleria fissa nell'HTML. */
+  var PLAY_ICO = '<span class="g-play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span>';
+  function gThumb(g, alt) {
+    if (g.foto) return '<img src="' + escH(g.foto) + '" alt="' + alt + '" loading="lazy" decoding="async">';
+    if (g.youtube) return '<img src="https://i.ytimg.com/vi/' + escH(g.youtube) + '/hqdefault.jpg" alt="' + alt + '" loading="lazy" decoding="async">';
+    if (g.poster) return '<img src="' + escH(g.poster) + '" alt="' + alt + '" loading="lazy" decoding="async">';
+    return '<video src="' + escH(g.video) + '#t=0.5" muted playsinline preload="metadata" aria-hidden="true"></video>';
+  }
+  function gItem(g) { return g.foto ? g.foto : g.video ? { video: g.video, poster: g.poster } : { youtube: g.youtube }; }
+  function renderGallery() {
+    var G = D.gallery || []; if (!G.length) return;
+    var pin = $('#galleria .pin-track'), grid = $('#gallery-grid');
+    if (pin) pin.innerHTML = G.map(function (g, k) {
+      var n = String(k + 1).padStart(2, '0'), cap = escH(g.titolo || (g.foto ? 'Foto' : 'Video'));
+      return '<figure class="pin-item' + (g.foto ? '' : ' is-video') + '"><button type="button" class="g-open" data-g="' + k + '" aria-label="Apri ' + (g.foto ? 'foto' : 'video') + ': ' + cap + '">' +
+        gThumb(g, cap) + (g.foto ? '' : PLAY_ICO) + '</button><figcaption>' + n + ' — ' + cap + '</figcaption></figure>';
+    }).join('');
+    if (grid) grid.innerHTML = G.map(function (g, k) {
+      var cap = escH(g.titolo || (g.foto ? 'Foto della serata' : 'Video della serata'));
+      return '<figure class="gcell' + (g.foto ? '' : ' is-video') + '" data-rev="scale"' + (k % 8 ? ' data-delay="' + (k % 8 * 0.05).toFixed(2) + '"' : '') + '>' +
+        '<button type="button" class="g-open" data-g="' + k + '" aria-label="Apri ' + cap + '">' + gThumb(g, cap) + (g.foto ? '' : PLAY_ICO) + '</button></figure>';
+    }).join('');
+    document.addEventListener('click', function (e) {
+      var b = e.target.closest('.g-open'); if (!b) return;
+      openLb(G.map(gItem), +b.getAttribute('data-g') || 0, function (it, i) { return G[i].titolo || 'Dalle serate'; });
+    });
+  }
+
   var SOC_ICONS = {
     Instagram: 'M12 2.2c3.2 0 3.6 0 4.9.07 1.2.05 1.8.25 2.2.42.6.22 1 .5 1.4.9.4.4.7.8.9 1.4.17.4.37 1 .42 2.2.06 1.3.07 1.7.07 4.9s0 3.6-.07 4.9c-.05 1.2-.25 1.8-.42 2.2a3.8 3.8 0 0 1-.9 1.4c-.4.4-.8.7-1.4.9-.4.17-1 .37-2.2.42-1.3.06-1.7.07-4.9.07s-3.6 0-4.9-.07c-1.2-.05-1.8-.25-2.2-.42a3.8 3.8 0 0 1-1.4-.9 3.8 3.8 0 0 1-.9-1.4c-.17-.4-.37-1-.42-2.2C2.2 15.6 2.2 15.2 2.2 12s0-3.6.07-4.9c.05-1.2.25-1.8.42-2.2.22-.6.5-1 .9-1.4.4-.4.8-.7 1.4-.9.4-.17 1-.37 2.2-.42C8.4 2.2 8.8 2.2 12 2.2zm0 3.4a6.4 6.4 0 1 0 0 12.8 6.4 6.4 0 0 0 0-12.8zm0 10.6a4.2 4.2 0 1 1 0-8.4 4.2 4.2 0 0 1 0 8.4zm6.6-10.9a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z',
     Facebook: 'M14 8.5V6.8c0-.8.2-1.2 1.4-1.2H17V2.6c-.3 0-1.2-.1-2.3-.1-2.4 0-4 1.4-4 4.1v1.9H8V12h2.7v9.4H14V12h2.7l.4-3.5H14z',
@@ -1030,8 +1225,10 @@
     tick();
     renderTracks();
     renderEvents();
+    renderEventPage();
     renderVenues();
     renderVideos();
+    renderGallery();
     renderSocial();
     initSecret();
     initMisc();

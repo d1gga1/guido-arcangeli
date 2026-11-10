@@ -42,6 +42,11 @@ window.GA_DATA = (function () {
   /* -------- SERATE -------- date = ISO (YYYY-MM-DD) */
   var events = C.serate || [];
 
+  /* -------- GALLERIA "Dalle serate" (home e news) --------
+     voci: {foto, titolo} | {video, poster, titolo} | {youtube, titolo}
+     Se è vuota restano le 8 foto di atmosfera in assets/img/gallery/. */
+  var gallery = (C.galleria || []).filter(function (g) { return g && (g.foto || g.video || g.youtube); });
+
   /* -------- LOCALI / RESIDENZE -------- */
   var venues = [
     ['Trocadero Village','Viareggio — Resident'],
@@ -82,5 +87,5 @@ window.GA_DATA = (function () {
     ['Amazon Music','https://www.amazon.it/Musica-Digitale-Guido-Arcangeli/s?rh=n%3A1748203031%2Cp_27%3AGuido+Arcangeli']
   ];
 
-  return { OLD:OLD, tracks:tracks, featured:featured, featuredText:mom.frase || '', events:events, venues:venues, videos:videos, contact:contact, social:social };
+  return { OLD:OLD, tracks:tracks, featured:featured, featuredText:mom.frase || '', events:events, gallery:gallery, venues:venues, videos:videos, contact:contact, social:social };
 })();

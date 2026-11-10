@@ -813,6 +813,63 @@ window.GA_CONTENUTI = {
    "venue": "Dancing Papillon",
    "city": "Piano Di Mommio  - Lucca",
    "note": "Open H 21.00"
+  },
+  {
+   "id": "2026-11-01-grotta-maona",
+   "date": "2026-11-01",
+   "ora": "",
+   "titolo": "I Superballabili!",
+   "venue": "Dancing Grotta Maona",
+   "city": "Montecatini Terme (PT)",
+   "note": "In consolle Guido Arcangeli DJ",
+   "descrizione": "Domenica alla Grotta Maona di Montecatini Terme: musica tutta da ballare, con Guido Arcangeli DJ in consolle.",
+   "locandina": "eventi/2026-11-01-grotta-maona/locandina.jpg",
+   "foto": [],
+   "video": []
+  },
+  {
+   "id": "2026-10-31-halloween-ilaria",
+   "date": "2026-10-31",
+   "ora": "20:00",
+   "titolo": "Mostruosamente Ballabili — Halloween Night",
+   "venue": "Ilaria Restaurant",
+   "city": "",
+   "note": "Cena e ballo",
+   "descrizione": "Halloween Night a cena e ballo con il DJ duo Guido Arcangeli & Barbara DJ.\nApertura porte alle 20:00, DJ set dal vivo, cocktail da brivido e cena.",
+   "locandina": "eventi/2026-10-31-halloween-ilaria/locandina.jpg",
+   "foto": [],
+   "video": []
+  },
+  {
+   "id": "2026-10-30-happy-day",
+   "date": "2026-10-30",
+   "ora": "",
+   "titolo": "Dancing Happy Day",
+   "venue": "Dancing Happy Day",
+   "city": "San Giuliano Terme (PI)",
+   "note": "In consolle Guido Arcangeli & Barbara DJ",
+   "descrizione": "Venerdì sera al Dancing Happy Day di San Giuliano Terme, con Guido Arcangeli & Barbara DJ in consolle.",
+   "locandina": "eventi/2026-10-30-happy-day/locandina.jpg",
+   "foto": [],
+   "video": []
+  },
+  {
+   "id": "2026-10-27-papillon",
+   "date": "2026-10-27",
+   "ora": "21:00",
+   "titolo": "Martedì al Papillon",
+   "venue": "Dancing Papillon",
+   "city": "Piano di Mommio (LU)",
+   "note": "In consolle Guido Arcangeli & Barbara DJ",
+   "descrizione": "Martedì sera al Dancing Papillon di Piano di Mommio con Guido Arcangeli & Barbara DJ in consolle. Ecco un assaggio della serata.",
+   "locandina": "",
+   "foto": [],
+   "video": [
+    {
+     "file": "eventi/2026-10-27-papillon/video-1.mp4",
+     "poster": "eventi/2026-10-27-papillon/video-1.jpg"
+    }
+   ]
   }
  ],
  "video": [

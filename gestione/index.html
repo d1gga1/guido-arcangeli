@@ -140,6 +140,17 @@ main{max-width:1100px;margin:0 auto;padding:22px 16px 120px}
 .dlg{width:100%;max-width:420px;background:var(--bg-2);border:1px solid var(--line-2);border-radius:18px;padding:22px}
 .dlg p{color:var(--ink-dim);margin:.6em 0 1.2em}
 .dlg .btns{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
+.dlg--share{max-width:520px;max-height:calc(100dvh - 32px);overflow:auto}
+.shd-h{display:flex;gap:14px;justify-content:space-between;align-items:flex-start}
+.shd-img{width:76px;height:96px;object-fit:cover;border-radius:10px;border:1px solid var(--line);flex:none}
+.dlg p.shd-warn{margin:.9em 0 0;padding:10px 12px;border-radius:10px;background:rgba(62,224,143,.08);border:1px solid rgba(62,224,143,.3);color:var(--ink);font-size:.9rem}
+.shd-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:16px}
+.shb{display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px 6px;border-radius:12px;border:1px solid var(--line-2);background:var(--bg-1);color:var(--ink);font:600 .82rem var(--f-body);cursor:pointer;transition:transform .15s,border-color .2s}
+.shb svg{width:26px;height:26px;fill:currentColor}
+.shb:hover{transform:translateY(-2px);border-color:var(--ink-dim)}
+.shb-wa svg{fill:#25d366}.shb-fb svg{fill:#1877f2}.shb-ig svg{fill:#e1306c}.shb-tg svg{fill:#229ed9}.shb-more svg{fill:var(--c)}
+.shd-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.dlg p.shd-ig{margin:.8em 0 0;color:var(--ink);font-size:.88rem;line-height:1.45}
 .toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom));transform:translate(-50%,20px);z-index:70;background:var(--bg-3);border:1px solid var(--line-2);border-radius:12px;padding:12px 16px;max-width:calc(100% - 32px);opacity:0;transition:.3s;pointer-events:none;font-size:.92rem}
 .toast.show{opacity:1;transform:translate(-50%,0)}
 .toast.ok{border-color:rgba(62,224,143,.5)}
@@ -153,6 +164,29 @@ main{max-width:1100px;margin:0 auto;padding:22px 16px 120px}
 .spin{width:38px;height:38px;border-radius:50%;border:3px solid var(--line-2);border-top-color:var(--c);animation:sp 0.9s linear infinite;margin:0 auto 16px}
 @keyframes sp{to{transform:rotate(360deg)}}
 .note{font-size:.85rem;color:var(--ink-dim);background:rgba(0,229,255,.06);border:1px solid rgba(0,229,255,.2);border-radius:12px;padding:12px 14px}
+/* galleria */
+.gal{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px}
+.gal-cell{border:1px solid var(--line);border-radius:var(--r);background:var(--bg-1);overflow:hidden;display:flex;flex-direction:column}
+.gal-th{position:relative;aspect-ratio:3/4;background:var(--bg-3);overflow:hidden}
+.gal-th img,.gal-th video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.gal-n{position:absolute;left:6px;top:6px;font-family:var(--f-mono);font-size:.62rem;background:rgba(5,4,10,.8);border-radius:5px;padding:2px 6px}
+.gal-play{position:absolute;inset:0;display:grid;place-items:center;font-size:1.6rem;color:#fff;text-shadow:0 2px 12px #000;pointer-events:none}
+.gal-b{padding:8px 10px 0;display:grid;gap:4px}
+.gal-b .tag{justify-self:start}
+.gal-cap{font-size:.85rem;color:var(--ink-dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gal-a{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:8px 10px 10px;margin-top:auto}
+.gal-a .icon-btn{font-size:1.3rem;line-height:1}
+.pickc{cursor:pointer;display:block}
+.pickc input{position:absolute;top:6px;right:6px;width:22px;height:22px;accent-color:var(--v)}
+.pickc:has(input:checked){outline:3px solid var(--v);outline-offset:-3px}
+.pickc.is-in{opacity:.45;cursor:default}
+.pickc video{width:100%;height:100%;object-fit:cover}
+.ev-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:8px}
+.ev-cell{position:relative;aspect-ratio:1;border-radius:10px;overflow:hidden;background:var(--bg-3);border:1px solid var(--line)}
+.ev-cell img{width:100%;height:100%;object-fit:cover}
+.ev-x{position:absolute;top:4px;right:4px;width:30px;height:30px;border-radius:50%;border:0;background:rgba(5,4,10,.8);color:#fff;font-size:1.2rem;line-height:1;cursor:pointer}
+.ev-new{position:absolute;left:4px;bottom:4px;font-family:var(--f-mono);font-size:.55rem;letter-spacing:.1em;text-transform:uppercase;background:var(--ok);color:#000;border-radius:4px;padding:2px 5px}
+#ev-vids .item{grid-template-columns:64px 1fr auto}
 </style>
 </head>
 <body>
@@ -162,7 +196,7 @@ main{max-width:1100px;margin:0 auto;padding:22px 16px 120px}
   <div class="gate-box">
     <p class="eyebrow">Guido Arcangeli DJ</p>
     <h1 class="disp">Area riservata</h1>
-    <p style="color:var(--ink-dim)">Accedi per gestire brani, testi, serate e video del sito.</p>
+    <p style="color:var(--ink-dim)">Accedi per gestire brani, testi, serate (con foto e video) e video del sito.</p>
     <form id="f-login" autocomplete="on">
       <label class="f"><span>Nome utente</span><input class="in" name="user" autocomplete="username" autocapitalize="none" required></label>
       <label class="f"><span>Password</span><input class="in" name="pass" type="password" autocomplete="current-password" required></label>
@@ -219,6 +253,7 @@ main{max-width:1100px;margin:0 auto;padding:22px 16px 120px}
     <nav class="tabs" role="tablist">
       <button class="tab" role="tab" data-tab="brani" aria-selected="true">Brani</button>
       <button class="tab" role="tab" data-tab="serate" aria-selected="false">Serate</button>
+      <button class="tab" role="tab" data-tab="galleria" aria-selected="false">Galleria</button>
       <button class="tab" role="tab" data-tab="video" aria-selected="false">Video</button>
     </nav>
   </header>
@@ -236,10 +271,24 @@ main{max-width:1100px;margin:0 auto;padding:22px 16px 120px}
     <section data-panel="serate" hidden>
       <div class="head">
         <h2 class="disp">Serate</h2>
-        <button class="btn" type="button" id="b-clean-ev">Togli le serate passate</button>
         <button class="btn btn--solid" type="button" id="b-new-ev">+ Nuova serata</button>
       </div>
+      <p class="note" style="margin-bottom:16px">Le serate in programma sono in home e nella pagina <b>Serate</b>; quelle passate restano
+        nella pagina Serate con locandina, foto e video. Puoi riaprire una serata quando vuoi (anche settimane dopo) per aggiungere foto e video.</p>
+      <div class="note" id="ev-space" style="margin-bottom:16px"></div>
       <div class="list" id="l-serate"></div>
+    </section>
+    <section data-panel="galleria" hidden>
+      <div class="head">
+        <h2 class="disp">Galleria</h2>
+        <span class="btn btn--solid pick">+ Foto<input type="file" accept="image/*" multiple id="g-add-foto"></span>
+        <span class="btn pick">+ Video<input type="file" accept="video/*" multiple id="g-add-vid"></span>
+        <button class="btn" type="button" id="g-from-ev">Prendi dalle serate…</button>
+      </div>
+      <p class="note" style="margin-bottom:12px">Sono le foto e i video della sezione <b>"Dalle serate"</b> in home (e nella pagina News).
+        L'ordine qui è quello del sito: le nuove vanno per prime, con le frecce le sposti. Tocca <b>Modifica</b> per scrivere la didascalia o togliere una foto.</p>
+      <div style="display:flex;gap:8px;margin-bottom:16px;max-width:560px"><input class="in" id="g-yt" placeholder="Oppure incolla un link YouTube"><button class="btn" type="button" id="g-yt-add">Aggiungi</button></div>
+      <div class="gal" id="l-gal"></div>
     </section>
     <section data-panel="video" hidden>
       <div class="head">
@@ -328,6 +377,7 @@ function unseal(box, user, pass) {
 var S = null;            // { token, repo, branch, user }
 var C = null;            // contenuti
 var TREE = {};           // file presenti nel repository
+var SIZE_TOT = 0;        // byte occupati dal sito (per il limite di 1 GB di GitHub Pages)
 function saveSession() { try { sessionStorage.setItem('ga_adm', JSON.stringify(S)); } catch (e) {} }
 function loadSession() { try { return JSON.parse(sessionStorage.getItem('ga_adm') || 'null'); } catch (e) { return null; } }
 
@@ -372,7 +422,7 @@ function uploadBlob(b64, onProg) {
 }
 function loadTree() {
   return gh('GET', '/git/trees/' + encodeURIComponent(S.branch) + '?recursive=1').then(function (t) {
-    TREE = {}; (t.tree || []).forEach(function (e) { if (e.type === 'blob') TREE[e.path] = e.sha; });
+    TREE = {}; SIZE_TOT = 0; (t.tree || []).forEach(function (e) { if (e.type === 'blob') { TREE[e.path] = e.sha; SIZE_TOT += e.size || 0; } });
   });
 }
 function parseContent(txt) {
@@ -383,7 +433,7 @@ function parseContent(txt) {
 function serializeContent(c) {
   c.aggiornato = new Date().toISOString();
   return '/* ============================================================\n' +
-    '   contenuti.js — BRANI, SERATE e VIDEO del sito\n' +
+    '   contenuti.js — BRANI, SERATE, GALLERIA e VIDEO del sito\n' +
     '   Questo file viene riscritto dal pannello di gestione (/gestione/).\n' +
     '   Si può modificare anche a mano: è JSON dentro window.GA_CONTENUTI.\n' +
     '   ============================================================ */\n' +
@@ -393,7 +443,7 @@ function loadContent() {
   return gh('GET', '/contents/' + CONTENT_PATH + '?ref=' + encodeURIComponent(S.branch) + '&t=' + Date.now(), null, { accept: 'application/vnd.github.raw', text: true })
     .then(function (txt) {
       C = parseContent(txt);
-      C.brani = C.brani || []; C.serate = C.serate || []; C.video = C.video || []; C.momento = C.momento || {};
+      C.brani = C.brani || []; C.serate = C.serate || []; C.video = C.video || []; C.momento = C.momento || {}; C.galleria = C.galleria || [];
     });
 }
 
@@ -449,6 +499,53 @@ function pagineBrani() {
   });
   return out;
 }
+/* ---------------- pagine delle serate (serata/ID.html) ----------------
+   Il link che si condivide: su WhatsApp/Facebook/Telegram l'anteprima mostra la
+   locandina. STESSE REGOLE di pagina_serata() in genera-pagine-brani.py */
+var MODELLO_S = null, MODEL_S_PATH = 'assets/modello-serata.html';
+function serataId(e) { return e.id || (e.date + '-' + slugifyP(e.venue).slice(0, 50)); }
+function serataUrl(e) { return SITE + 'serata/' + serataId(e) + '.html'; }
+function serataImg(e) {
+  var v = (e.video || []).filter(function (x) { return x.poster; })[0];
+  var p = e.locandina || (e.foto || [])[0] || (v && v.poster) || '';
+  return p ? SITE + p : SITE + 'assets/img/og.jpg';
+}
+function serataTesti(e) {
+  var t = e.titolo || e.venue || 'Serata';
+  var quando = evFull(e.date) + (e.ora ? ' · ore ' + e.ora : '');
+  var dove = [e.titolo && e.venue && e.titolo !== e.venue ? e.venue : '', e.city].filter(Boolean).join(' · ');
+  var extra = String(e.descrizione || e.note || '').replace(/\s+/g, ' ').trim();
+  var d = 'Guido Arcangeli DJ — ' + quando + (dove ? ', ' + dove : '') + '.' + (extra ? ' ' + extra : '');
+  if (d.length > 300) d = d.slice(0, 297).replace(/\s+\S*$/, '') + '…';
+  return { titolo: t, quando: quando, dove: dove, descr: d };
+}
+function jsonldSerata(e, id) {
+  var x = serataTesti(e), url = SITE + 'serata/' + id + '.html', ora = e.ora || '';
+  var ev = { '@type': 'MusicEvent', '@id': url + '#serata', name: x.titolo + (e.venue && e.venue !== x.titolo ? ' — ' + e.venue : ''), url: url,
+    startDate: e.date + (/^\d\d:\d\d$/.test(ora) ? 'T' + ora : ''), description: x.descr, image: encodeURI(serataImg(e)),
+    eventStatus: 'https://schema.org/EventScheduled', eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
+    location: { '@type': 'Place', name: e.venue || '', address: { '@type': 'PostalAddress', addressLocality: String(e.city || '').replace(/\s*\(.*\)/, ''), addressRegion: 'Toscana', addressCountry: 'IT' } },
+    performer: { '@type': 'Person', '@id': SITE + '#guido', name: 'Guido Arcangeli' },
+    organizer: { '@type': 'Person', name: 'Guido Arcangeli', url: SITE } };
+  var g = { '@context': 'https://schema.org', '@graph': [ev, { '@type': 'BreadcrumbList', itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: SITE },
+    { '@type': 'ListItem', position: 2, name: 'Serate', item: SITE + 'serate.html' },
+    { '@type': 'ListItem', position: 3, name: x.titolo, item: url }] }] };
+  return '<script type="application/ld+json">' + JSON.stringify(g).replace(/<\//g, '<\\/') + '<\/script>';
+}
+function paginaSerata(e, id) {
+  var x = serataTesti(e);
+  var v = { TITOLO: esc(x.titolo), DESCRIZIONE: esc(x.descr), IMMAGINE: esc(encodeURI(serataImg(e))), URL: esc(SITE + 'serata/' + id + '.html'),
+    ID: esc(id), QUANDO: esc(x.quando), DOVE: esc(x.dove), NOTA: esc(e.note || ''), JSONLD: jsonldSerata(e, id) };
+  return MODELLO_S.replace(/\{\{([A-Z]+)\}\}/g, function (m, k) { return k in v ? v[k] : m; });
+}
+function pagineSerate() {
+  var out = {};
+  if (MODELLO_S) (C.serate || []).forEach(function (e) {
+    if (!e.date) return; var id = serataId(e); out['serata/' + id + '.html'] = paginaSerata(e, id);
+  });
+  return out;
+}
 function gitSha(text) {   // lo "sha" che GitHub darebbe al file: se e' uguale, la pagina non e' cambiata
   var body = new TextEncoder().encode(text), head = new TextEncoder().encode('blob ' + body.length + '\0');
   var all = new Uint8Array(head.length + body.length); all.set(head); all.set(body, head.length);
@@ -457,19 +554,27 @@ function gitSha(text) {   // lo "sha" che GitHub darebbe al file: se e' uguale, 
   });
 }
 function pageChanges() {
-  if (!MODELLO) return Promise.resolve({ add: [], del: [], sha: {} });
-  var pages = pagineBrani(), paths = Object.keys(pages), sha = {};
+  if (!MODELLO && !MODELLO_S) return Promise.resolve({ add: [], del: [], sha: {} });
+  var pages = MODELLO ? pagineBrani() : {}, ps = pagineSerate(), sha = {};
+  Object.keys(ps).forEach(function (p) { pages[p] = ps[p]; });
+  var paths = Object.keys(pages);
   return Promise.all(paths.map(function (p) { return gitSha(pages[p]).then(function (h) { sha[p] = h; }); })).then(function () {
     return {
       add: paths.filter(function (p) { return TREE[p] !== sha[p]; }).map(function (p) { return { path: p, mode: '100644', type: 'blob', content: pages[p] }; }),
-      del: Object.keys(TREE).filter(function (p) { return /^brano\/[^/]+\.html$/.test(p) && !(p in pages); }),
+      del: Object.keys(TREE).filter(function (p) {
+        return ((MODELLO && /^brano\/[^/]+\.html$/.test(p)) || (MODELLO_S && /^serata\/[^/]+\.html$/.test(p))) && !(p in pages);
+      }),
       sha: sha
     };
   });
 }
 function loadModel() {
   return gh('GET', '/contents/' + MODEL_PATH + '?ref=' + encodeURIComponent(S.branch) + '&t=' + Date.now(), null, { accept: 'application/vnd.github.raw', text: true })
-    .then(function (txt) { MODELLO = txt; }, function () { MODELLO = null; });
+    .then(function (txt) { MODELLO = txt; }, function () { MODELLO = null; })
+    .then(function () {
+      return gh('GET', '/contents/' + MODEL_S_PATH + '?ref=' + encodeURIComponent(S.branch) + '&t=' + Date.now(), null, { accept: 'application/vnd.github.raw', text: true });
+    })
+    .then(function (txt) { MODELLO_S = txt; }, function () { MODELLO_S = null; });
 }
 
 /* Un salvataggio = un commit con tutti i file insieme.
@@ -681,7 +786,7 @@ $$('.tab').forEach(function (t) {
     $$('[data-panel]').forEach(function (p) { p.hidden = p.getAttribute('data-panel') !== t.getAttribute('data-tab'); });
   });
 });
-function renderAll() { renderSongs(); renderEvents(); renderVideos(); }
+function renderAll() { renderSongs(); renderEvents(); renderGal(); renderVideos(); }
 
 var I = {
   up: '<svg viewBox="0 0 24 24"><path d="M12 6.8 5.4 13.4 6.8 14.8 12 9.6l5.2 5.2 1.4-1.4z"/></svg>',
@@ -988,60 +1093,507 @@ function lyricsPdf(title, authors, text) {
   });
 }
 
-/* ---------------- SERATE ---------------- */
+/* ---------------- SERATE ----------------
+   Ogni serata: date, ora, titolo, venue, city, note, descrizione,
+   locandina (immagine), foto [percorsi], video [{file, poster} | {youtube}].
+   I file stanno in eventi/<id>/. Le serate passate restano sul sito
+   (pagina serate.html → "Serate passate") e si possono sempre modificare,
+   per esempio per aggiungere foto e video giorni dopo. */
+var GIORNI = ['Domenica','Lunedì','Martedì','Mercoledì','Giovedì','Venerdì','Sabato'];
+var MESI_L = ['gennaio','febbraio','marzo','aprile','maggio','giugno','luglio','agosto','settembre','ottobre','novembre','dicembre'];
+var SPAZIO_MAX = 1000 * 1024 * 1024;   // GitHub Pages: sito pubblicato al massimo 1 GB
 function today() { var d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
-function sortEvents() { C.serate.sort(function (a, b) { return a.date < b.date ? -1 : a.date > b.date ? 1 : 0; }); }
+function sortEvents() { C.serate.sort(function (a, b) { return a.date < b.date ? 1 : a.date > b.date ? -1 : 0; }); }  // più recenti in alto
+function evDateObj(s) { var p = String(s || '').split('-'); return new Date(+p[0], (+p[1] || 1) - 1, +p[2] || 1); }
+function evFull(s) { if (!s) return ''; var d = evDateObj(s); return GIORNI[d.getDay()] + ' ' + d.getDate() + ' ' + MESI_L[d.getMonth()] + ' ' + d.getFullYear(); }
+function evThumb(e) {
+  if (e.locandina) return '../' + e.locandina;
+  if ((e.foto || []).length) return '../' + e.foto[0];
+  var v = (e.video || []).filter(function (x) { return x.poster || x.youtube; })[0];
+  return v ? (v.poster ? '../' + v.poster : 'https://i.ytimg.com/vi/' + v.youtube + '/mqdefault.jpg') : '';
+}
+function evFiles(e) {
+  var out = []; if (e.locandina) out.push(e.locandina);
+  (e.foto || []).forEach(function (f) { out.push(f); });
+  (e.video || []).forEach(function (v) { if (v.file) out.push(v.file); if (v.poster) out.push(v.poster); });
+  return out.filter(function (p) { return /^eventi\//.test(p); });
+}
+function mb(n) { return (n / 1048576).toFixed(n < 10485760 ? 1 : 0).replace('.', ',') + ' MB'; }
+function renderSpace() {
+  var el = $('#ev-space'); if (!el) return;
+  var used = SIZE_TOT, pct = Math.min(100, used / SPAZIO_MAX * 100);
+  el.innerHTML = 'Spazio usato dal sito: <b>' + mb(used) + '</b> su ' + mb(SPAZIO_MAX) + ' (' + Math.round(pct) + '%)' +
+    '<div class="bar" style="margin-top:8px"><i style="width:' + pct + '%' + (pct > 90 ? ';background:var(--err)' : '') + '"></i></div>' +
+    (pct > 90 ? '<p style="margin:.6em 0 0;color:var(--err)">Il sito è quasi pieno: per i video lunghi usa un link YouTube invece di caricare il file.</p>' : '');
+}
 function renderEvents() {
-  sortEvents();
+  sortEvents(); renderSpace();
   var host = $('#l-serate'), t = today();
-  if (!C.serate.length) { host.innerHTML = '<div class="empty">Nessuna serata in calendario.</div>'; return; }
+  if (!C.serate.length) { host.innerHTML = '<div class="empty">Nessuna serata. Aggiungi la prima con "+ Nuova serata".</div>'; return; }
   host.innerHTML = C.serate.map(function (e, i) {
-    var d = (e.date || '').split('-');
-    return '<div class="item' + (e.date < t ? ' past' : '') + '" data-i="' + i + '">' +
-      '<div class="date-box"><div><b>' + esc(+d[2] || '?') + '</b><br><small>' + esc(MESI[(+d[1] || 1) - 1]) + ' ' + esc((d[0] || '').slice(2)) + '</small></div></div>' +
-      '<div class="t"><b>' + esc(e.venue) + '</b><small>' + esc([e.city, e.note].filter(Boolean).join(' · ')) + (e.date < t ? ' · passata, non si vede sul sito' : '') + '</small></div>' +
-      '<div class="acts"><button class="btn btn--sm" type="button" data-ed>Modifica</button></div></div>';
+    var d = (e.date || '').split('-'), th = evThumb(e), nf = (e.foto || []).length, nv = (e.video || []).length;
+    return '<div class="item" data-i="' + i + '">' +
+      (th ? '<img src="' + esc(th) + '" alt="" loading="lazy" onerror="this.onerror=null;this.src=\'../assets/img/vinyl.jpg\'">'
+          : '<div class="date-box"><div><b>' + esc(+d[2] || '?') + '</b><br><small>' + esc(MESI[(+d[1] || 1) - 1]) + ' ' + esc(d[0] || '') + '</small></div></div>') +
+      '<div class="t"><b>' + esc(e.titolo || e.venue) + '</b>' +
+      '<small>' + esc(evFull(e.date) + (e.ora ? ' · ore ' + e.ora : '')) + '</small>' +
+      '<small>' + esc([e.titolo && e.titolo !== e.venue ? e.venue : '', e.city].filter(Boolean).join(' · ')) + '</small>' +
+      '<div class="tags">' +
+        (e.date < t ? '<span class="tag">Passata</span>' : '<span class="tag star">In programma</span>') +
+        '<span class="tag' + (e.locandina ? ' on' : '') + '">' + (e.locandina ? '✓ ' : '— ') + 'Locandina</span>' +
+        '<span class="tag' + (nf ? ' on' : '') + '">' + nf + ' foto</span>' +
+        '<span class="tag' + (nv ? ' on' : '') + '">' + nv + ' video</span>' +
+      '</div></div>' +
+      '<div class="acts"><button class="btn btn--sm" type="button" data-sh-ev>Condividi</button><button class="btn btn--sm" type="button" data-ed>Modifica</button></div></div>';
   }).join('');
 }
 $('#l-serate').addEventListener('click', function (e) {
-  var it = e.target.closest('.item'); if (it && e.target.closest('[data-ed]')) editEvent(+it.getAttribute('data-i'));
+  var it = e.target.closest('.item'); if (!it) return;
+  if (e.target.closest('[data-ed]')) editEvent(+it.getAttribute('data-i'));
+  else if (e.target.closest('[data-sh-ev]')) shareEvent(C.serate[+it.getAttribute('data-i')]);
 });
-$('#b-new-ev').addEventListener('click', function () { editEvent(-1); });
-$('#b-clean-ev').addEventListener('click', function () {
-  var t = today(), n = C.serate.filter(function (e) { return e.date < t; }).length;
-  if (!n) { toast('Non ci sono serate passate.'); return; }
-  ask('Togliere le serate passate?', n + (n === 1 ? ' serata già passata verrà tolta' : ' serate già passate verranno tolte') + ' dall\'elenco.', 'Togli').then(function (ok) {
-    if (!ok) return;
-    var prev = C.serate.slice();
-    C.serate = C.serate.filter(function (e) { return e.date >= t; });
-    publish('Tolte le serate passate', [], []).then(renderEvents, function () { C.serate = prev; renderEvents(); });
+
+/* ---------------- CONDIVIDI UNA SERATA ----------------
+   Il link è la pagina serata/ID.html: su WhatsApp, Facebook e Telegram
+   l'anteprima mostra la locandina. Instagram non accetta link dal web:
+   si condivide l'immagine della locandina (dal telefono) con il testo da incollare. */
+var SH_IC = {
+  wa: 'M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm4.5 12.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.5-.3z',
+  fb: 'M13.5 22v-8h2.7l.4-3.2h-3.1V8.8c0-.9.3-1.5 1.6-1.5h1.7V4.4a22 22 0 0 0-2.5-.1c-2.4 0-4.1 1.5-4.1 4.2v2.3H7.5V14h2.7v8z',
+  ig: 'M12 7.3a4.7 4.7 0 1 0 0 9.4 4.7 4.7 0 0 0 0-9.4zm0 7.7a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm6-7.9a1.1 1.1 0 1 1-2.2 0 1.1 1.1 0 0 1 2.2 0zM16 2H8a6 6 0 0 0-6 6v8a6 6 0 0 0 6 6h8a6 6 0 0 0 6-6V8a6 6 0 0 0-6-6zm4 14a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4V8a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4z',
+  tg: 'M21.4 3.6 2.9 10.7c-1.3.5-1.2 1.2-.2 1.5l4.7 1.5 1.8 5.6c.2.6.4.8.9.8.4 0 .6-.2.9-.4l2.3-2.2 4.7 3.5c.9.5 1.5.2 1.7-.8l3.1-14.6c.3-1.3-.5-1.9-1.4-1.5zM9.6 14.1l8.8-5.6c.4-.3.8-.1.5.2l-7.5 6.8-.3 3.1z',
+  x: 'M17.8 3h3.1l-6.8 7.7L22 21h-6.2l-4.9-6.4L5.3 21H2.2l7.2-8.3L1.8 3h6.4l4.4 5.8zm-1.1 16.2h1.7L7.4 4.7H5.6z',
+  more: 'M18 16a3 3 0 0 0-2.4 1.2l-6.8-3.4a3 3 0 0 0 0-1.6l6.8-3.4A3 3 0 1 0 15 7l-6.8 3.4a3 3 0 1 0 0 3.2L15 17a3 3 0 1 0 3-1z'
+};
+var TEL_GUIDO = '333 84 48 728';
+function evPostText(e, url) {
+  var x = serataTesti(e), past = e.date < today();
+  var righe = [(past ? '📸 Foto e video della serata!' : '🎶 Vi aspetto!') + ' ' + x.titolo,
+    '📅 ' + evFull(e.date) + (e.ora ? ' · ore ' + e.ora : '')];
+  if (x.dove) righe.push('📍 ' + x.dove);
+  if (e.note) righe.push(e.note);
+  if (!past) righe.push('', 'Info e prenotazioni: ' + TEL_GUIDO + ' (anche WhatsApp)');
+  righe.push('', url);
+  return righe.join('\n');
+}
+function copyTxt(t, msg) {
+  function ok() { toast(msg || 'Copiato'); }
+  if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(t).then(ok, fb);
+  fb();
+  function fb() {
+    var ta = document.createElement('textarea'); ta.value = t; ta.style.cssText = 'position:fixed;top:0;left:0;opacity:0';
+    document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); ok(); } catch (x) {} ta.remove();
+  }
+}
+// immagine da condividere: il file appena scelto oppure la locandina/foto già sul sito
+function evImageFile(e, file) {
+  if (file) return Promise.resolve(file);
+  var v = (e.video || []).filter(function (x) { return x.poster; })[0];
+  var p = e.locandina || (e.foto || [])[0] || (v && v.poster); if (!p) return Promise.resolve(null);
+  return fetch('../' + p, { cache: 'force-cache' }).then(function (r) { return r.ok ? r.blob() : null; })
+    .then(function (b) { return b ? new File([b], 'locandina-' + serataId(e) + '.jpg', { type: b.type || 'image/jpeg' }) : null; })
+    .catch(function () { return null; });
+}
+function shareEvent(e, file, appena) {
+  if (!e) return;
+  var url = serataUrl(e), x = serataTesti(e), imgP = evImageFile(e, file), imgUrl = null;
+  var mobile = matchMedia('(hover:none),(pointer:coarse)').matches;
+  var d = document.createElement('div'); d.className = 'dlg-scrim';
+  var b = function (k, label) { return '<button class="shb shb-' + k + '" type="button" data-k="' + k + '"><svg viewBox="0 0 24 24"><path d="' + SH_IC[k] + '"/></svg><span>' + label + '</span></button>'; };
+  d.innerHTML = '<div class="dlg dlg--share" role="dialog" aria-modal="true" aria-label="Condividi la serata">' +
+    '<div class="shd-h"><div><p class="eyebrow">Condividi la serata</p><h3 class="disp" style="font-size:1.5rem;margin:.25em 0 0">' + esc(x.titolo) + '</h3>' +
+    '<small style="color:var(--ink-dim)">' + esc(x.quando) + '</small></div><img class="shd-img" alt="" hidden></div>' +
+    (appena ? '<p class="shd-warn">Serata salvata! La sua pagina sarà online tra 1–2 minuti: se l\'anteprima su WhatsApp o Facebook non mostra ancora la locandina, riprova fra poco.</p>' : '') +
+    '<div class="shd-grid">' + b('wa', 'WhatsApp') + b('fb', 'Facebook') + b('ig', 'Instagram') + b('tg', 'Telegram') + b('x', 'X') +
+      (navigator.share ? b('more', 'Altre app') : '') + '</div>' +
+    '<label class="f" style="margin-top:14px"><span>Testo del post (puoi modificarlo)</span><textarea class="in" rows="7" data-txt></textarea></label>' +
+    '<div class="shd-row"><button class="btn btn--sm" type="button" data-k="copytxt">Copia testo</button><button class="btn btn--sm" type="button" data-k="link">Copia link</button>' +
+      '<a class="btn btn--sm" data-k="dl" hidden download>Scarica locandina</a><a class="btn btn--sm" href="' + esc(url) + '" target="_blank" rel="noopener">Apri la pagina ↗</a></div>' +
+    '<p class="hint shd-ig" hidden></p>' +
+    '<div class="btns" style="margin-top:14px"><button class="btn btn--solid" type="button" data-k="close">Fatto</button></div></div>';
+  var ta = $('[data-txt]', d); ta.value = evPostText(e, url);
+  document.body.appendChild(d);
+  imgP.then(function (f) {
+    if (!f || !d.isConnected) return;
+    imgUrl = URL.createObjectURL(f);
+    var im = $('.shd-img', d); im.src = imgUrl; im.hidden = false;
+    var a = $('[data-k=dl]', d); a.href = imgUrl; a.download = f.name; a.hidden = false;
   });
-});
+  function testoSenzaLink() { return ta.value.replace(url, '').replace(/\s+$/, ''); }
+  function pop(u) { window.open(u, '_blank', 'noopener,width=640,height=600'); }
+  function igHint(t) { var h = $('.shd-ig', d); h.innerHTML = t; h.hidden = false; }
+  function close() { if (imgUrl) setTimeout(function () { URL.revokeObjectURL(imgUrl); }, 60000); d.remove(); }
+  d.addEventListener('click', function (ev) {
+    if (ev.target === d) return close();
+    var t = ev.target.closest('[data-k]'); if (!t) return;
+    var k = t.getAttribute('data-k');
+    if (k === 'close') close();
+    else if (k === 'wa') pop('https://wa.me/?text=' + encodeURIComponent(ta.value));
+    else if (k === 'fb') { copyTxt(testoSenzaLink(), 'Testo copiato: incollalo nel post di Facebook'); pop('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(url)); }
+    else if (k === 'tg') pop('https://t.me/share/url?url=' + encodeURIComponent(url) + '&text=' + encodeURIComponent(testoSenzaLink()));
+    else if (k === 'x') pop('https://twitter.com/intent/tweet?text=' + encodeURIComponent(testoSenzaLink().slice(0, 230)) + '&url=' + encodeURIComponent(url));
+    else if (k === 'link') copyTxt(url, 'Link della serata copiato');
+    else if (k === 'copytxt') copyTxt(ta.value, 'Testo copiato');
+    else if (k === 'more') navigator.share({ title: x.titolo, text: testoSenzaLink(), url: url }).catch(function () {});
+    else if (k === 'ig') {
+      copyTxt(ta.value, 'Testo copiato: incollalo come didascalia');
+      imgP.then(function (f) {
+        if (f && mobile && navigator.canShare && navigator.canShare({ files: [f] })) {
+          navigator.share({ files: [f] }).catch(function () {});
+          igHint('Nel menu scegli <b>Instagram</b> (post o storia) e incolla il testo come didascalia. Nelle storie puoi aggiungere l\'adesivo "Link" con il link della serata.');
+        } else if (f) {
+          var a = document.createElement('a'); a.href = imgUrl || URL.createObjectURL(f); a.download = f.name; document.body.appendChild(a); a.click(); a.remove();
+          igHint('Locandina scaricata e testo copiato. Instagram dal computer: <b>Crea → Post</b>, scegli la locandina e incolla il testo. Dal telefono è più comodo: apri il pannello dal telefono e premi Instagram.');
+        } else {
+          igHint('Questa serata non ha ancora locandina o foto. Il testo è copiato: puoi incollarlo in una storia di Instagram con l\'adesivo "Link".');
+        }
+      });
+    }
+  });
+}
+$('#b-new-ev').addEventListener('click', function () { editEvent(-1); });
+
+// immagine ridotta (lato lungo max "size"), proporzioni originali, JPEG
+function fitJpeg(file, size, q) {
+  return new Promise(function (res, rej) {
+    var img = new Image();
+    img.onload = function () {
+      var w = img.naturalWidth, h = img.naturalHeight, k = Math.min(1, size / Math.max(w, h)), cv = document.createElement('canvas');
+      cv.width = Math.round(w * k); cv.height = Math.round(h * k);
+      var cx = cv.getContext('2d'); cx.imageSmoothingQuality = 'high'; cx.drawImage(img, 0, 0, cv.width, cv.height);
+      res(cv.toDataURL('image/jpeg', q || 0.85).split(',')[1]);
+    };
+    img.onerror = function () { rej(new Error('Immagine non leggibile (' + (file.name || '') + '): usa JPG o PNG.')); };
+    img.src = URL.createObjectURL(file);
+  });
+}
+// fotogramma di anteprima del video (se il browser riesce a leggerlo; altrimenti niente anteprima)
+function videoPoster(file) {
+  return new Promise(function (res) {
+    var v = document.createElement('video'), done = false;
+    function end(x) { if (!done) { done = true; res(x); } }
+    v.muted = true; v.playsInline = true; v.preload = 'auto';
+    v.onloadeddata = function () { v.currentTime = Math.min(2, (v.duration || 4) / 3); };
+    v.onseeked = function () {
+      try {
+        var k = Math.min(1, 1280 / Math.max(v.videoWidth, v.videoHeight)), cv = document.createElement('canvas');
+        cv.width = Math.round(v.videoWidth * k); cv.height = Math.round(v.videoHeight * k);
+        cv.getContext('2d').drawImage(v, 0, 0, cv.width, cv.height);
+        end(cv.toDataURL('image/jpeg', 0.8).split(',')[1]);
+      } catch (e) { end(null); }
+    };
+    v.onerror = function () { end(null); };
+    setTimeout(function () { end(null); }, 8000);
+    v.src = URL.createObjectURL(file);
+  });
+}
+function evUniqueId(base) {
+  var used = {}; C.serate.forEach(function (x) { if (x.id) used[x.id] = 1; });
+  Object.keys(TREE).forEach(function (p) { var m = p.match(/^eventi\/([^/]+)\//); if (m) used[m[1]] = 1; });
+  var k = base, c = 2; while (used[k]) k = base + '-' + (c++); return k;
+}
+
 function editEvent(i) {
-  var isNew = i < 0, e = isNew ? { date: '', venue: '', city: '', note: '' } : C.serate[i];
-  openSheet(isNew ? 'Nuova serata' : 'Modifica serata', '' +
+  var isNew = i < 0;
+  var e = isNew ? { date: '', ora: '', titolo: '', venue: '', city: '', note: '', descrizione: '', locandina: '', foto: [], video: [] } : C.serate[i];
+  var foto = (e.foto || []).map(function (p) { return { path: p }; });        // {path} oppure {file, url}
+  var vids = (e.video || []).map(function (v) { return Object.assign({}, v); }); // {file,poster} | {youtube} | {pend: File}
+  var poster = { path: e.locandina || '', file: null };
+
+  var html = '' +
     '<div class="sec"><h4>Serata</h4>' +
-      '<label class="f"><span>Data *</span><input class="in" name="date" type="date" required value="' + esc(e.date) + '"></label>' +
-      '<label class="f"><span>Locale *</span><input class="in" name="venue" required value="' + esc(e.venue) + '" placeholder="es. Discoteca Sombrero"></label>' +
-      '<label class="f"><span>Città</span><input class="in" name="city" value="' + esc(e.city) + '" placeholder="es. San Miniato (PI)"></label>' +
-      '<label class="f"><span>Note</span><input class="in" name="note" value="' + esc(e.note) + '" placeholder="es. Dalle 22:00 — cena su prenotazione"></label>' +
-    '</div>' + (isNew ? '' : '<div><button class="btn btn--danger btn--sm" type="button" data-del-ev>Elimina questa serata</button></div>'),
-  function (f) {
+      '<div class="row row-2">' +
+        '<label class="f"><span>Data *</span><input class="in" name="date" type="date" required value="' + esc(e.date) + '"></label>' +
+        '<label class="f"><span>Ora</span><input class="in" name="ora" type="time" value="' + esc(e.ora || '') + '"></label>' +
+      '</div>' +
+      '<p class="hint" style="margin:0" id="ev-full">' + esc(evFull(e.date)) + '</p>' +
+      '<label class="f"><span>Titolo della serata</span><input class="in" name="titolo" value="' + esc(e.titolo || '') + '" placeholder="es. Mostruosamente Ballabili — Halloween Night"></label>' +
+      '<label class="f"><span>Locale *</span><input class="in" name="venue" required value="' + esc(e.venue) + '" placeholder="es. Dancing Grotta Maona"></label>' +
+      '<label class="f"><span>Città</span><input class="in" name="city" value="' + esc(e.city) + '" placeholder="es. Montecatini Terme (PT)"></label>' +
+      '<label class="f"><span>Riga breve</span><input class="in" name="note" value="' + esc(e.note) + '" placeholder="es. In consolle Guido Arcangeli & Barbara DJ"></label>' +
+      '<label class="f"><span>Descrizione</span><textarea class="in" name="descrizione" style="min-height:120px" placeholder="Racconta la serata: cena, ospiti, com\'è andata…">' + esc(e.descrizione || '') + '</textarea></label>' +
+    '</div>' +
+    '<div class="sec"><h4>Locandina</h4>' +
+      '<div class="cover-pick"><img id="ev-poster" alt="" style="object-fit:contain" src="' + (poster.path ? '../' + esc(poster.path) : '../assets/img/vinyl.jpg') + '">' +
+      '<div style="display:grid;gap:8px"><span class="btn btn--sm pick">' + (poster.path ? 'Cambia locandina…' : 'Scegli immagine…') + '<input type="file" accept="image/*" data-ev-poster></span>' +
+      '<button class="btn btn--sm btn--danger" type="button" data-ev-poster-rm' + (poster.path ? '' : ' hidden') + '>Togli locandina</button>' +
+      '<p class="hint" style="margin:0">JPG o PNG, anche verticale. Viene ridotta in automatico.</p></div></div>' +
+    '</div>' +
+    '<div class="sec"><h4>Foto della serata</h4>' +
+      '<div class="ev-grid" id="ev-foto"></div>' +
+      '<div><span class="btn btn--sm pick">+ Aggiungi foto…<input type="file" accept="image/*" multiple data-ev-foto></span></div>' +
+      '<p class="hint" style="margin:0">Puoi sceglierne tante insieme. Si possono aggiungere anche giorni dopo la serata.</p>' +
+    '</div>' +
+    '<div class="sec"><h4>Video della serata</h4>' +
+      '<div class="list" id="ev-vids"></div>' +
+      '<div><span class="btn btn--sm pick">+ Carica video…<input type="file" accept="video/*" multiple data-ev-vid></span></div>' +
+      '<p class="hint" style="margin:0">Video brevi (massimo 95 MB l\'uno). Per i video lunghi meglio YouTube:</p>' +
+      '<div style="display:flex;gap:8px"><input class="in" name="yt" placeholder="Incolla un link YouTube"><button class="btn btn--sm" type="button" data-ev-yt>Aggiungi</button></div>' +
+    '</div>' +
+    (isNew ? '' : '<div class="sec"><h4>Elimina</h4><p class="hint" style="margin:0">Toglie la serata dal sito insieme a locandina, foto e video.</p><div><button class="btn btn--danger btn--sm" type="button" data-del-ev>Elimina questa serata</button></div></div>');
+
+  openSheet(isNew ? 'Nuova serata' : 'Modifica serata', html, function (f) {
     if (!f.date.value || !f.venue.value.trim()) { toast('Data e locale sono obbligatori', 'bad'); return false; }
-    var ne = { date: f.date.value, venue: f.venue.value.trim(), city: f.city.value.trim(), note: f.note.value.trim() };
-    var prev = C.serate.slice();
-    if (isNew) C.serate.push(ne); else C.serate[C.serate.indexOf(e)] = ne;
-    return publish((isNew ? 'Nuova serata: ' : 'Modificata serata: ') + ne.venue + ' ' + ne.date, [], []).then(renderEvents, function (x) { C.serate = prev; throw x; });
+    var id = e.id || evUniqueId(f.date.value + '-' + slug(f.titolo.value.trim() || f.venue.value.trim()).slice(0, 40));
+    var dir = 'eventi/' + id + '/', stamp = Date.now().toString(36);
+    var files = [], del = [], tasks = [], n = 0;
+    var ne = {
+      id: id, date: f.date.value, ora: f.ora.value, titolo: f.titolo.value.trim(), venue: f.venue.value.trim(),
+      city: f.city.value.trim(), note: f.note.value.trim(), descrizione: f.descrizione.value.trim(),
+      locandina: poster.path, foto: [], video: []
+    };
+    if (poster.file) {
+      var pp = dir + 'locandina-' + stamp + '.jpg';
+      tasks.push(fitJpeg(poster.file, 1600, 0.86).then(function (b64) { files.push({ path: pp, b64: b64 }); }));
+      ne.locandina = pp;
+    }
+    foto.forEach(function (x) {
+      if (x.path) { ne.foto.push(x.path); return; }
+      var fp = dir + 'foto-' + stamp + '-' + (++n) + '.jpg'; ne.foto.push(fp);
+      tasks.push(fitJpeg(x.file, 1600, 0.85).then(function (b64) { files.push({ path: fp, b64: b64 }); }));
+    });
+    vids.forEach(function (v) {
+      if (!v.pend) { ne.video.push(v.youtube ? { youtube: v.youtube } : { file: v.file, poster: v.poster || '' }); return; }
+      if (v.pend.size > MAX_FILE) throw new Error('Il video "' + v.pend.name + '" è troppo grande (massimo 95 MB). Mettilo su YouTube e incolla il link.');
+      var k = ++n, vp = dir + 'video-' + stamp + '-' + k + '.' + (extOf(v.pend.name) || 'mp4'), item = { file: vp, poster: '' };
+      ne.video.push(item);
+      tasks.push(fileB64(v.pend).then(function (b64) { files.push({ path: vp, b64: b64 }); }));
+      tasks.push(videoPoster(v.pend).then(function (b64) {
+        if (b64) { item.poster = dir + 'video-' + stamp + '-' + k + '.jpg'; files.push({ path: item.poster, b64: b64 }); }
+      }));
+    });
+    // i file tolti dalla serata vengono cancellati dal sito
+    var keep = galFiles(); evFiles(ne).forEach(function (p) { keep[p] = 1; });
+    evFiles(e).forEach(function (p) { if (!keep[p]) del.push(p); });
+    var heavy = vids.some(function (v) { return v.pend; }) || foto.some(function (x) { return x.file; });
+    if (heavy) busy('Preparo i file…', 'Riduco le foto e leggo i video', null);
+    return Promise.all(tasks).then(function () {
+      var add = files.reduce(function (s, x) { return s + x.b64.length * 0.75; }, 0);
+      if (SIZE_TOT + add > SPAZIO_MAX * 0.98) { hideBusy(); throw new Error('Non c\'è abbastanza spazio sul sito per questi file (' + mb(add) + '). Togli qualche video o usa un link YouTube.'); }
+      var prev = C.serate.slice();
+      if (isNew) C.serate.push(ne); else C.serate[C.serate.indexOf(e)] = ne;
+      return publish((isNew ? 'Nuova serata: ' : 'Modificata serata: ') + (ne.titolo || ne.venue) + ' ' + ne.date, files, del,
+        files.length ? 'Pubblico "' + (ne.titolo || ne.venue) + '"' : '').then(function () {
+          SIZE_TOT += add; renderEvents();
+          if (isNew) setTimeout(function () { shareEvent(ne, poster.file || (foto.filter(function (q) { return q.file; })[0] || {}).file, true); }, 350);
+        }, function (x) { C.serate = prev; throw x; });
+    });
   }, isNew ? 'Aggiungi e pubblica' : 'Salva e pubblica');
-  var del = $('[data-del-ev]');
-  if (del) del.addEventListener('click', function () {
-    ask('Eliminare la serata?', e.venue + ' — ' + e.date, 'Elimina', true).then(function (ok) {
+
+  var body = $('#sheet-body');
+  function drawFoto() {
+    $('#ev-foto', body).innerHTML = foto.length ? foto.map(function (x, k) {
+      return '<div class="ev-cell"><img src="' + esc(x.path ? '../' + x.path : x.url) + '" alt="">' +
+        (x.file ? '<span class="ev-new">nuova</span>' : '') +
+        '<button type="button" class="ev-x" data-rm-foto="' + k + '" aria-label="Togli questa foto">×</button></div>';
+    }).join('') : '<p class="hint" style="margin:0">Nessuna foto.</p>';
+  }
+  function drawVids() {
+    $('#ev-vids', body).innerHTML = vids.length ? vids.map(function (v, k) {
+      var th = v.youtube ? 'https://i.ytimg.com/vi/' + v.youtube + '/mqdefault.jpg' : v.poster ? '../' + v.poster : '';
+      var name = v.youtube ? 'YouTube · youtu.be/' + v.youtube : v.pend ? v.pend.name + ' (' + mb(v.pend.size) + ')' : v.file.split('/').pop();
+      return '<div class="item">' + (th ? '<img src="' + esc(th) + '" alt="">' : '<div class="thumb"></div>') +
+        '<div class="t"><b>' + esc(name) + '</b><small>' + (v.pend ? '<span style="color:var(--ok)">nuovo, si carica al salvataggio</span>' :
+          v.file ? '<a href="../' + esc(v.file) + '" target="_blank" rel="noopener">guarda</a>' : '') + '</small></div>' +
+        '<div class="acts"><button class="btn btn--sm btn--danger" type="button" data-rm-vid="' + k + '">Togli</button></div></div>';
+    }).join('') : '<p class="hint" style="margin:0">Nessun video.</p>';
+  }
+  drawFoto(); drawVids();
+  body.addEventListener('change', function (ev) {
+    var t = ev.target;
+    if (t.name === 'date') { $('#ev-full', body).textContent = evFull(t.value); return; }
+    if (t.hasAttribute('data-ev-poster') && t.files[0]) {
+      poster.file = t.files[0]; $('#ev-poster', body).src = URL.createObjectURL(t.files[0]);
+      $('[data-ev-poster-rm]', body).hidden = false; t.value = ''; return;
+    }
+    if (t.hasAttribute('data-ev-foto')) {
+      Array.prototype.forEach.call(t.files, function (fl) { foto.push({ file: fl, url: URL.createObjectURL(fl) }); });
+      t.value = ''; drawFoto(); return;
+    }
+    if (t.hasAttribute('data-ev-vid')) {
+      Array.prototype.forEach.call(t.files, function (fl) {
+        if (fl.size > MAX_FILE) { toast('"' + fl.name + '" è troppo grande (massimo 95 MB): usa YouTube', 'bad', 6000); return; }
+        vids.push({ pend: fl });
+      });
+      t.value = ''; drawVids();
+    }
+  });
+  body.addEventListener('click', function (ev) {
+    var t = ev.target, b;
+    if ((b = t.closest('[data-rm-foto]'))) { foto.splice(+b.getAttribute('data-rm-foto'), 1); dirty = true; drawFoto(); return; }
+    if ((b = t.closest('[data-rm-vid]'))) { vids.splice(+b.getAttribute('data-rm-vid'), 1); dirty = true; drawVids(); return; }
+    if (t.closest('[data-ev-poster-rm]')) {
+      poster = { path: '', file: null }; $('#ev-poster', body).src = '../assets/img/vinyl.jpg'; t.closest('[data-ev-poster-rm]').hidden = true; dirty = true; return;
+    }
+    if (t.closest('[data-ev-yt]')) {
+      var inp = body.querySelector('[name=yt]'), id = ytId(inp.value);
+      if (!id) { toast('Link YouTube non riconosciuto', 'bad'); return; }
+      vids.push({ youtube: id }); inp.value = ''; dirty = true; drawVids(); return;
+    }
+    if (t.closest('[data-del-ev]')) {
+      ask('Eliminare la serata?', (e.titolo || e.venue) + ' — ' + evFull(e.date) + '. Verranno cancellate anche locandina, foto e video (quelli messi anche nella Galleria restano lì).', 'Elimina', true).then(function (ok) {
+        if (!ok) return;
+        var prev = C.serate.slice(); C.serate.splice(C.serate.indexOf(e), 1); closeSheet(true);
+        var inGal = galFiles();
+        publish('Eliminata serata: ' + (e.titolo || e.venue) + ' ' + e.date, [], evFiles(e).filter(function (p) { return !inGal[p]; }))
+          .then(renderEvents, function () { C.serate = prev; renderEvents(); });
+      });
+    }
+  });
+}
+
+/* ---------------- GALLERIA "Dalle serate" ----------------
+   C.galleria: [{foto, titolo} | {video, poster, titolo} | {youtube, titolo}]
+   File caricati qui → cartella galleria/. Si possono anche prendere foto e
+   video già caricati in una serata (stesso file, nessuna copia). */
+function galFiles() {
+  var o = {}; C.galleria.forEach(function (g) { [g.foto, g.video, g.poster].forEach(function (p) { if (p) o[p] = 1; }); }); return o;
+}
+var LOCAL = {};   // anteprime dei file appena caricati (online arrivano dopo 1-2 minuti)
+function galThumb(g) {
+  if (g.foto) return LOCAL[g.foto] || '../' + g.foto;
+  if (g.poster) return LOCAL[g.poster] || '../' + g.poster;
+  if (g.video && LOCAL[g.video]) return '';
+  if (g.youtube) return 'https://i.ytimg.com/vi/' + g.youtube + '/mqdefault.jpg';
+  return '';
+}
+// file della galleria da cancellare: solo quelli in galleria/ che nessun altro usa
+function galDelFiles(g) {
+  var used = galFiles(); C.serate.forEach(function (e) { evFiles(e).forEach(function (p) { used[p] = 1; }); });
+  return [g.foto, g.video, g.poster].filter(function (p) { return p && /^galleria\//.test(p) && !used[p]; });
+}
+function renderGal() {
+  var host = $('#l-gal'); if (!host) return;
+  if (!C.galleria.length) {
+    host.innerHTML = '<div class="empty" style="grid-column:1/-1">La sezione "Dalle serate" mostra ancora le 8 immagini di esempio.<br>' +
+      'Aggiungi le tue foto o i tuoi video: dalla prima che carichi, quelle di esempio spariscono.</div>';
+    return;
+  }
+  var n = C.galleria.length;
+  host.innerHTML = C.galleria.map(function (g, i) {
+    var th = galThumb(g), tipo = g.foto ? 'Foto' : g.youtube ? 'YouTube' : 'Video';
+    return '<div class="gal-cell" data-i="' + i + '">' +
+      '<div class="gal-th">' + (th ? '<img src="' + esc(th) + '" alt="" loading="lazy">' : '<video src="' + esc(LOCAL[g.video] || '../' + g.video) + '#t=0.5" muted preload="metadata"></video>') +
+        '<span class="gal-n">' + String(i + 1).padStart(2, '0') + '</span>' + (g.foto ? '' : '<span class="gal-play">▶</span>') + '</div>' +
+      '<div class="gal-b"><small class="tag">' + tipo + '</small><span class="gal-cap">' + esc(g.titolo || '—') + '</span></div>' +
+      '<div class="gal-a">' +
+        '<button class="icon-btn" type="button" data-gmv="-1" aria-label="Sposta prima"' + (i === 0 ? ' disabled' : '') + '>‹</button>' +
+        '<button class="btn btn--sm" type="button" data-ged>Modifica</button>' +
+        '<button class="icon-btn" type="button" data-gmv="1" aria-label="Sposta dopo"' + (i === n - 1 ? ' disabled' : '') + '>›</button>' +
+      '</div></div>';
+  }).join('');
+}
+var gMoveT = null;
+$('#l-gal').addEventListener('click', function (e) {
+  var c = e.target.closest('.gal-cell'); if (!c) return;
+  var i = +c.getAttribute('data-i'), mv = e.target.closest('[data-gmv]');
+  if (mv) {
+    var j = i + (+mv.getAttribute('data-gmv')); if (j < 0 || j >= C.galleria.length) return;
+    var x = C.galleria[i]; C.galleria[i] = C.galleria[j]; C.galleria[j] = x; renderGal();
+    setStatus('busy', 'Ordine da salvare…'); clearTimeout(gMoveT);
+    gMoveT = setTimeout(function () { publish('Nuovo ordine della galleria', [], []).catch(function () {}); }, 2500);
+    return;
+  }
+  if (e.target.closest('[data-ged]')) editGal(i);
+});
+function galPublish(items, files, msg) {
+  var add = files.reduce(function (s2, x) { return s2 + x.b64.length * 0.75; }, 0);
+  if (SIZE_TOT + add > SPAZIO_MAX * 0.98) { hideBusy(); toast('Non c\'è abbastanza spazio sul sito per questi file (' + mb(add) + '). Per i video usa un link YouTube.', 'bad', 7000); return Promise.resolve(); }
+  var prev = C.galleria.slice();
+  C.galleria = items.concat(C.galleria); renderGal();
+  return publish(msg, files, [], files.length ? 'Pubblico la galleria' : '').then(function () { SIZE_TOT += add; renderGal(); },
+    function () { C.galleria = prev; renderGal(); });
+}
+$('#g-add-foto').addEventListener('change', function () {
+  var list = Array.prototype.slice.call(this.files); this.value = ''; if (!list.length) return;
+  var stamp = Date.now().toString(36), files = [], items = [];
+  busy('Preparo le foto…', 'Le riduco per il sito', null);
+  Promise.all(list.map(function (f, k) {
+    var p = 'galleria/foto-' + stamp + '-' + (k + 1) + '.jpg'; items.push({ foto: p, titolo: '' }); LOCAL[p] = URL.createObjectURL(f);
+    return fitJpeg(f, 1600, 0.85).then(function (b64) { files.push({ path: p, b64: b64 }); });
+  })).then(function () {
+    return galPublish(items, files, 'Galleria: ' + items.length + (items.length === 1 ? ' foto aggiunta' : ' foto aggiunte'));
+  }).catch(function (e) { hideBusy(); toast(e.message, 'bad', 6000); });
+});
+$('#g-add-vid').addEventListener('change', function () {
+  var list = Array.prototype.slice.call(this.files); this.value = ''; if (!list.length) return;
+  var big = list.filter(function (f) { return f.size > MAX_FILE; });
+  if (big.length) toast('"' + big[0].name + '" è troppo grande (massimo 95 MB): mettilo su YouTube e incolla il link', 'bad', 7000);
+  list = list.filter(function (f) { return f.size <= MAX_FILE; }); if (!list.length) return;
+  var stamp = Date.now().toString(36), files = [], items = [];
+  busy('Preparo i video…', 'Leggo i file e creo le anteprime', null);
+  Promise.all(list.map(function (f, k) {
+    var base = 'galleria/video-' + stamp + '-' + (k + 1), it = { video: base + '.' + (extOf(f.name) || 'mp4'), poster: '', titolo: '' };
+    items.push(it); LOCAL[it.video] = URL.createObjectURL(f);
+    return Promise.all([
+      fileB64(f).then(function (b64) { files.push({ path: it.video, b64: b64 }); }),
+      videoPoster(f).then(function (b64) { if (b64) { it.poster = base + '.jpg'; LOCAL[it.poster] = 'data:image/jpeg;base64,' + b64; files.push({ path: it.poster, b64: b64 }); } })
+    ]);
+  })).then(function () {
+    return galPublish(items, files, 'Galleria: ' + items.length + (items.length === 1 ? ' video aggiunto' : ' video aggiunti'));
+  }).catch(function (e) { hideBusy(); toast(e.message, 'bad', 6000); });
+});
+$('#g-yt-add').addEventListener('click', function () {
+  var inp = $('#g-yt'), id = ytId(inp.value);
+  if (!id) { toast('Link YouTube non riconosciuto', 'bad'); return; }
+  inp.value = ''; galPublish([{ youtube: id, titolo: '' }], [], 'Galleria: video YouTube aggiunto');
+});
+function editGal(i) {
+  var g = C.galleria[i], th = galThumb(g);
+  openSheet(g.foto ? 'Foto della galleria' : 'Video della galleria', '' +
+    '<div class="sec">' +
+      (g.foto || g.youtube ? '<img src="' + esc(th) + '" alt="" style="width:100%;max-height:46vh;object-fit:contain;border-radius:12px;background:#000">'
+                    : '<video src="' + esc(LOCAL[g.video] || '../' + g.video) + '"' + (g.poster ? ' poster="' + esc(galThumb(g)) + '"' : '') + ' controls playsinline style="width:100%;max-height:46vh;border-radius:12px;background:#000"></video>') +
+      '<label class="f"><span>Didascalia</span><input class="in" name="titolo" maxlength="60" value="' + esc(g.titolo || '') + '" placeholder="es. Grotta Maona — la pista"></label>' +
+      '<p class="hint" style="margin:0">Compare sotto la foto, in maiuscolo. Breve: luogo o momento della serata.</p>' +
+    '</div>' +
+    '<div class="sec"><h4>Togli dalla galleria</h4><div><button class="btn btn--danger btn--sm" type="button" data-del-g>Togli dalla galleria</button></div></div>',
+  function (f) {
+    var ng = Object.assign({}, g, { titolo: f.titolo.value.trim() }), prev = C.galleria.slice();
+    C.galleria[C.galleria.indexOf(g)] = ng;
+    return publish('Galleria: didascalia', [], []).then(renderGal, function (x) { C.galleria = prev; throw x; });
+  });
+  $('[data-del-g]').addEventListener('click', function () {
+    ask('Togliere dalla galleria?', g.foto ? 'La foto non sarà più nella sezione "Dalle serate".' : 'Il video non sarà più nella sezione "Dalle serate".', 'Togli', true).then(function (ok) {
       if (!ok) return;
-      var prev = C.serate.slice(); C.serate.splice(C.serate.indexOf(e), 1); closeSheet(true);
-      publish('Eliminata serata: ' + e.venue + ' ' + e.date, [], []).then(renderEvents, function () { C.serate = prev; renderEvents(); });
+      var prev = C.galleria.slice(); C.galleria.splice(C.galleria.indexOf(g), 1);
+      var del = galDelFiles(g); closeSheet(true); renderGal();
+      publish('Galleria: tolto un elemento', [], del).then(renderGal, function () { C.galleria = prev; renderGal(); });
     });
   });
 }
+// scegli foto e video già caricati nelle serate
+$('#g-from-ev').addEventListener('click', function () {
+  sortEvents();
+  var inGal = galFiles(), pool = [];
+  var html = C.serate.map(function (e) {
+    var t = e.titolo || e.venue, cells = [];
+    if (e.locandina) cells.push({ foto: e.locandina, titolo: t, th: e.locandina, lab: 'locandina' });
+    (e.foto || []).forEach(function (p) { cells.push({ foto: p, titolo: t, th: p }); });
+    (e.video || []).forEach(function (v) {
+      if (v.youtube) cells.push({ youtube: v.youtube, titolo: t, thu: 'https://i.ytimg.com/vi/' + v.youtube + '/mqdefault.jpg', lab: 'video' });
+      else if (v.file) cells.push({ video: v.file, poster: v.poster || '', titolo: t, th: v.poster, lab: 'video' });
+    });
+    if (!cells.length) return '';
+    return '<div class="sec"><h4>' + esc(t) + ' <small style="color:var(--ink-faint);font-weight:400">· ' + esc(evFull(e.date)) + '</small></h4><div class="ev-grid">' +
+      cells.map(function (c) {
+        var k = pool.push(c) - 1, already = inGal[c.foto || c.video] || C.galleria.some(function (g) { return c.youtube && g.youtube === c.youtube; });
+        var src = c.thu || (c.th ? '../' + c.th : '');
+        return '<label class="ev-cell pickc' + (already ? ' is-in' : '') + '">' +
+          (src ? '<img src="' + esc(src) + '" alt="" loading="lazy">' : '<video src="../' + esc(c.video) + '#t=0.5" muted preload="metadata"></video>') +
+          '<input type="checkbox" data-pk="' + k + '"' + (already ? ' disabled' : '') + '>' +
+          (already ? '<span class="ev-new" style="background:var(--ink-dim)">già in galleria</span>' : c.lab ? '<span class="ev-new" style="background:var(--c)">' + c.lab + '</span>' : '') +
+          '</label>';
+      }).join('') + '</div></div>';
+  }).join('');
+  if (!pool.length) { toast('Nelle serate non ci sono ancora foto o video: aggiungili da "Serate" → Modifica', 'bad', 6000); return; }
+  openSheet('Prendi dalle serate', '<p class="hint" style="margin:0 0 4px">Tocca le foto e i video da mettere nella sezione "Dalle serate". La didascalia sarà il nome della serata (la puoi cambiare dopo).</p>' + html,
+    function (f) {
+      var sel = $$('[data-pk]:checked', f).map(function (x) { var c = pool[+x.getAttribute('data-pk')]; return c.foto ? { foto: c.foto, titolo: c.titolo } : c.youtube ? { youtube: c.youtube, titolo: c.titolo } : { video: c.video, poster: c.poster, titolo: c.titolo }; });
+      if (!sel.length) { toast('Non hai scelto niente', 'bad'); return false; }
+      return galPublish(sel, [], 'Galleria: ' + sel.length + ' dalle serate');
+    }, 'Aggiungi alla galleria');
+});
 
 /* ---------------- VIDEO ---------------- */
 function renderVideos() {

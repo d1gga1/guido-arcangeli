@@ -1,5 +1,55 @@
 # Sito Guido Arcangeli DJ — nuova versione
 
+## ★ Galleria "Dalle serate" e condivisione delle serate (novembre 2026)
+
+**Galleria dal pannello** — `/gestione/` ha una nuova scheda **Galleria**: sono le foto e i video
+della sezione "Dalle serate" in home (e della galleria nella pagina News).
+- **+ Foto** (anche tante insieme, ridotte in automatico), **+ Video** (file fino a 95 MB, con anteprima
+  creata da sola) oppure un **link YouTube**.
+- **Prendi dalle serate…**: sceglie foto, locandine e video già caricati in una serata, senza ricaricarli.
+- Frecce per l'ordine, **Modifica** per la didascalia o per togliere un elemento.
+- Finché la galleria è vuota restano le 8 immagini di esempio; dalla prima foto caricata spariscono.
+- Sul sito, toccando una foto o un video si apre a schermo intero (i video partono lì, con l'audio).
+- File in **`galleria/`** (recuperati da `pubblica.sh` come `eventi/`). Se una serata viene eliminata,
+  le sue foto messe in galleria non vengono cancellate.
+
+**Condividere una serata** — ogni serata ha la sua pagina **`serata/ID.html`**
+(es. `serata/2026-11-01-grotta-maona.html`): è il link che si condivide, e su WhatsApp, Facebook e
+Telegram l'anteprima mostra **locandina, titolo e data**.
+- Pannello → Serate → **Condividi** (e si apre da solo dopo aver aggiunto una serata nuova):
+  WhatsApp, Facebook, Instagram, Telegram, X, testo del post già pronto e modificabile, copia link,
+  scarica locandina.
+- **Instagram** non accetta link dal web: dal telefono il tasto Instagram apre il menu di condivisione
+  con la **locandina** (post o storia) e copia il testo da incollare come didascalia; dal computer scarica
+  la locandina e copia il testo.
+- Sul sito, in `serate.html` e nella pagina di ogni serata, c'è la riga **"Condividi la serata"**.
+- Le pagine si creano da sole (pannello a ogni salvataggio, `pubblica.sh` con `genera-pagine-brani.py`),
+  partendo da `assets/modello-serata.html`; sono anche nella sitemap.
+- Una serata appena salvata è online dopo 1–2 minuti: se l'anteprima non mostra subito la locandina,
+  riprovare fra poco. Facebook ricorda le anteprime: per aggiornarle <https://developers.facebook.com/tools/debug/>.
+- **Prima volta**: lanciare `bash pubblica.sh` per mettere online i file nuovi (modello delle serate,
+  pannello aggiornato). Da lì in poi fa tutto il pannello.
+- Copia dei file prima della modifica: `_tmp/backup_prima_galleria_condivisione/`.
+
+## ★ Serate con locandina, foto e video (novembre 2026)
+
+- **Nuova pagina `serate.html`**: prossime serate e **serate passate**, ognuna con data completa
+  di giorno e **anno**, ora, titolo, locale, descrizione, locandina (si ingrandisce), foto e video.
+  Il menu "Serate" di tutte le pagine porta qui; in home restano le prossime date (con anno e
+  miniatura della locandina) + il pulsante "Tutte le serate, foto e video".
+- **Pannello `/gestione/` → Serate**: Guido aggiunge e modifica le serate con titolo, ora, descrizione,
+  locandina, tante foto insieme, video (file fino a 95 MB) o link YouTube. Le serate passate **non
+  spariscono più**: si riaprono quando si vuole per aggiungere foto e video anche settimane dopo.
+  Foto e locandine vengono ridotte in automatico; per ogni video caricato viene creata un'anteprima.
+  Eliminare una serata cancella anche i suoi file.
+- I file stanno in **`eventi/<id-serata>/`**. `pubblica.sh` ora recupera anche questa cartella
+  (come `audio/` e `covers/`), quindi le foto caricate da Guido non vengono mai cancellate.
+- **Spazio**: GitHub Pages accetta siti fino a 1 GB e il sito ne usa già ~735 MB (soprattutto `audio/`).
+  Il pannello mostra lo spazio usato e blocca i caricamenti oltre il limite: per i video lunghi usare YouTube.
+  Video da iPhone: meglio impostare Fotocamera → Formati → "Più compatibile" (i video HEVC non si vedono su tutti i browser).
+- Dati per Google: le serate future in home hanno locandina e link alla serata; `serate.html` è nella sitemap.
+- Copia dei file prima della modifica: `_tmp/backup_prima_serate/`.
+
 ## ★ SEO — Google e assistenti AI (ottobre 2026)
 
 - **Nuova pagina `dj-toscana.html`** ("DJ in Toscana"): servizi, zone con i locali veri, domande frequenti.
@@ -27,7 +77,7 @@ Da lì Guido, con nome utente e password, può:
 - **scrivere il testo** di una canzone: il PDF scaricabile viene creato da solo
   (oppure caricare un PDF/Word già pronto)
 - scegliere il **Brano del momento** della home e la sua frase
-- gestire **serate** e **video**
+- gestire **serate** (con foto, video e condivisione sui social), la **galleria "Dalle serate"** e i **video**
 
 Ogni "Salva e pubblica" va direttamente online (1–2 minuti). Non serve il computer di Devid.
 
@@ -198,10 +248,11 @@ assets/js/main.js      animazioni, scroll, filtri, form
 Apri **`assets/js/data.js`** con un editor di testo. Trovi tre blocchi:
 
 **Serate** — dal pannello `/gestione/` oppure in `assets/js/contenuti.js` (blocco `serate`), data in formato `AAAA-MM-GG`.
-Il sito mostra solo le date future e le ordina da solo.
+Le date future vanno in home e in `serate.html`; quelle passate in `serate.html` → "Serate passate".
 
 ```js
-{ date:'2026-11-08', venue:'Nome del locale', city:'Città (PR)', note:'Dalle 22:00' },
+{ "id":"2026-11-08-nome", "date":"2026-11-08", "ora":"22:00", "titolo":"", "venue":"Nome del locale", "city":"Città (PR)",
+  "note":"Riga breve", "descrizione":"", "locandina":"eventi/…/locandina.jpg", "foto":[…], "video":[{"file":"…mp4","poster":"…jpg"} o {"youtube":"ID"}] }
 ```
 
 **Brani** — ora si gestiscono dal pannello `/gestione/` (o a mano in `assets/js/contenuti.js`).
