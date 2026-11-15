@@ -1,15 +1,29 @@
 /* ============================================================
-   contenuti.js — BRANI, SERATE e VIDEO del sito
+   contenuti.js — BRANI, SERATE, GALLERIA e VIDEO del sito
    Questo file viene riscritto dal pannello di gestione (/gestione/).
    Si può modificare anche a mano: è JSON dentro window.GA_CONTENUTI.
    ============================================================ */
 window.GA_CONTENUTI = {
- "aggiornato": "2026-11-03T02:26:18.957Z",
+ "aggiornato": "2026-11-15T09:10:23.815Z",
  "momento": {
   "audio": "audio/verso-il-mare.mp3",
   "frase": "La nuova uscita con la Ex Novo Band: una ballata sotto la luna, verso il mare. Ascoltala subito qui oppure scaricala: brano completo, solo base o solo testo."
  },
  "brani": [
+  {
+   "titolo": "Usfruto  -  Amarte",
+   "autori": "Usfruto  ( Carla Morrison)  Amarte  ( Tasca  -  Donasoldi)",
+   "anno": 2026,
+   "genere": "Rumba",
+   "copertina": "covers/amarte.jpg",
+   "audio": "",
+   "base": "",
+   "testo": "",
+   "parole": "",
+   "download": 0,
+   "youtube": "j-NkY4LVDm8",
+   "copertinaWeb": ""
+  },
   {
    "titolo": "Verso il Mare – Ex Novo Band – feat. Guido Arcangeli",
    "autori": "A. Capaccioli – G. Donasoldi",
@@ -893,5 +907,6 @@ window.GA_CONTENUTI = {
    "id": "PsgKqaKUNhk",
    "title": "Produzione in studio"
   }
- ]
+ ],
+ "galleria": []
 };
