@@ -4,7 +4,7 @@
    Si può modificare anche a mano: è JSON dentro window.GA_CONTENUTI.
    ============================================================ */
 window.GA_CONTENUTI = {
- "aggiornato": "2026-11-15T09:10:23.815Z",
+ "aggiornato": "2026-11-15T09:11:02.013Z",
  "momento": {
   "audio": "audio/verso-il-mare.mp3",
   "frase": "La nuova uscita con la Ex Novo Band: una ballata sotto la luna, verso il mare. Ascoltala subito qui oppure scaricala: brano completo, solo base o solo testo."
@@ -15,7 +15,7 @@ window.GA_CONTENUTI = {
    "autori": "Usfruto  ( Carla Morrison)  Amarte  ( Tasca  -  Donasoldi)",
    "anno": 2026,
    "genere": "Rumba",
-   "copertina": "covers/amarte.jpg",
+   "copertina": "covers/amarte-2.jpg",
    "audio": "",
    "base": "",
    "testo": "",
