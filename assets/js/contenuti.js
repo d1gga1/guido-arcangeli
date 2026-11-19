@@ -4,27 +4,12 @@
    Si può modificare anche a mano: è JSON dentro window.GA_CONTENUTI.
    ============================================================ */
 window.GA_CONTENUTI = {
- "aggiornato": "2026-11-19T04:27:47.238Z",
+ "aggiornato": "2026-11-19T04:32:01.281Z",
  "momento": {
   "audio": "audio/verso-il-mare.mp3",
   "frase": "La nuova uscita con la Ex Novo Band: una ballata sotto la luna, verso il mare. Ascoltala subito qui oppure scaricala: brano completo, solo base o solo testo."
  },
  "brani": [
-  {
-   "titolo": "Verso il Mare – Ex Novo Band – feat. Guido Arcangeli",
-   "autori": "A. Capaccioli – G. Donasoldi",
-   "anno": 2026,
-   "genere": "Ballabile",
-   "copertina": "covers/verso-il-mare.jpg",
-   "copertinaWeb": "",
-   "audio": "audio/verso-il-mare.mp3",
-   "base": "",
-   "testo": "",
-   "parole": "",
-   "download": 312,
-   "youtube": "CPcA_6zNuo8",
-   "pagina": ""
-  },
   {
    "titolo": "Usfruto  -  Amarte",
    "autori": "Usfruto  ( Carla Morrison)  Amarte  ( Tasca  -  Donasoldi)",
@@ -53,6 +38,21 @@ window.GA_CONTENUTI = {
    "download": 187,
    "youtube": "",
    "video": "audio/video/aria-di-casa-mia.mp4",
+   "pagina": ""
+  },
+  {
+   "titolo": "Verso il Mare – Ex Novo Band – feat. Guido Arcangeli",
+   "autori": "A. Capaccioli – G. Donasoldi",
+   "anno": 2026,
+   "genere": "Ballabile",
+   "copertina": "covers/verso-il-mare.jpg",
+   "copertinaWeb": "",
+   "audio": "audio/verso-il-mare.mp3",
+   "base": "",
+   "testo": "",
+   "parole": "",
+   "download": 312,
+   "youtube": "CPcA_6zNuo8",
    "pagina": ""
   },
   {
