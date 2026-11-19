@@ -4,7 +4,7 @@
    Si può modificare anche a mano: è JSON dentro window.GA_CONTENUTI.
    ============================================================ */
 window.GA_CONTENUTI = {
- "aggiornato": "2026-11-19T04:43:42.622Z",
+ "aggiornato": "2026-11-19T04:50:14.228Z",
  "momento": {
   "audio": "audio/verso-il-mare.mp3",
   "frase": "La nuova uscita con la Ex Novo Band: una ballata sotto la luna, verso il mare. Ascoltala subito qui oppure scaricala: brano completo, solo base o solo testo."
@@ -822,12 +822,6 @@ window.GA_CONTENUTI = {
   }
  ],
  "serate": [
-  {
-   "date": "2026-11-03",
-   "venue": "Dancing Papillon",
-   "city": "Piano Di Mommio  - Lucca",
-   "note": "Open H 21.00"
-  },
   {
    "id": "2026-11-01-grotta-maona",
    "date": "2026-11-01",
