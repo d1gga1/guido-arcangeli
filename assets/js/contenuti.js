@@ -4,7 +4,7 @@
    Si può modificare anche a mano: è JSON dentro window.GA_CONTENUTI.
    ============================================================ */
 window.GA_CONTENUTI = {
- "aggiornato": "2026-11-19T04:50:51.476Z",
+ "aggiornato": "2026-11-19T04:52:33.365Z",
  "momento": {
   "audio": "audio/verso-il-mare.mp3",
   "frase": "La nuova uscita con la Ex Novo Band: una ballata sotto la luna, verso il mare. Ascoltala subito qui oppure scaricala: brano completo, solo base o solo testo."
@@ -822,19 +822,6 @@ window.GA_CONTENUTI = {
   }
  ],
  "serate": [
-  {
-   "id": "2026-10-31-halloween-ilaria",
-   "date": "2026-10-31",
-   "ora": "20:00",
-   "titolo": "Mostruosamente Ballabili — Halloween Night",
-   "venue": "Ilaria Restaurant",
-   "city": "",
-   "note": "Cena e ballo",
-   "descrizione": "Halloween Night a cena e ballo con il DJ duo Guido Arcangeli & Barbara DJ.\nApertura porte alle 20:00, DJ set dal vivo, cocktail da brivido e cena.",
-   "locandina": "eventi/2026-10-31-halloween-ilaria/locandina.jpg",
-   "foto": [],
-   "video": []
-  },
   {
    "id": "2026-10-30-happy-day",
    "date": "2026-10-30",
