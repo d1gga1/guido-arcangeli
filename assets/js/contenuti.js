@@ -4,7 +4,7 @@
    Si può modificare anche a mano: è JSON dentro window.GA_CONTENUTI.
    ============================================================ */
 window.GA_CONTENUTI = {
- "aggiornato": "2026-11-19T04:50:14.228Z",
+ "aggiornato": "2026-11-19T04:50:51.476Z",
  "momento": {
   "audio": "audio/verso-il-mare.mp3",
   "frase": "La nuova uscita con la Ex Novo Band: una ballata sotto la luna, verso il mare. Ascoltala subito qui oppure scaricala: brano completo, solo base o solo testo."
@@ -822,19 +822,6 @@ window.GA_CONTENUTI = {
   }
  ],
  "serate": [
-  {
-   "id": "2026-11-01-grotta-maona",
-   "date": "2026-11-01",
-   "ora": "",
-   "titolo": "I Superballabili!",
-   "venue": "Dancing Grotta Maona",
-   "city": "Montecatini Terme (PT)",
-   "note": "In consolle Guido Arcangeli DJ",
-   "descrizione": "Domenica alla Grotta Maona di Montecatini Terme: musica tutta da ballare, con Guido Arcangeli DJ in consolle.",
-   "locandina": "eventi/2026-11-01-grotta-maona/locandina.jpg",
-   "foto": [],
-   "video": []
-  },
   {
    "id": "2026-10-31-halloween-ilaria",
    "date": "2026-10-31",
